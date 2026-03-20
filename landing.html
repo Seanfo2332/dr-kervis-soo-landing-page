@@ -113,38 +113,51 @@
 <!-- Background Particle Placeholder (Simulated via Canvas) -->
 <canvas height="4217" id="particle-canvas" width="1278"></canvas>
 <!-- Top Navigation Bar -->
-<header class="fixed top-4 left-1/2 -translate-x-1/2 w-[90%] max-w-7xl rounded-2xl border border-white/10 bg-neutral-900/70 backdrop-blur-xl shadow-[0_0_20px_rgba(0,243,255,0.1)] flex justify-between items-center px-8 py-4 z-[100] transition-all duration-300">
-<div class="text-xl font-headline font-bold tracking-tighter text-cyan-400">Dr. Kervis Soo</div>
+<header class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] md:w-[90%] max-w-7xl rounded-2xl border border-white/10 bg-neutral-900/70 backdrop-blur-xl shadow-[0_0_20px_rgba(0,243,255,0.1)] flex justify-between items-center px-4 md:px-8 py-3 md:py-4 z-[100] transition-all duration-300">
+<div class="text-lg md:text-xl font-headline font-bold tracking-tighter text-cyan-400">Dr. Kervis Soo</div>
 <nav class="hidden md:flex gap-8" id="main-nav">
 <a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#about">About</a>
 <a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#ventures">Ventures</a>
 <a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#impact">Impact</a>
 <a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#awards">Awards</a>
 </nav>
-<button class="bg-primary-container text-on-primary px-6 py-2 rounded-xl font-headline font-bold uppercase text-sm hover:scale-105 hover:shadow-[0_0_15px_rgba(0,243,255,0.3)] transition-all duration-300">
+<div class="flex items-center gap-3">
+<button class="hidden md:block bg-primary-container text-on-primary px-4 md:px-6 py-2 rounded-xl font-headline font-bold uppercase text-xs md:text-sm hover:scale-105 hover:shadow-[0_0_15px_rgba(0,243,255,0.3)] transition-all duration-300">
         Contact
     </button>
+<button id="mobile-menu-btn" class="md:hidden text-white p-1">
+<span class="material-symbols-outlined text-2xl">menu</span>
+</button>
+</div>
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="hidden absolute top-full left-0 right-0 mt-2 mx-2 rounded-xl bg-neutral-900/95 backdrop-blur-xl border border-white/10 p-4 flex flex-col gap-3 md:hidden">
+<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 py-2 px-4" href="#about">About</a>
+<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 py-2 px-4" href="#ventures">Ventures</a>
+<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 py-2 px-4" href="#impact">Impact</a>
+<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 py-2 px-4" href="#awards">Awards</a>
+<a class="bg-primary-container text-on-primary px-4 py-2 rounded-xl font-headline font-bold uppercase text-xs text-center" href="#">Contact</a>
+</div>
 </header>
 <!-- Hero Section -->
-<section class="relative min-height-screen pt-32 pb-20 px-6 overflow-hidden flex flex-col items-center justify-center" id="hero">
-<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<section class="relative min-height-screen pt-24 md:pt-32 pb-12 md:pb-20 px-4 md:px-6 overflow-hidden flex flex-col items-center justify-center" id="hero">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-center">
 <div class="space-y-8 z-10 order-2 lg:order-1">
-<h1 class="text-5xl md:text-7xl font-headline font-bold leading-tight tracking-tight text-white">
+<h1 class="text-3xl md:text-7xl font-headline font-bold leading-tight tracking-tight text-white">
                 苏才育博士: <br/>
 <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container to-secondary-fixed">AI 应用专家</span><br/>
                 与数字经济愿景家
             </h1>
-<p class="text-xl md:text-2xl text-on-surface-variant font-light max-w-xl">
+<p class="text-base md:text-2xl text-on-surface-variant font-light max-w-xl">
                 星域集团 (Zocco Group) 创办人兼董事长 | 马来亚大学管理学博士 | 林肯大学学院人工智能领域荣誉院士
             </p>
-<p class="text-base text-on-surface-variant/70 max-w-xl">
+<p class="text-sm md:text-base text-on-surface-variant/70 max-w-xl">
                 马来西亚著名青年企业家、数字经济资深从业者。长期致力于 AI、数字内容产业、MCN 生态及直播娱乐业的融合与创新，是马来西亚青年企业家的代表人物之一。
             </p>
-<div class="flex flex-wrap gap-6 pt-4">
-<a href="#ventures" class="px-8 py-4 bg-gradient-to-r from-on-primary-container to-primary-container text-on-primary rounded-xl font-headline font-bold uppercase tracking-wider hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(0,243,255,0.2)] inline-block">
+<div class="flex flex-wrap gap-3 md:gap-6 pt-4">
+<a href="#ventures" class="px-5 md:px-8 py-3 md:py-4 bg-gradient-to-r from-on-primary-container to-primary-container text-on-primary rounded-xl font-headline font-bold uppercase text-sm md:text-base tracking-wider hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(0,243,255,0.2)] inline-block">
                     探索商业版图
                 </a>
-<a href="#impact" class="px-8 py-4 border border-outline-variant hover:bg-white/5 text-white rounded-xl font-headline font-bold uppercase tracking-wider transition-all duration-300 inline-block">
+<a href="#impact" class="px-5 md:px-8 py-3 md:py-4 border border-outline-variant hover:bg-white/5 text-white rounded-xl font-headline font-bold uppercase text-sm md:text-base tracking-wider transition-all duration-300 inline-block">
                     了解社会公益
                 </a>
 </div>
@@ -162,10 +175,10 @@
 </div>
 </section>
 <!-- About & Education Section -->
-<section class="py-24 bg-surface-container-low relative overflow-hidden" id="about">
+<section class="py-12 md:py-24 bg-surface-container-low relative overflow-hidden" id="about">
 <div class="max-w-7xl mx-auto px-6">
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-<div class="lg:col-span-4 sticky top-32">
+<div class="lg:col-span-4 lg:sticky lg:top-32">
 <h2 class="text-4xl font-headline font-bold text-white mb-6 uppercase tracking-tight">
                     学者型企业家 <br/>
 <span class="text-primary-container">Academic Entrepreneur</span>
@@ -266,16 +279,16 @@ MTPN 槟城分会重要成员
 </div>
 </section>
 <!-- Business Empire (Zocco Group) Section -->
-<section class="py-24 relative" id="ventures">
+<section class="py-12 md:py-24 relative" id="ventures">
 <div class="max-w-7xl mx-auto px-6">
-<div class="text-center mb-20">
-<h2 class="text-4xl md:text-6xl font-headline font-extrabold text-white mb-4 tracking-tighter">星域集团 ZOCCO GROUP</h2>
+<div class="text-center mb-12 md:mb-20">
+<h2 class="text-2xl md:text-6xl font-headline font-extrabold text-white mb-4 tracking-tighter">星域集团 ZOCCO GROUP</h2>
 <div class="h-1 w-24 bg-primary-container mx-auto rounded-full mb-6"></div>
 <p class="text-on-surface-variant max-w-3xl mx-auto text-lg">通过星域集团构建闭环数字经济生态系统——围绕"AI、内容、创作者经济与品牌商业化"搭建可持续运转的生态，从内容生产、流量聚合、品牌合作到商业转化形成完整闭环。</p>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 <!-- Card 1 -->
-<div class="glass-panel p-10 rounded-2xl group border border-white/5 hover:border-primary-container/30 transition-all duration-500">
+<div class="glass-panel p-6 md:p-10 rounded-2xl group border border-white/5 hover:border-primary-container/30 transition-all duration-500">
 <div class="flex justify-between items-start mb-8">
 <span class="material-symbols-outlined text-5xl text-primary-container" style='font-variation-settings: "FILL" 1;'>neurology</span>
 <div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 01</div>
@@ -289,7 +302,7 @@ MTPN 槟城分会重要成员
 </ul>
 </div>
 <!-- Card 2 -->
-<div class="glass-panel p-10 rounded-2xl group border border-white/5 hover:border-secondary-fixed/30 transition-all duration-500">
+<div class="glass-panel p-6 md:p-10 rounded-2xl group border border-white/5 hover:border-secondary-fixed/30 transition-all duration-500">
 <div class="flex justify-between items-start mb-8">
 <span class="material-symbols-outlined text-5xl text-secondary-fixed" style='font-variation-settings: "FILL" 1;'>groups</span>
 <div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 02</div>
@@ -303,7 +316,7 @@ MTPN 槟城分会重要成员
 </ul>
 </div>
 <!-- Card 3 -->
-<div class="glass-panel p-10 rounded-2xl group border border-white/5 hover:border-tertiary-container/30 transition-all duration-500">
+<div class="glass-panel p-6 md:p-10 rounded-2xl group border border-white/5 hover:border-tertiary-container/30 transition-all duration-500">
 <div class="flex justify-between items-start mb-8">
 <span class="material-symbols-outlined text-5xl text-tertiary-container" style='font-variation-settings: "FILL" 1;'>movie</span>
 <div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 03</div>
@@ -317,7 +330,7 @@ MTPN 槟城分会重要成员
 </ul>
 </div>
 <!-- Card 4 -->
-<div class="glass-panel p-10 rounded-2xl group border border-white/5 hover:border-white/20 transition-all duration-500">
+<div class="glass-panel p-6 md:p-10 rounded-2xl group border border-white/5 hover:border-white/20 transition-all duration-500">
 <div class="flex justify-between items-start mb-8">
 <span class="material-symbols-outlined text-5xl text-on-surface" style='font-variation-settings: "FILL" 1;'>diamond</span>
 <div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 04</div>
@@ -335,7 +348,7 @@ MTPN 槟城分会重要成员
 </div>
 </section>
 <!-- Social Impact Section -->
-<section class="py-24 bg-gradient-to-b from-surface to-surface-container-low border-y border-white/5" id="impact">
+<section class="py-12 md:py-24 bg-gradient-to-b from-surface to-surface-container-low border-y border-white/5" id="impact">
 <div class="max-w-7xl mx-auto px-6">
 <div class="flex flex-col md:flex-row gap-16 items-center">
 <div class="flex-1 space-y-8">
@@ -385,7 +398,7 @@ MTPN 槟城分会重要成员
 <div class="aspect-square rounded-2xl overflow-hidden shadow-2xl neon-border-cyan glass-panel">
 <img alt="Charity Impact" class="w-full h-full object-cover opacity-80 grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaAX6fJnr5kZpCYSpMb521lbaxJed4hP5y9Or_5AtgjsXCtuVcOLjwVtmj62Di-n_B99aGMcoXCFLogR1tY8BTcAVNdDcuBOd6kq_rBlBuJz0TbM9LMQ-cCkDfUHHZdL93xZFlEtyt_v6lqtdmFJrnGPBeH-eCTGXMGl_xbg4c1sjsmDoOGt8Xt42wxWcEwX66UZd9oeQ5QUHKqoU8y0QApHwpkyHtHktgjZjW00OOnOUCObM_7Du3aYgai33Fz5YcUnd_4tNZy4fX"/>
 </div>
-<div class="absolute -bottom-8 -left-8 bg-surface-container-high p-8 rounded-2xl shadow-2xl border border-white/10 hidden md:block">
+<div class="mt-6 md:mt-0 md:absolute md:-bottom-8 md:-left-8 bg-surface-container-high p-6 md:p-8 rounded-2xl shadow-2xl border border-white/10 text-center md:text-left">
 <div class="text-primary-container text-4xl font-headline font-bold mb-1">1,000,000+</div>
 <div class="text-on-surface-variant text-sm font-label uppercase">Donated (MYR)</div>
 </div>
@@ -394,7 +407,7 @@ MTPN 槟城分会重要成员
 </div>
 </section>
 <!-- Awards & Quotes Section -->
-<section class="py-24 overflow-hidden" id="awards">
+<section class="py-12 md:py-24 overflow-hidden" id="awards">
 <div class="max-w-7xl mx-auto px-6">
 <h2 class="text-center text-3xl font-headline font-bold text-white mb-6 uppercase tracking-widest">权威媒体报道与荣誉</h2>
 <p class="text-center text-on-surface-variant max-w-2xl mx-auto mb-16">苏才育的实践代表了新一代企业家的特质——具备敏锐的技术嗅觉与强烈的社会责任感，致力于将 AI 技术有效转化为实际生产力。</p>
@@ -478,7 +491,7 @@ MTPN 槟城分会重要成员
 </section>
 <!-- Bottom Navigation Bar -->
 <footer class="w-full bg-neutral-950 border-t border-white/5">
-<div class="w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
+<div class="w-full py-12 pb-24 md:pb-12 px-6 md:px-8 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
 <div class="mb-8 md:mb-0">
 <div class="text-lg font-['Space_Grotesk'] font-bold text-white mb-4">Dr. Kervis Soo</div>
 <p class="font-['Manrope'] text-neutral-400 text-sm">© 2026 Dr. Kervis Soo. All Rights Reserved.</p>
@@ -491,7 +504,7 @@ MTPN 槟城分会重要成员
 </div>
 </footer>
 <!-- Bottom Floating Nav -->
-<nav class="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-full border border-white/5 px-6 bg-neutral-950/80 backdrop-blur-md shadow-2xl shadow-cyan-900/20 z-50 flex gap-8 py-3 items-center">
+<nav class="fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 rounded-full border border-white/5 px-4 md:px-6 bg-neutral-950/80 backdrop-blur-md shadow-2xl shadow-cyan-900/20 z-50 flex gap-4 md:gap-8 py-2 md:py-3 items-center">
 <a class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-200 hover:scale-110 transition-transform" href="https://www.linkedin.com" target="_blank">
 <span class="material-symbols-outlined" data-icon="share">share</span>
 <span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-widest">LinkedIn</span>
@@ -580,10 +593,32 @@ MTPN 槟城分会重要成员
         mouse.x = e.x;
         mouse.y = e.y;
     });
+    window.addEventListener('touchmove', (e) => {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+    });
 
     window.addEventListener('resize', init);
     init();
     animate();
+</script>
+
+<!-- Mobile Menu Toggle -->
+<script>
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = menuBtn.querySelector('.material-symbols-outlined');
+    menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        menuIcon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
+    });
+    // Close menu when clicking a link
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            menuIcon.textContent = 'menu';
+        });
+    });
 </script>
 
 <!-- Active Nav Highlight Script -->

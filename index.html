@@ -72,31 +72,33 @@
 
         /* Title */
         .title {
-            font-size: clamp(48px, 8vw, 96px);
+            font-size: clamp(36px, 8vw, 96px);
             font-weight: 700;
             letter-spacing: -2px;
             text-align: center;
             margin-bottom: 16px;
             text-shadow: 0 0 60px rgba(0,243,255,0.3);
+            padding: 0 16px;
         }
         .subtitle {
             font-family: 'Manrope', sans-serif;
-            font-size: clamp(16px, 2.5vw, 24px);
+            font-size: clamp(14px, 2.5vw, 24px);
             color: rgba(255,255,255,0.5);
             font-weight: 300;
             text-align: center;
             max-width: 600px;
             margin-bottom: 48px;
+            padding: 0 24px;
         }
 
         /* Enter button */
         .enter-btn {
             display: inline-block;
-            padding: 16px 48px;
+            padding: 14px 40px;
             background: linear-gradient(135deg, #00f3ff, #34ff8d);
             color: #000;
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -207,7 +209,8 @@
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
-    const COUNT = 5000;
+    const isMobile = window.innerWidth < 768;
+    const COUNT = isMobile ? 2000 : 5000;
     const SPEED_MULT = 1;
 
     const scene = new THREE.Scene();
