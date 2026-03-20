@@ -1,652 +1,379 @@
 <!DOCTYPE html>
-
-<html class="dark scroll-smooth" lang="zh-CN"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Dr. Kervis Soo | 苏才育博士 - AI 应用专家与数字经济愿景家</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "on-surface": "#e2e2e2",
-                        "on-secondary": "#003919",
-                        "on-error-container": "#ffdad6",
-                        "inverse-surface": "#e2e2e2",
-                        "surface-tint": "#00dce6",
-                        "on-primary-fixed": "#002022",
-                        "inverse-on-surface": "#303030",
-                        "on-tertiary-fixed": "#221b00",
-                        "background": "#131313",
-                        "surface-container-highest": "#353535",
-                        "on-primary-fixed-variant": "#004f53",
-                        "surface-dim": "#131313",
-                        "on-primary-container": "#006b71",
-                        "secondary": "#f5fff3",
-                        "surface": "#131313",
-                        "primary-container": "#00f3ff",
-                        "on-error": "#690005",
-                        "surface-bright": "#393939",
-                        "on-primary": "#00373a",
-                        "on-tertiary-fixed-variant": "#554500",
-                        "secondary-fixed": "#60ff99",
-                        "surface-container-low": "#1b1b1b",
-                        "outline": "#849495",
-                        "on-tertiary-container": "#725e00",
-                        "surface-container-lowest": "#0e0e0e",
-                        "on-secondary-container": "#007239",
-                        "primary-fixed": "#6ff6ff",
-                        "on-secondary-fixed": "#00210c",
-                        "surface-container": "#1f1f1f",
-                        "outline-variant": "#3a494b",
-                        "tertiary": "#fff7e9",
-                        "primary-fixed-dim": "#00dce6",
-                        "inverse-primary": "#00696f",
-                        "tertiary-container": "#ffd93d",
-                        "tertiary-fixed": "#ffe173",
-                        "primary": "#e3fdff",
-                        "error": "#ffb4ab",
-                        "error-container": "#93000a",
-                        "surface-variant": "#353535",
-                        "secondary-container": "#34ff8d",
-                        "secondary-fixed-dim": "#00e479",
-                        "tertiary-fixed-dim": "#e8c426",
-                        "on-background": "#e2e2e2",
-                        "surface-container-high": "#2a2a2a",
-                        "on-tertiary": "#3b2f00",
-                        "on-secondary-fixed-variant": "#005228",
-                        "on-surface-variant": "#b9cacb"
-                    },
-                    fontFamily: {
-                        "headline": ["Space Grotesk"],
-                        "body": ["Manrope"],
-                        "label": ["Space Grotesk"]
-                    },
-                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
-                },
-            },
-        }
-    </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        html {
-            scroll-padding-top: 100px;
-        }
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Kervis Soo | 苏才育博士</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: #131313;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Space Grotesk', sans-serif;
             color: #e2e2e2;
-            overflow-x: hidden;
         }
-        .glass-panel {
-            background: rgba(27, 27, 27, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-        .hero-glow {
-            box-shadow: 0 0 40px rgba(0, 243, 255, 0.2);
-        }
-        .text-glow {
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-        }
-        canvas#particle-canvas {
+
+        /* Overlay content */
+        #overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             pointer-events: none;
         }
-        .neon-border-cyan {
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+        #overlay > * { pointer-events: auto; }
+
+        /* Pulse badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #00f3ff;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+            margin-bottom: 32px;
+        }
+        .pulse-dot {
+            position: relative;
+            width: 8px; height: 8px;
+        }
+        .pulse-dot::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: #00f3ff;
+            animation: ping 1.5s cubic-bezier(0,0,0.2,1) infinite;
+            opacity: 0.75;
+        }
+        .pulse-dot::after {
+            content: '';
+            position: relative;
+            display: block;
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #00f3ff;
+        }
+        @keyframes ping {
+            75%, 100% { transform: scale(2); opacity: 0; }
+        }
+
+        /* Title */
+        .title {
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 700;
+            letter-spacing: -2px;
+            text-align: center;
+            margin-bottom: 16px;
+            text-shadow: 0 0 60px rgba(0,243,255,0.3);
+        }
+        .subtitle {
+            font-family: 'Manrope', sans-serif;
+            font-size: clamp(16px, 2.5vw, 24px);
+            color: rgba(255,255,255,0.5);
+            font-weight: 300;
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 48px;
+        }
+
+        /* Enter button */
+        .enter-btn {
+            display: inline-block;
+            padding: 16px 48px;
+            background: linear-gradient(135deg, #00f3ff, #34ff8d);
+            color: #000;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 40px rgba(0,243,255,0.3);
+        }
+        .enter-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 60px rgba(0,243,255,0.5);
+        }
+
+        /* Scroll hint at bottom */
+        .scroll-hint {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        .scroll-hint span {
+            color: rgba(255,255,255,0.3);
+            font-size: 11px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .scroll-hint .material-symbols-outlined {
+            color: rgba(255,255,255,0.3);
+            font-size: 28px;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(12px); }
+        }
+
+        /* Fade-in animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 1s ease forwards;
+        }
+        .fade-in:nth-child(1) { animation-delay: 0.5s; }
+        .fade-in:nth-child(2) { animation-delay: 0.8s; }
+        .fade-in:nth-child(3) { animation-delay: 1.1s; }
+        .fade-in:nth-child(4) { animation-delay: 1.4s; }
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Warp flash overlay */
+        #warp-flash {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: #fff;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #warp-flash.active {
+            opacity: 1;
+        }
+
+        /* Overlay fade out during warp */
+        #overlay.warping {
+            transition: opacity 0.4s ease;
+            opacity: 0;
         }
     </style>
-</head>
-<body class="font-body selection:bg-primary-container selection:text-on-primary">
-<!-- Background Particle Placeholder (Simulated via Canvas) -->
-<canvas height="4217" id="particle-canvas" width="1278"></canvas>
-<!-- Top Navigation Bar -->
-<header class="fixed top-4 left-1/2 -translate-x-1/2 w-[90%] max-w-7xl rounded-2xl border border-white/10 bg-neutral-900/70 backdrop-blur-xl shadow-[0_0_20px_rgba(0,243,255,0.1)] flex justify-between items-center px-8 py-4 z-[100] transition-all duration-300">
-<div class="text-xl font-headline font-bold tracking-tighter text-cyan-400">Dr. Kervis Soo</div>
-<nav class="hidden md:flex gap-8" id="main-nav">
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#about">About</a>
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#ventures">Ventures</a>
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#impact">Impact</a>
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#awards">Awards</a>
-</nav>
-<button class="bg-primary-container text-on-primary px-6 py-2 rounded-xl font-headline font-bold uppercase text-sm hover:scale-105 hover:shadow-[0_0_15px_rgba(0,243,255,0.3)] transition-all duration-300">
-        Contact
-    </button>
-</header>
-<!-- Hero Section -->
-<section class="relative min-height-screen pt-32 pb-20 px-6 overflow-hidden flex flex-col items-center justify-center" id="hero">
-<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-<div class="space-y-8 z-10 order-2 lg:order-1">
-<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-low border border-outline-variant/30 text-secondary-fixed text-sm font-label tracking-widest uppercase">
-<span class="relative flex h-2 w-2">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary-fixed opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2 w-2 bg-secondary-fixed"></span>
-</span>
-                Neural Architect &amp; Visionary
-            </div>
-<h1 class="text-5xl md:text-7xl font-headline font-bold leading-tight tracking-tight text-white">
-                苏才育博士: <br/>
-<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container to-secondary-fixed">AI 应用专家</span><br/>
-                与数字经济愿景家
-            </h1>
-<p class="text-xl md:text-2xl text-on-surface-variant font-light max-w-xl">
-                星域集团 (Zocco Group) 创办人兼董事长 | 马来亚大学管理学博士 | 林肯大学学院人工智能领域荣誉院士
-            </p>
-<p class="text-base text-on-surface-variant/70 max-w-xl">
-                马来西亚著名青年企业家、数字经济资深从业者。长期致力于 AI、数字内容产业、MCN 生态及直播娱乐业的融合与创新，是马来西亚青年企业家的代表人物之一。
-            </p>
-<div class="flex flex-wrap gap-6 pt-4">
-<a href="#ventures" class="px-8 py-4 bg-gradient-to-r from-on-primary-container to-primary-container text-on-primary rounded-xl font-headline font-bold uppercase tracking-wider hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(0,243,255,0.2)] inline-block">
-                    探索商业版图
-                </a>
-<a href="#impact" class="px-8 py-4 border border-outline-variant hover:bg-white/5 text-white rounded-xl font-headline font-bold uppercase tracking-wider transition-all duration-300 inline-block">
-                    了解社会公益
-                </a>
-</div>
-</div>
-<div class="relative order-1 lg:order-2 flex justify-center">
-<div class="relative w-72 h-72 md:w-[450px] md:h-[450px]">
-<!-- Outer Glow Effect -->
-<div class="absolute inset-0 rounded-full bg-primary-container/20 blur-[80px] animate-pulse"></div>
-<div class="absolute -inset-2 rounded-full border border-primary-container/30 border-dashed animate-[spin_20s_linear_infinite]"></div>
-<div class="relative w-full h-full rounded-full overflow-hidden border-4 border-primary-container/50 hero-glow z-10 glass-panel">
-<img alt="Dr. Kervis Soo" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" src="https://lh3.googleusercontent.com/aida/ADBb0ujAoe-cVc4gtMGIqO4y8gk_Wu2NlX1jpPLNkB3nYkiUOn3kCi6X2eMwU-rKzL8GxwIN4A3PQSEveaZ1Pmwe86gAoXyrHWtDljTa2l3qghskYdTeiQp4npWOFtcxBSmckEpHMiOl4Jy7FSIiXCMxWRiDYjJ6QKC0U7W0KXkIzwlggaGvRL7sXC9SudO-uyqMQpiPKJkDb-WHRot-mvh3OyIbfG5Kl3w6kN0mZDFoQrkcp84odrJtNUxZb1aStSx3Iw7r3Z8Y7kKEKA"/>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- About & Education Section -->
-<section class="py-24 bg-surface-container-low relative overflow-hidden" id="about">
-<div class="max-w-7xl mx-auto px-6">
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-<div class="lg:col-span-4 sticky top-32">
-<h2 class="text-4xl font-headline font-bold text-white mb-6 uppercase tracking-tight">
-                    学者型企业家 <br/>
-<span class="text-primary-container">Academic Entrepreneur</span>
-</h2>
-<div class="mb-8 rounded-2xl overflow-hidden neon-border-cyan glass-panel aspect-[4/5] relative group">
-<img alt="Dr. Kervis Soo Professional Background" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/ADBb0ugv74JExl9VrKFBLygDfMDuvDENLAyiihRyQDpcPE9VTxJfNkan_Zswstc3y6B5PAZElWS1Dnh7ALz3YjySGm9ZXQ0FMHluGKIy28pZz1RbnMQbNkI8P2kQTC-Zb9xuOmMw-k0YzmwEX6nbMiVgOXeFJvCP9utLIg-RD2JnKYrcKBYzNdSJ_hG-DbYCbZY3qG4wbZsfT0iYxJetqD8Nbqm7h9yWzVurLMpymPxO8y6Gbsyy4dhlPLohECsVuYqMcQwNiLA3ZA6CbA"/>
-<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<p class="text-white font-headline font-bold text-lg">Leadership &amp; Professionalism</p>
-</div>
-</div>
-<p class="text-on-surface-variant leading-relaxed text-lg mb-6">
-                    苏才育（Kervis Soo Chai Ee，1992年—），出生于马来西亚。从居銮中华中学出发，始终保持对知识的渴求与对商业的敏锐触觉。他完美融合了学术严谨性与商业前瞻性，致力于将最前沿的 AI 技术转化为可规模化的商业应用。
-                </p>
-<!-- Key Stats -->
-<div class="grid grid-cols-2 gap-4 mt-6">
-<div class="p-4 rounded-xl bg-surface-container border border-white/5 text-center">
-<div class="text-primary-container font-headline font-bold text-2xl">1992</div>
-<div class="text-on-surface-variant text-xs font-label uppercase tracking-wider mt-1">出生年份</div>
-</div>
-<div class="p-4 rounded-xl bg-surface-container border border-white/5 text-center">
-<div class="text-secondary-fixed font-headline font-bold text-2xl">DBA</div>
-<div class="text-on-surface-variant text-xs font-label uppercase tracking-wider mt-1">管理学博士</div>
-</div>
-<div class="p-4 rounded-xl bg-surface-container border border-white/5 text-center">
-<div class="text-tertiary-container font-headline font-bold text-2xl">4+</div>
-<div class="text-on-surface-variant text-xs font-label uppercase tracking-wider mt-1">商业板块</div>
-</div>
-<div class="p-4 rounded-xl bg-surface-container border border-white/5 text-center">
-<div class="text-primary-container font-headline font-bold text-2xl">UM</div>
-<div class="text-on-surface-variant text-xs font-label uppercase tracking-wider mt-1">马来亚大学</div>
-</div>
-</div>
-</div>
-<div class="lg:col-span-8 space-y-12 pt-12">
-<!-- Timeline -->
-<div class="relative pl-8 border-l border-outline-variant/30 space-y-16">
-<!-- Item 1 -->
-<div class="relative">
-<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-primary-container shadow-[0_0_10px_rgba(0,243,255,1)]"></div>
-<div class="text-primary-container font-headline font-bold text-2xl mb-2">2026年1月</div>
-<h3 class="text-2xl font-bold text-white mb-4">人工智能领域荣誉院士 | 林肯大学学院</h3>
-<p class="text-on-surface-variant mb-3">马来西亚林肯大学学院（Lincoln University College）正式授予其"人工智能领域荣誉院士"（Honorary Fellow in Artificial Intelligence）称号。</p>
-<p class="text-on-surface-variant/70 text-sm">这一荣誉不仅是对其 AI 技术转化与数字内容产业实践能力的肯定，也标志着其从纯粹的商业经营者向"学者型企业家"的成功转型。</p>
-</div>
-<!-- Item 2 -->
-<div class="relative">
-<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-secondary-fixed shadow-[0_0_10px_rgba(96,255,153,1)]"></div>
-<div class="text-secondary-fixed font-headline font-bold text-2xl mb-2">2025年4月</div>
-<h3 class="text-2xl font-bold text-white mb-4">管理学博士 (DBA) | 马来亚大学</h3>
-<p class="text-on-surface-variant mb-3">进入马来西亚最高学府马来亚大学（University of Malaya）深造，研究方向聚焦于"数字经济背景下的企业转型"与"人工智能对传统内容产业的赋能"。</p>
-<p class="text-on-surface-variant/70 text-sm">2025年4月顺利通过论文答辩并取得博士学位，为其商业实践提供了严谨的理论支撑。</p>
-</div>
-<!-- Item 3 -->
-<div class="relative">
-<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-tertiary-container shadow-[0_0_10px_rgba(255,217,61,1)]"></div>
-<div class="text-tertiary-container font-headline font-bold text-2xl mb-2">创业起步</div>
-<h3 class="text-2xl font-bold text-white mb-4">创办星域集团 Zocco Group</h3>
-<p class="text-on-surface-variant mb-3">敏锐察觉全球数字化浪潮对东南亚市场的冲击，以短视频内容与直播运营为切入点创办星域集团。</p>
-<p class="text-on-surface-variant/70 text-sm">在极短时间内，将公司从单一的内容工作室发展成为涵盖 MCN、电商营销、艺人孵化及影视投资的综合性集团。</p>
-</div>
-<!-- Item 4 -->
-<div class="relative">
-<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-outline-variant"></div>
-<div class="text-on-surface-variant font-headline font-bold text-xl mb-2">求学时代</div>
-<h3 class="text-xl font-bold text-white mb-4">居銮中华中学 (CHHS)</h3>
-<p class="text-on-surface-variant">就读于柔佛州著名华文独立中学，在校期间表现出对商业逻辑与社会公益的浓厚兴趣，奠定了深厚的中道文化底蕴与坚毅的拼搏精神。</p>
-</div>
-</div>
-<!-- Social Roles -->
-<div class="mt-16 p-8 rounded-2xl glass-panel border border-white/5">
-<h3 class="text-xl font-headline font-bold text-white mb-6">社会职务</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="flex items-center gap-3 text-on-surface-variant">
-<span class="material-symbols-outlined text-primary-container text-xl" style='font-variation-settings: "FILL" 1;'>verified</span>
-星域集团创办人兼董事长
-</div>
-<div class="flex items-center gap-3 text-on-surface-variant">
-<span class="material-symbols-outlined text-primary-container text-xl" style='font-variation-settings: "FILL" 1;'>school</span>
-林肯大学学院 AI 荣誉院士
-</div>
-<div class="flex items-center gap-3 text-on-surface-variant">
-<span class="material-symbols-outlined text-secondary-fixed text-xl" style='font-variation-settings: "FILL" 1;'>groups</span>
-MTPN 槟城分会重要成员
-</div>
-<div class="flex items-center gap-3 text-on-surface-variant">
-<span class="material-symbols-outlined text-tertiary-container text-xl" style='font-variation-settings: "FILL" 1;'>favorite</span>
-马来西亚公益节核心赞助人
-</div>
-<div class="flex items-center gap-3 text-on-surface-variant">
-<span class="material-symbols-outlined text-tertiary-container text-xl" style='font-variation-settings: "FILL" 1;'>volunteer_activism</span>
-"百万慈善基金" 发起人
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Business Empire (Zocco Group) Section -->
-<section class="py-24 relative" id="ventures">
-<div class="max-w-7xl mx-auto px-6">
-<div class="text-center mb-20">
-<h2 class="text-4xl md:text-6xl font-headline font-extrabold text-white mb-4 tracking-tighter">星域集团 ZOCCO GROUP</h2>
-<div class="h-1 w-24 bg-primary-container mx-auto rounded-full mb-6"></div>
-<p class="text-on-surface-variant max-w-3xl mx-auto text-lg">通过星域集团构建闭环数字经济生态系统——围绕"AI、内容、创作者经济与品牌商业化"搭建可持续运转的生态，从内容生产、流量聚合、品牌合作到商业转化形成完整闭环。</p>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<!-- Card 1 -->
-<div class="glass-panel p-10 rounded-2xl group border border-white/5 hover:border-primary-container/30 transition-all duration-500">
-<div class="flex justify-between items-start mb-8">
-<span class="material-symbols-outlined text-5xl text-primary-container" style='font-variation-settings: "FILL" 1;'>neurology</span>
-<div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 01</div>
-</div>
-<h3 class="text-3xl font-bold text-white mb-4">AI + 内容生产</h3>
-<p class="text-on-surface-variant/70 text-sm mb-6">提出"AI+内容"双驱动模式，主导研发多项应用于直播与短视频领域的 AI 工具。</p>
-<ul class="space-y-4 text-on-surface-variant">
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span><span><strong class="text-white">AIGC 内容生产：</strong>利用生成式 AI 技术，大幅降低短视频脚本、文案及后期剪辑的时间成本</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span><span><strong class="text-white">AI 音乐生态圈：</strong>通过 AI 创作与 IP 联动，探索数字音乐新商业高度，引起《SG Scope》等媒体广泛关注</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span><span><strong class="text-white">数据化智能运营：</strong>基于 AI 算法的直播流量监控系统，实现精准观众画像分析与商业转化预测</span></li>
-</ul>
-</div>
-<!-- Card 2 -->
-<div class="glass-panel p-10 rounded-2xl group border border-white/5 hover:border-secondary-fixed/30 transition-all duration-500">
-<div class="flex justify-between items-start mb-8">
-<span class="material-symbols-outlined text-5xl text-secondary-fixed" style='font-variation-settings: "FILL" 1;'>groups</span>
-<div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 02</div>
-</div>
-<h3 class="text-3xl font-bold text-white mb-4">MCN 生态矩阵</h3>
-<p class="text-on-surface-variant/70 text-sm mb-6">建立标准化创作者孵化流程，推动内容创作者与品牌的深度联名合作。</p>
-<ul class="space-y-4 text-on-surface-variant">
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed mt-2 shrink-0"></span><span><strong class="text-white">多平台布局：</strong>在 TikTok、Facebook、YouTube 等主流平台拥有大量签约达人</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed mt-2 shrink-0"></span><span><strong class="text-white">跨界合作：</strong>推动创作者与医美、时尚、零售等品牌深度联名，提升流量商业溢价能力</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed mt-2 shrink-0"></span><span><strong class="text-white">艺人孵化：</strong>标准化头部艺人孵化体系，实现从内容创作到流量转化的完整链路</span></li>
-</ul>
-</div>
-<!-- Card 3 -->
-<div class="glass-panel p-10 rounded-2xl group border border-white/5 hover:border-tertiary-container/30 transition-all duration-500">
-<div class="flex justify-between items-start mb-8">
-<span class="material-symbols-outlined text-5xl text-tertiary-container" style='font-variation-settings: "FILL" 1;'>movie</span>
-<div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 03</div>
-</div>
-<h3 class="text-3xl font-bold text-white mb-4">影视投资与科技</h3>
-<p class="text-on-surface-variant/70 text-sm mb-6">将视野扩展至大银幕，主张引入 AI 预审和数字营销技术提高投资成功率。</p>
-<ul class="space-y-4 text-on-surface-variant">
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container mt-2 shrink-0"></span><span><strong class="text-white">电影《Indera》：</strong>入围第34届马来西亚电影节，成功入围韩国富川国际奇幻影展</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container mt-2 shrink-0"></span><span><strong class="text-white">AI 剧本预审：</strong>通过数据预测市场反应，引入 AI 分镜技术提高影视投资成功率</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container mt-2 shrink-0"></span><span><strong class="text-white">数字孪生拍摄：</strong>探索虚拟拍摄基地，推动影视制作数字化转型</span></li>
-</ul>
-</div>
-<!-- Card 4 -->
-<div class="glass-panel p-10 rounded-2xl group border border-white/5 hover:border-white/20 transition-all duration-500">
-<div class="flex justify-between items-start mb-8">
-<span class="material-symbols-outlined text-5xl text-on-surface" style='font-variation-settings: "FILL" 1;'>diamond</span>
-<div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 04</div>
-</div>
-<h3 class="text-3xl font-bold text-white mb-4">跨界商业</h3>
-<p class="text-on-surface-variant/70 text-sm mb-6">以东南亚市场为起点，探索线上娱乐流量与线下商业体验的深度结合。</p>
-<ul class="space-y-4 text-on-surface-variant">
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0"></span><span><strong class="text-white">医美产业：</strong>携手国际品牌打造体验馆，将流量运营逻辑引入线下实业</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0"></span><span><strong class="text-white">品牌品鉴会：</strong>主办星域集团 × AJEndless 马来西亚品鉴会，通过社交媒体影响力赋能传统快消品</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0"></span><span><strong class="text-white">线下消费场景：</strong>持续探索线上娱乐流量向实际消费场景转化</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0"></span><span><strong class="text-white">区域化发展：</strong>以东南亚为基础，布局更具增长潜力的内容、娱乐与消费产业生态</span></li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<!-- Social Impact Section -->
-<section class="py-24 bg-gradient-to-b from-surface to-surface-container-low border-y border-white/5" id="impact">
-<div class="max-w-7xl mx-auto px-6">
-<div class="flex flex-col md:flex-row gap-16 items-center">
-<div class="flex-1 space-y-8">
-<h2 class="text-4xl font-headline font-bold text-white mb-8">社会责任与公益愿景</h2>
-<blockquote class="relative pl-12">
-<span class="absolute left-0 top-0 text-6xl text-primary-container opacity-20 font-serif">"</span>
-<p class="text-2xl md:text-3xl font-medium italic text-on-surface mb-6">取之社会，用之社会。</p>
-<footer class="text-on-surface-variant">— Dr. Kervis Soo</footer>
-</blockquote>
-<div class="space-y-6">
-<div class="flex items-start gap-6 p-6 rounded-xl bg-surface-container border border-white/5">
-<span class="material-symbols-outlined text-tertiary-container text-4xl shrink-0" style='font-variation-settings: "FILL" 1;'>volunteer_activism</span>
-<div>
-<h4 class="text-xl font-bold text-white mb-2">百万慈善基金</h4>
-<p class="text-on-surface-variant mb-2">2025年10月正式发起成立，计划在五年内投入数百万马币，专门用于：</p>
-<ul class="text-on-surface-variant/80 text-sm space-y-1 ml-4">
-<li>- 扶持青年创业计划</li>
-<li>- 提供数字技能培训</li>
-<li>- 资助社区教育基础设施建设</li>
-</ul>
-</div>
-</div>
-<div class="flex items-start gap-6 p-6 rounded-xl bg-surface-container border border-white/5">
-<span class="material-symbols-outlined text-secondary-fixed text-4xl shrink-0" style='font-variation-settings: "FILL" 1;'>school</span>
-<div>
-<h4 class="text-xl font-bold text-white mb-2">NEWGEN 苏亚辉与陈亚莲夫妇百万教育基金</h4>
-<p class="text-on-surface-variant mb-2">为感念父母教养之恩，在柔佛州成立的家族教育传承基金。主要面向家境贫寒但品学兼优的学生，帮助他们完成从中学到大学的学业，旨在打破贫困的代际传递。</p>
-</div>
-</div>
-<div class="flex items-start gap-6 p-6 rounded-xl bg-surface-container border border-white/5">
-<span class="material-symbols-outlined text-primary-container text-4xl shrink-0" style='font-variation-settings: "FILL" 1;'>account_balance</span>
-<div>
-<h4 class="text-xl font-bold text-white mb-2">母校回馈 — 居銮中华中学</h4>
-<p class="text-on-surface-variant">多次以个人和集团名义回馈母校，支持学校的硬件建设与奖助学金计划，鼓励母校学子勇于探索科技前沿。</p>
-</div>
-</div>
-<div class="flex items-start gap-6 p-6 rounded-xl bg-surface-container border border-white/5">
-<span class="material-symbols-outlined text-tertiary-container text-4xl shrink-0" style='font-variation-settings: "FILL" 1;'>celebration</span>
-<div>
-<h4 class="text-xl font-bold text-white mb-2">马来西亚公益节</h4>
-<p class="text-on-surface-variant">星域集团冠名赞助马来西亚公益节，作为核心合作伙伴推动企业社会责任文化。</p>
-</div>
-</div>
-</div>
-</div>
-<div class="flex-1 relative">
-<div class="aspect-square rounded-2xl overflow-hidden shadow-2xl neon-border-cyan glass-panel">
-<img alt="Charity Impact" class="w-full h-full object-cover opacity-80 grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaAX6fJnr5kZpCYSpMb521lbaxJed4hP5y9Or_5AtgjsXCtuVcOLjwVtmj62Di-n_B99aGMcoXCFLogR1tY8BTcAVNdDcuBOd6kq_rBlBuJz0TbM9LMQ-cCkDfUHHZdL93xZFlEtyt_v6lqtdmFJrnGPBeH-eCTGXMGl_xbg4c1sjsmDoOGt8Xt42wxWcEwX66UZd9oeQ5QUHKqoU8y0QApHwpkyHtHktgjZjW00OOnOUCObM_7Du3aYgai33Fz5YcUnd_4tNZy4fX"/>
-</div>
-<div class="absolute -bottom-8 -left-8 bg-surface-container-high p-8 rounded-2xl shadow-2xl border border-white/10 hidden md:block">
-<div class="text-primary-container text-4xl font-headline font-bold mb-1">1,000,000+</div>
-<div class="text-on-surface-variant text-sm font-label uppercase">Donated (MYR)</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Awards & Quotes Section -->
-<section class="py-24 overflow-hidden" id="awards">
-<div class="max-w-7xl mx-auto px-6">
-<h2 class="text-center text-3xl font-headline font-bold text-white mb-6 uppercase tracking-widest">权威媒体报道与荣誉</h2>
-<p class="text-center text-on-surface-variant max-w-2xl mx-auto mb-16">苏才育的实践代表了新一代企业家的特质——具备敏锐的技术嗅觉与强烈的社会责任感，致力于将 AI 技术有效转化为实际生产力。</p>
-<!-- Honours -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-<div class="p-8 rounded-2xl glass-panel border border-primary-container/20">
-<div class="flex items-center gap-4 mb-4">
-<span class="material-symbols-outlined text-3xl text-primary-container" style='font-variation-settings: "FILL" 1;'>workspace_premium</span>
-<div>
-<h4 class="text-lg font-bold text-white">管理学博士 (DBA)</h4>
-<p class="text-on-surface-variant text-sm">马来亚大学 (University of Malaya) · 2025</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-2xl glass-panel border border-secondary-fixed/20">
-<div class="flex items-center gap-4 mb-4">
-<span class="material-symbols-outlined text-3xl text-secondary-fixed" style='font-variation-settings: "FILL" 1;'>military_tech</span>
-<div>
-<h4 class="text-lg font-bold text-white">人工智能领域荣誉院士</h4>
-<p class="text-on-surface-variant text-sm">林肯大学学院 (Lincoln University College) · 2026</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Media Logos -->
-<div class="flex flex-wrap justify-center gap-x-12 gap-y-4 opacity-60 mb-16">
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">ONASIANEWS</span>
-</div>
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">INSIDER NEWS ASIA</span>
-</div>
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">SG SCOPE</span>
-</div>
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">TIDE NEWS</span>
-</div>
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">THE INSIDER X</span>
-</div>
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">搜狐新闻</span>
-</div>
-</div>
-<!-- Quotes Grid -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-<!-- Media Quote -->
-<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/20">
-<div class="text-xs font-label uppercase tracking-widest text-primary-container mb-4">媒体评价</div>
-<p class="italic text-on-surface-variant">"苏才育博士代表了东南亚新一代科技创业者的精神——具备敏锐的技术嗅觉与强烈的社会责任感，致力于将 AI 技术有效转化为数字内容产业和直播运营中的实际生产力。"</p>
-<div class="not-italic mt-6 font-bold text-white">— Insider News Asia</div>
-</div>
-<!-- Industry Quote -->
-<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/20">
-<div class="text-xs font-label uppercase tracking-widest text-secondary-fixed mb-4">业界评价</div>
-<p class="italic text-on-surface-variant">"在马来西亚数字娱乐产业中，苏才育被视为 MCN 生态的架构师。他不仅是在经营一家公司，更是在构建一套适应 AI 时代的数字内容准则，展示了传统商业如何通过 AI 实现'老树发新芽'。"</p>
-<div class="not-italic mt-6 font-bold text-white">— 业界观察</div>
-</div>
-<!-- Academic Quote -->
-<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/20">
-<div class="text-xs font-label uppercase tracking-widest text-tertiary-container mb-4">学术界评价</div>
-<p class="italic text-on-surface-variant">"林肯大学学院认可其在 AI 产业化方面的实践。他的探索在技术发展、产业实践与社会责任之间建立了联系，为人工智能在商业场景中的应用提供了宝贵的参考案例。"</p>
-<div class="not-italic mt-6 font-bold text-white">— Lincoln University College</div>
-</div>
-</div>
-<!-- References -->
-<div class="mt-12 p-8 rounded-2xl glass-panel border border-white/5">
-<h3 class="text-lg font-headline font-bold text-white mb-6">参考资料</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-on-surface-variant/70">
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">01.</span>《Dr Kervis AI Honorary Fellow: A New Era for Zocco Group》— OnAsiaNews</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">02.</span>《星域集团 Dr.Kervis 苏才育院士冠名赞助马来西亚公益节》— Tide News</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">03.</span>《星域集团 AI 音乐生态圈开启大马产业商业新高度》— SG Scope</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">04.</span>《追星还是投资？星域集团 AI 音乐生态圈解析》— The Insider X</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">05.</span>《Dr Kervis 苏才育——跨界企业家多元版图》— 搜狐新闻</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">06.</span>《星域集团携手医美品牌打造体验馆》— 新浪社区</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">07.</span>《星域集团百万慈善基金计划：用数字经济回馈社会》— Insider News Asia</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Bottom Navigation Bar -->
-<footer class="w-full bg-neutral-950 border-t border-white/5">
-<div class="w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
-<div class="mb-8 md:mb-0">
-<div class="text-lg font-['Space_Grotesk'] font-bold text-white mb-4">Dr. Kervis Soo</div>
-<p class="font-['Manrope'] text-neutral-400 text-sm">© 2026 Dr. Kervis Soo. Neural Architectures &amp; Digital Vision.</p>
-</div>
-<div class="flex gap-8">
-<a class="font-['Manrope'] text-neutral-400 text-sm hover:text-cyan-300 transition-colors" href="#">Privacy Policy</a>
-<a class="font-['Manrope'] text-neutral-400 text-sm hover:text-cyan-300 transition-colors" href="#">Terms of Service</a>
-<a class="font-['Manrope'] text-neutral-400 text-sm hover:text-cyan-300 transition-colors" href="#">AI Ethics</a>
-</div>
-</div>
-</footer>
-<!-- Bottom Floating Nav -->
-<nav class="fixed bottom-6 left-1/2 -translate-x-1/2 rounded-full border border-white/5 px-6 bg-neutral-950/80 backdrop-blur-md shadow-2xl shadow-cyan-900/20 z-50 flex gap-8 py-3 items-center">
-<a class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-200 hover:scale-110 transition-transform" href="https://www.linkedin.com" target="_blank">
-<span class="material-symbols-outlined" data-icon="share">share</span>
-<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-widest">LinkedIn</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-200 hover:scale-110 transition-transform" href="https://twitter.com" target="_blank">
-<span class="material-symbols-outlined" data-icon="rss_feed">rss_feed</span>
-<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-widest">X</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-200 hover:scale-110 transition-transform" href="https://github.com" target="_blank">
-<span class="material-symbols-outlined" data-icon="code">code</span>
-<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-widest">GitHub</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-200 hover:scale-110 transition-transform" href="#">
-<span class="material-symbols-outlined" data-icon="article">article</span>
-<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-widest">Medium</span>
-</a>
-</nav>
-<!-- Simple Script for Background Particle Simulation -->
-<script>
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let mouse = { x: null, y: null };
-
-    function init() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        particles = [];
-        for (let i = 0; i < 80; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2 + 1,
-                speedX: Math.random() * 0.5 - 0.25,
-                speedY: Math.random() * 0.5 - 0.25,
-                color: Math.random() > 0.5 ? '#00f3ff' : '#34ff8d'
-            });
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
         }
     }
+    </script>
+</head>
+<body>
+
+<!-- Warp Effects -->
+<div id="warp-flash"></div>
+<!-- Overlay Content -->
+<div id="overlay">
+    <div class="badge fade-in">
+        <span class="pulse-dot"></span>
+        Neural Architect &amp; Visionary
+    </div>
+    <div class="title fade-in">Dr. Kervis Soo</div>
+    <div class="subtitle fade-in">苏才育博士 — AI 应用专家与数字经济愿景家</div>
+    <a href="#" id="enter-btn" class="enter-btn fade-in">Enter</a>
+</div>
+
+<!-- Bottom hint -->
+<div class="scroll-hint">
+    <span>Explore the Universe</span>
+    <span class="material-symbols-outlined">expand_more</span>
+</div>
+
+<!-- 3D Earth Scene -->
+<script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    const COUNT = 5000;
+    const SPEED_MULT = 1;
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x000000, 0.01);
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+    camera.position.set(0, 0, 100);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    document.body.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 2.0;
+    controls.enableZoom = false;
+
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+    bloomPass.strength = 1.8; bloomPass.radius = 0.4; bloomPass.threshold = 0;
+    composer.addPass(bloomPass);
+
+    const dummy = new THREE.Object3D();
+    const color = new THREE.Color();
+    const target = new THREE.Vector3();
+
+    const geometry = new THREE.ConeGeometry(0.1, 0.5, 4).rotateX(Math.PI / 2);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00aaff });
+    const instancedMesh = new THREE.InstancedMesh(geometry, material, COUNT);
+    instancedMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    scene.add(instancedMesh);
+
+    const positions = [];
+    for (let i = 0; i < COUNT; i++) {
+        positions.push(new THREE.Vector3((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100));
+        instancedMesh.setColorAt(i, color.setHex(0x00ff88));
+    }
+
+    const PARAMS = { radius: 40, oceanDepth: 2, atmosphereHeight: 6, rotSpeed: 0.15, cloudDensity: 4 };
+    const clock = new THREE.Clock();
 
     function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-            p.x += p.speedX;
-            p.y += p.speedY;
-
-            if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-            if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-
-            if (mouse.x && mouse.y) {
-                let dx = mouse.x - p.x;
-                let dy = mouse.y - p.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 150) {
-                    p.x -= dx * 0.01;
-                    p.y -= dy * 0.01;
-                }
-            }
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = p.color;
-            ctx.globalAlpha = 0.3;
-            ctx.fill();
-
-            // Draw lines between close particles
-            particles.forEach(p2 => {
-                let dx = p.x - p2.x;
-                let dy = p.y - p2.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 100) {
-                    ctx.beginPath();
-                    ctx.strokeStyle = p.color;
-                    ctx.globalAlpha = 1 - (dist / 100);
-                    ctx.lineWidth = 0.5;
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(p2.x, p2.y);
-                    ctx.stroke();
-                }
-            });
-        });
         requestAnimationFrame(animate);
-    }
+        const time = clock.getElapsedTime() * SPEED_MULT;
+        controls.update();
 
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.x;
-        mouse.y = e.y;
+        const count = COUNT;
+        for (let i = 0; i < COUNT; i++) {
+            const radius = PARAMS.radius;
+            const oceanDepth = PARAMS.oceanDepth;
+            const atmosphereHeight = PARAMS.atmosphereHeight;
+            const rotSpeed = PARAMS.rotSpeed;
+            const cloudDensity = PARAMS.cloudDensity;
+
+            const phi = Math.acos(1 - 2 * (i / count));
+            const theta = Math.sqrt(count * Math.PI) * phi + time * rotSpeed;
+            const sinPhi = Math.sin(phi), cosPhi = Math.cos(phi);
+            const sinTheta = Math.sin(theta), cosTheta = Math.cos(theta);
+            const lat = cosPhi;
+            const lon = Math.atan2(sinTheta, cosTheta);
+
+            const n1 = Math.sin(lat * 8.3 + lon * 6.1 + time * 0.05);
+            const n2 = Math.sin(lat * 14.7 - lon * 11.3 + time * 0.03);
+            const n3 = Math.cos(lat * 5.1 + lon * 9.7 + time * 0.07);
+            const n4 = Math.sin(lat * 20.0 + lon * 17.0);
+            const terrain = (n1 * 0.45 + n2 * 0.3 + n3 * 0.2 + n4 * 0.05);
+
+            const isOcean = terrain < -0.05;
+            const isMountain = terrain > 0.3;
+            const isPolar = Math.abs(lat) > 0.82;
+            const cloudNoise = Math.sin(lat * 12.0 + lon * 9.0 + time * 0.12) * Math.cos(lat * 7.0 - lon * 13.0 + time * 0.09);
+            const isCloud = cloudNoise > (1.0 - cloudDensity * 0.09);
+            const isAtmo = i > count * 0.92;
+
+            const cloudR = radius + 1.2 + Math.sin(lon * 5.0 + time * 0.1) * 0.4;
+            const atmoR = radius + atmosphereHeight * (0.8 + Math.sin(lon * 3.0 + lat * 4.0 + time * 0.04) * 0.2);
+            const landR = radius + Math.max(0, terrain) * 3.5;
+            const oceanR = radius - Math.abs(Math.min(0, terrain)) * oceanDepth;
+            const r = isAtmo ? atmoR : (isCloud ? cloudR : (isOcean ? oceanR : landR));
+
+            const px = sinPhi * cosTheta * r;
+            const py = cosPhi * r;
+            const pz = sinPhi * sinTheta * r;
+            target.set(px, py, pz);
+
+            const snowCap = isMountain && Math.abs(lat) > 0.3;
+            const hue = isAtmo ? 0.6 : (isCloud ? 0.0 : (isOcean ? 0.58 + terrain * 0.04 : (isPolar ? 0.0 : (isMountain ? 0.08 : 0.28 + terrain * 0.12))));
+            const sat = isAtmo ? 0.6 : (isCloud ? 0.0 : (isOcean ? 0.75 + terrain * 0.1 : (isPolar ? 0.05 : (isMountain ? 0.25 : 0.55))));
+            const oceanLit = 0.3 + Math.abs(lat) * 0.1;
+            const landLit = isPolar ? 0.92 : (snowCap ? 0.95 : (isMountain ? 0.38 : 0.42 + terrain * 0.15));
+            const lit = isAtmo ? 0.55 + Math.abs(lat) * 0.1 : (isCloud ? 0.88 + Math.sin(time * 0.2) * 0.05 : (isOcean ? oceanLit : landLit));
+            color.setHSL(hue, sat, lit);
+
+            positions[i].lerp(target, 0.1);
+            dummy.position.copy(positions[i]);
+            dummy.updateMatrix();
+            instancedMesh.setMatrixAt(i, dummy.matrix);
+            instancedMesh.setColorAt(i, color);
+        }
+        instancedMesh.instanceMatrix.needsUpdate = true;
+        instancedMesh.instanceColor.needsUpdate = true;
+        composer.render();
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    window.addEventListener('resize', init);
-    init();
-    animate();
-</script>
+    // ==================== SUBTLE ZOOM TRANSITION ====================
+    const warpFlash = document.getElementById('warp-flash');
+    const overlay = document.getElementById('overlay');
+    const scrollHint = document.querySelector('.scroll-hint');
+    let isWarping = false;
 
-<!-- Active Nav Highlight Script -->
-<script>
-    const navLinks = document.querySelectorAll('.nav-link');
-    const navSections = ['about', 'ventures', 'impact', 'awards'].map(id => document.getElementById(id)).filter(Boolean);
-    let scrollLocked = false;
+    function animateTransition(startTime) {
+        if (!isWarping) return;
+        const elapsed = (performance.now() - startTime) / 1000;
+        const duration = 1.2;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease-in curve for gentle acceleration
+        const ease = progress * progress;
 
-    function setActive(link) {
-        navLinks.forEach(l => {
-            l.classList.remove('text-cyan-400', 'border-b-2', 'border-cyan-400');
-            l.classList.add('text-neutral-400');
-        });
-        link.classList.remove('text-neutral-400');
-        link.classList.add('text-cyan-400', 'border-b-2', 'border-cyan-400');
-    }
+        // Gentle camera zoom toward Earth
+        camera.position.z -= 0.3 + ease * 1.5;
+        camera.fov = 60 + ease * 10;
+        camera.updateProjectionMatrix();
 
-    function clearActive() {
-        navLinks.forEach(l => {
-            l.classList.remove('text-cyan-400', 'border-b-2', 'border-cyan-400');
-            l.classList.add('text-neutral-400');
-        });
-    }
+        // Slight bloom increase
+        bloomPass.strength = 1.8 + ease * 1.2;
 
-    // Highlight on scroll
-    window.addEventListener('scroll', () => {
-        if (scrollLocked) return;
-
-        let current = '';
-        navSections.forEach(section => {
-            const rect = section.getBoundingClientRect();
-            if (rect.top <= 150) {
-                current = section.getAttribute('id');
-            }
-        });
-
-        if (!current) {
-            clearActive();
+        if (progress >= 1) {
+            warpFlash.classList.add('active');
+            setTimeout(() => {
+                window.location.href = 'landing.html';
+            }, 350);
             return;
         }
 
-        navLinks.forEach(link => {
-            if (link.getAttribute('href') === '#' + current) {
-                setActive(link);
-            }
-        });
-    });
+        requestAnimationFrame(() => animateTransition(startTime));
+    }
 
-    // On click: lock scroll updates during smooth scroll
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            setActive(link);
-            scrollLocked = true;
-            clearTimeout(window._scrollTimer);
-            window._scrollTimer = setTimeout(() => { scrollLocked = false; }, 1000);
-        });
+    document.getElementById('enter-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (isWarping) return;
+        isWarping = true;
+
+        // Fade out text
+        overlay.classList.add('warping');
+        scrollHint.style.transition = 'opacity 0.3s';
+        scrollHint.style.opacity = '0';
+
+        // Disable controls
+        controls.autoRotate = false;
+        controls.enabled = false;
+
+        animateTransition(performance.now());
     });
 </script>
-</body></html>
+</body>
+</html>
