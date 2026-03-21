@@ -1339,6 +1339,126 @@ img {
     z-index: 5;
 }
 
+/* =========================================
+   MOBILE RESPONSIVE
+   ========================================= */
+@media (max-width: 1024px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    .about-image-col {
+        order: -1;
+        max-width: 500px;
+    }
+    .ventures-header {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    .impact-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    .impact-image-wrapper {
+        max-width: 500px;
+    }
+    .references-list {
+        grid-template-columns: 1fr;
+    }
+    .hero-bg-image {
+        width: 50%;
+        opacity: 0.5;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+    .nav-menu-btn {
+        display: block;
+    }
+    .mobile-menu {
+        display: flex;
+    }
+    .hero-bg-image {
+        width: 100%;
+        opacity: 0.3;
+    }
+    .hero-bg-image::after {
+        background: linear-gradient(to right, var(--bg) 0%, rgba(29,29,29,0.6) 100%),
+                    linear-gradient(to top, var(--bg) 0%, transparent 40%),
+                    linear-gradient(to bottom, var(--bg) 0%, transparent 30%);
+    }
+    .hero-accent-line {
+        display: none;
+    }
+    .about-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+    .ventures-grid {
+        grid-template-columns: 1fr;
+    }
+    .awards-grid {
+        grid-template-columns: 1fr;
+    }
+    .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    .footer-inner {
+        flex-direction: column;
+        gap: 3rem;
+    }
+    .footer-links {
+        align-items: flex-start;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    .media-logos {
+        gap: 1.5rem 2rem;
+    }
+    .hscroll-card {
+        width: 85vw;
+    }
+    .magnetic-btn {
+        padding: 1rem 2rem;
+        font-size: 0.7rem;
+    }
+    .roles-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .cursor-dot {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+    .stat-number {
+        font-size: 1.6rem;
+    }
+    .stat-label {
+        font-size: 0.7rem;
+    }
+    .roles-grid {
+        grid-template-columns: 1fr;
+    }
+    .headline-xl {
+        font-size: 3rem;
+    }
+    .impact-quote {
+        font-size: 2rem;
+    }
+}
+
 </style>
 </head>
 
