@@ -1,680 +1,2257 @@
 <!DOCTYPE html>
-
-<html class="dark scroll-smooth" lang="zh-CN"><head>
+<html lang="zh-CN">
+<head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Dr. Kervis Soo | 苏才育博士 - AI 应用专家与数字经济愿景家</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "on-surface": "#e2e2e2",
-                        "on-secondary": "#003919",
-                        "on-error-container": "#ffdad6",
-                        "inverse-surface": "#e2e2e2",
-                        "surface-tint": "#00dce6",
-                        "on-primary-fixed": "#002022",
-                        "inverse-on-surface": "#303030",
-                        "on-tertiary-fixed": "#221b00",
-                        "background": "#131313",
-                        "surface-container-highest": "#353535",
-                        "on-primary-fixed-variant": "#004f53",
-                        "surface-dim": "#131313",
-                        "on-primary-container": "#006b71",
-                        "secondary": "#f5fff3",
-                        "surface": "#131313",
-                        "primary-container": "#00f3ff",
-                        "on-error": "#690005",
-                        "surface-bright": "#393939",
-                        "on-primary": "#00373a",
-                        "on-tertiary-fixed-variant": "#554500",
-                        "secondary-fixed": "#60ff99",
-                        "surface-container-low": "#1b1b1b",
-                        "outline": "#849495",
-                        "on-tertiary-container": "#725e00",
-                        "surface-container-lowest": "#0e0e0e",
-                        "on-secondary-container": "#007239",
-                        "primary-fixed": "#6ff6ff",
-                        "on-secondary-fixed": "#00210c",
-                        "surface-container": "#1f1f1f",
-                        "outline-variant": "#3a494b",
-                        "tertiary": "#fff7e9",
-                        "primary-fixed-dim": "#00dce6",
-                        "inverse-primary": "#00696f",
-                        "tertiary-container": "#ffd93d",
-                        "tertiary-fixed": "#ffe173",
-                        "primary": "#e3fdff",
-                        "error": "#ffb4ab",
-                        "error-container": "#93000a",
-                        "surface-variant": "#353535",
-                        "secondary-container": "#34ff8d",
-                        "secondary-fixed-dim": "#00e479",
-                        "tertiary-fixed-dim": "#e8c426",
-                        "on-background": "#e2e2e2",
-                        "surface-container-high": "#2a2a2a",
-                        "on-tertiary": "#3b2f00",
-                        "on-secondary-fixed-variant": "#005228",
-                        "on-surface-variant": "#b9cacb"
-                    },
-                    fontFamily: {
-                        "headline": ["Space Grotesk"],
-                        "body": ["Manrope"],
-                        "label": ["Space Grotesk"]
-                    },
-                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
-                },
-            },
-        }
-    </script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dr. Kervis Soo | 苏才育博士 — Architect of Digital Ecosystems</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet"/>
+
 <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        html {
-            scroll-padding-top: 100px;
-        }
-        body {
-            background-color: #131313;
-            color: #e2e2e2;
-            overflow-x: hidden;
-        }
-        .glass-panel {
-            background: rgba(27, 27, 27, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-        .hero-glow {
-            box-shadow: 0 0 40px rgba(0, 243, 255, 0.2);
-        }
-        .text-glow {
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-        }
-        canvas#particle-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-        .neon-border-cyan {
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
-        }
-    </style>
+/* =========================================
+   RESET & BASE
+   ========================================= */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #1d1d1d;
+    --bg-dark: #141414;
+    --bg-light: #252525;
+    --text: #e5e4e0;
+    --text-dim: #999892;
+    --text-muted: #6b6a65;
+    --accent: #ff642f;
+    --accent-dim: rgba(255, 100, 47, 0.15);
+    --white: #ffffff;
+    --border: rgba(229, 228, 224, 0.08);
+    --border-hover: rgba(229, 228, 224, 0.2);
+    --font-headline: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+}
+
+html {
+    scroll-padding-top: 0;
+}
+
+html.lenis, html.lenis body {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+}
+
+::selection {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+/* =========================================
+   TYPOGRAPHY
+   ========================================= */
+.headline {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text);
+}
+
+.headline-xl {
+    font-size: clamp(3.5rem, 10vw, 9rem);
+}
+
+.headline-lg {
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+}
+
+.headline-md {
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+}
+
+.headline-sm {
+    font-size: clamp(1.2rem, 2.5vw, 2rem);
+}
+
+.body-lg {
+    font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+    line-height: 1.7;
+    color: var(--text-dim);
+}
+
+.body-md {
+    font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+    line-height: 1.7;
+    color: var(--text-dim);
+}
+
+.label {
+    font-family: var(--font-headline);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.accent-text {
+    color: var(--accent);
+}
+
+/* =========================================
+   LAYOUT
+   ========================================= */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 clamp(1.5rem, 4vw, 4rem);
+}
+
+.section-padding {
+    padding-top: clamp(6rem, 15vh, 12rem);
+    padding-bottom: clamp(6rem, 15vh, 12rem);
+}
+
+/* =========================================
+   NAVIGATION
+   ========================================= */
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.5rem 0;
+    transition: background 0.4s ease, padding 0.4s ease;
+}
+
+.nav.scrolled {
+    background: rgba(29, 29, 29, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+    color: var(--text);
+}
+
+.nav-links {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+}
+
+.nav-link {
+    font-family: var(--font-headline);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.nav-link:hover {
+    color: var(--text);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+.nav-link.active {
+    color: var(--text);
+}
+
+/* Mobile menu button */
+.nav-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    position: relative;
+    width: 32px;
+    height: 32px;
+}
+
+.nav-menu-btn span {
+    display: block;
+    width: 24px;
+    height: 1.5px;
+    background: var(--text);
+    position: absolute;
+    left: 4px;
+    transition: all 0.3s ease;
+}
+
+.nav-menu-btn span:nth-child(1) { top: 10px; }
+.nav-menu-btn span:nth-child(2) { top: 16px; width: 16px; }
+.nav-menu-btn span:nth-child(3) { top: 22px; }
+
+.nav-menu-btn.open span:nth-child(1) {
+    transform: rotate(45deg);
+    top: 15px;
+}
+.nav-menu-btn.open span:nth-child(2) {
+    opacity: 0;
+}
+.nav-menu-btn.open span:nth-child(3) {
+    transform: rotate(-45deg);
+    top: 15px;
+}
+
+/* Mobile menu */
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--bg);
+    z-index: 99;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.mobile-menu.open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.mobile-menu a {
+    font-family: var(--font-headline);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    transition: color 0.3s ease;
+}
+
+.mobile-menu a:hover {
+    color: var(--accent);
+}
+
+/* =========================================
+   HERO
+   ========================================= */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: clamp(4rem, 10vh, 8rem);
+    padding-top: 8rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-bg-image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 45%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.hero-bg-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    filter: grayscale(30%);
+    will-change: transform;
+}
+
+.hero-bg-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, var(--bg) 0%, transparent 40%),
+                linear-gradient(to top, var(--bg) 0%, transparent 30%),
+                linear-gradient(to bottom, var(--bg) 0%, transparent 20%);
+    z-index: 2;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+}
+
+.hero-label {
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+.hero-name {
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.hero-name .char {
+    display: inline-block;
+    transform: translateY(100%);
+    opacity: 0;
+}
+
+.hero-subtitle {
+    max-width: 550px;
+    margin-bottom: 3rem;
+    overflow: hidden;
+}
+
+.hero-scroll-indicator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 3rem;
+}
+
+.hero-scroll-line {
+    width: 60px;
+    height: 1px;
+    background: var(--text-muted);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-scroll-line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 30%;
+    background: var(--accent);
+    animation: scrollLine 2s ease-in-out infinite;
+}
+
+@keyframes scrollLine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+}
+
+/* =========================================
+   INTRO TEXT (marquee-like)
+   ========================================= */
+.intro-marquee {
+    padding: clamp(3rem, 8vh, 6rem) 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.intro-marquee-inner {
+    white-space: nowrap;
+    display: flex;
+    gap: 4rem;
+    font-family: var(--font-headline);
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.intro-marquee-inner .separator {
+    color: var(--accent);
+}
+
+/* =========================================
+   ABOUT SECTION
+   ========================================= */
+.about {
+    background: var(--bg);
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(3rem, 6vw, 8rem);
+    align-items: start;
+}
+
+.about-text-col {
+    padding-top: 2rem;
+}
+
+.about-image-col {
+    position: relative;
+}
+
+.about-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 3/4;
+}
+
+.about-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(20%);
+    will-change: transform;
+    transition: filter 0.6s ease;
+}
+
+.about-image-wrapper:hover img {
+    filter: grayscale(0%);
+}
+
+.about-image-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--border);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.about-intro {
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+}
+
+.about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+}
+
+.stat-number {
+    font-family: var(--font-headline);
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* =========================================
+   TIMELINE
+   ========================================= */
+.timeline {
+    background: var(--bg-dark);
+}
+
+.timeline-header {
+    margin-bottom: clamp(4rem, 8vh, 8rem);
+    max-width: 700px;
+}
+
+.timeline-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.timeline-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: clamp(2rem, 4vw, 4rem);
+    padding: clamp(2.5rem, 4vh, 4rem) 0;
+    border-top: 1px solid var(--border);
+    position: relative;
+}
+
+.timeline-item:last-child {
+    border-bottom: 1px solid var(--border);
+}
+
+.timeline-year {
+    font-family: var(--font-headline);
+    font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.1;
+}
+
+.timeline-content h3 {
+    font-family: var(--font-headline);
+    font-size: clamp(1.3rem, 2vw, 1.8rem);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.timeline-content p {
+    color: var(--text-dim);
+    font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+    line-height: 1.7;
+    max-width: 600px;
+}
+
+.timeline-content .tag {
+    display: inline-block;
+    font-family: var(--font-headline);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 0.3rem 0.8rem;
+    margin-top: 1rem;
+}
+
+/* =========================================
+   VENTURES (Zocco Group)
+   ========================================= */
+.ventures {
+    background: var(--bg);
+}
+
+.ventures-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    margin-bottom: clamp(5rem, 10vh, 10rem);
+    align-items: end;
+}
+
+.ventures-header-right {
+    padding-bottom: 0.5rem;
+}
+
+.ventures-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+}
+
+.venture-card {
+    background: var(--bg);
+    padding: clamp(2rem, 4vw, 4rem);
+    position: relative;
+    transition: background 0.5s ease;
+}
+
+.venture-card:hover {
+    background: var(--bg-light);
+}
+
+.venture-number {
+    font-family: var(--font-headline);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 2rem;
+}
+
+.venture-card h3 {
+    font-family: var(--font-headline);
+    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    line-height: 1.15;
+}
+
+.venture-card p {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.venture-card ul {
+    list-style: none;
+    padding: 0;
+}
+
+.venture-card ul li {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    padding: 0.5rem 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+}
+
+.venture-card ul li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 0.5rem;
+}
+
+.venture-card ul li strong {
+    color: var(--text);
+    font-weight: 500;
+}
+
+.venture-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-headline);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 2rem;
+    transition: color 0.3s ease;
+}
+
+.venture-arrow svg {
+    width: 16px;
+    transition: transform 0.3s ease;
+}
+
+.venture-card:hover .venture-arrow {
+    color: var(--accent);
+}
+
+.venture-card:hover .venture-arrow svg {
+    transform: translateX(4px);
+}
+
+/* =========================================
+   IMPACT / SOCIAL RESPONSIBILITY
+   ========================================= */
+.impact {
+    background: var(--bg-dark);
+    position: relative;
+    overflow: hidden;
+}
+
+.impact-quote-section {
+    text-align: center;
+    padding-bottom: clamp(5rem, 10vh, 10rem);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: clamp(5rem, 10vh, 10rem);
+}
+
+.impact-quote {
+    font-family: var(--font-headline);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+}
+
+.impact-quote-attr {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.impact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(3rem, 6vw, 8rem);
+    align-items: start;
+}
+
+.impact-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/5;
+}
+
+.impact-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(40%);
+    will-change: transform;
+    transition: filter 0.6s ease;
+}
+
+.impact-image-wrapper:hover img {
+    filter: grayscale(0%);
+}
+
+.impact-image-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--border);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.impact-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.impact-item {
+    padding: clamp(1.5rem, 3vh, 2.5rem) 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.impact-item:first-child {
+    border-top: 1px solid var(--border);
+}
+
+.impact-item h4 {
+    font-family: var(--font-headline);
+    font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+}
+
+.impact-item p {
+    color: var(--text-dim);
+    font-size: 0.92rem;
+    line-height: 1.7;
+}
+
+/* Donation stat overlay */
+.impact-stat {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(20,20,20,0.95) 0%, transparent 100%);
+    z-index: 3;
+}
+
+.impact-stat-number {
+    font-family: var(--font-headline);
+    font-size: clamp(2rem, 3vw, 3rem);
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+}
+
+.impact-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.3rem;
+}
+
+/* =========================================
+   ROLES
+   ========================================= */
+.roles {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1px;
+    background: var(--border);
+}
+
+.role-item {
+    background: var(--bg);
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.role-item .role-title {
+    font-family: var(--font-headline);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.4;
+}
+
+/* =========================================
+   AWARDS / MEDIA
+   ========================================= */
+.awards {
+    background: var(--bg-dark);
+}
+
+.awards-header {
+    margin-bottom: clamp(4rem, 8vh, 8rem);
+    max-width: 700px;
+}
+
+.awards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: clamp(5rem, 10vh, 8rem);
+}
+
+.award-card {
+    background: var(--bg-dark);
+    padding: clamp(2rem, 4vw, 4rem);
+    transition: background 0.4s ease;
+}
+
+.award-card:hover {
+    background: var(--bg-light);
+}
+
+.award-year {
+    font-family: var(--font-headline);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+}
+
+.award-card h4 {
+    font-family: var(--font-headline);
+    font-size: clamp(1.3rem, 2vw, 1.8rem);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+}
+
+.award-card p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+}
+
+/* Media logos */
+.media-section {
+    padding: clamp(3rem, 6vh, 5rem) 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: clamp(5rem, 10vh, 8rem);
+}
+
+.media-label {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.media-logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem 4rem;
+    align-items: center;
+}
+
+.media-logo {
+    font-family: var(--font-headline);
+    font-size: clamp(0.8rem, 1.2vw, 1rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    opacity: 0.5;
+    transition: opacity 0.3s ease, color 0.3s ease;
+    cursor: default;
+}
+
+.media-logo:hover {
+    opacity: 1;
+    color: var(--text);
+}
+
+/* Quotes */
+.quotes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-bottom: clamp(5rem, 10vh, 8rem);
+}
+
+.quote-card {
+    background: var(--bg-dark);
+    padding: clamp(2rem, 4vw, 3.5rem);
+}
+
+.quote-source-label {
+    font-family: var(--font-headline);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+}
+
+.quote-card blockquote {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.quote-card cite {
+    font-style: normal;
+    font-family: var(--font-headline);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+/* References */
+.references {
+    padding-top: clamp(3rem, 6vh, 5rem);
+    border-top: 1px solid var(--border);
+}
+
+.references-header {
+    margin-bottom: 2rem;
+}
+
+.references-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 3rem;
+}
+
+.reference-item {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.reference-item .ref-num {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    font-size: 0.75rem;
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+.footer {
+    background: var(--bg-dark);
+    border-top: 1px solid var(--border);
+    padding: clamp(4rem, 8vh, 6rem) 0;
+}
+
+.footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.footer-left {
+    max-width: 400px;
+}
+
+.footer-name {
+    font-family: var(--font-headline);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.footer-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.footer-copyright {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-end;
+}
+
+.footer-link {
+    font-family: var(--font-headline);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.footer-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -3px;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.footer-link:hover {
+    color: var(--text);
+}
+
+.footer-link:hover::after {
+    width: 100%;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: clamp(3rem, 6vh, 5rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+
+/* =========================================
+   ANIMATIONS
+   ========================================= */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+}
+
+.reveal-line {
+    overflow: hidden;
+}
+
+.reveal-line > * {
+    transform: translateY(100%);
+}
+
+.parallax-img {
+    will-change: transform;
+}
+
+.split-word {
+    display: inline-block;
+    overflow: hidden;
+}
+
+.split-word > span {
+    display: inline-block;
+    transform: translateY(110%) rotateX(-40deg);
+    transform-origin: top center;
+}
+
+/* =========================================
+   CUSTOM CURSOR
+   ========================================= */
+.cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, opacity 0.3s ease;
+}
+
+.cursor-dot.hover {
+    width: 60px;
+    height: 60px;
+    margin: -24px 0 0 -24px;
+    background: var(--text);
+    opacity: 0.15;
+}
+
+@media (max-width: 768px) {
+    .cursor-dot { display: none; }
+}
+
+/* =========================================
+   FILM GRAIN OVERLAY
+   ========================================= */
+.grain-overlay {
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 0.5s steps(1) infinite;
+}
+
+@keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-5%, -10%); }
+    20% { transform: translate(-15%, 5%); }
+    30% { transform: translate(7%, -25%); }
+    40% { transform: translate(-5%, 25%); }
+    50% { transform: translate(-15%, 10%); }
+    60% { transform: translate(15%, 0%); }
+    70% { transform: translate(0%, 15%); }
+    80% { transform: translate(3%, 35%); }
+    90% { transform: translate(-10%, 10%); }
+}
+
+/* =========================================
+   IMAGE REVEAL CLIP
+   ========================================= */
+.img-reveal {
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 0s;
+}
+
+.img-reveal.revealed {
+    clip-path: inset(0% 0 0 0);
+    transition: clip-path 1.2s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/* =========================================
+   MAGNETIC BUTTON
+   ========================================= */
+.magnetic-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 2.5rem;
+    font-family: var(--font-headline);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.magnetic-btn .btn-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--text);
+    transform: translateY(101%);
+    transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.magnetic-btn:hover .btn-fill {
+    transform: translateY(0%);
+}
+
+.magnetic-btn span {
+    position: relative;
+    z-index: 2;
+}
+
+.magnetic-btn .arrow-icon {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
+}
+
+.magnetic-btn:hover .arrow-icon {
+    transform: translateX(6px);
+}
+
+/* =========================================
+   COUNTER ANIMATION
+   ========================================= */
+.counter-number {
+    font-family: var(--font-headline);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+/* =========================================
+   HORIZONTAL SCROLL SECTION
+   ========================================= */
+.hscroll-section {
+    overflow: hidden;
+}
+
+.hscroll-track {
+    display: flex;
+    gap: 2rem;
+    width: max-content;
+    will-change: transform;
+}
+
+.hscroll-card {
+    width: 400px;
+    flex-shrink: 0;
+    padding: clamp(2rem, 4vw, 3rem);
+    background: var(--bg-light);
+    border: 1px solid var(--border);
+    transition: border-color 0.4s ease, background 0.4s ease;
+}
+
+.hscroll-card:hover {
+    border-color: var(--border-hover);
+    background: var(--bg);
+}
+
+.hscroll-card .quote-source-label {
+    margin-bottom: 1.5rem;
+}
+
+.hscroll-card blockquote {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: clamp(0.9rem, 1.1vw, 1.05rem);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.hscroll-card cite {
+    font-style: normal;
+    font-family: var(--font-headline);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+@media (max-width: 768px) {
+    .hscroll-card { width: 85vw; }
+}
+
+/* =========================================
+   TEXT SCRAMBLE EFFECT
+   ========================================= */
+.scramble-text {
+    font-variant-numeric: tabular-nums;
+}
+
+/* =========================================
+   SECTION DIVIDER LINE
+   ========================================= */
+.section-line {
+    width: 0;
+    height: 1px;
+    background: var(--border-hover);
+    margin: 0 auto;
+}
+
+/* =========================================
+   STAGGER SCALE CARDS
+   ========================================= */
+.venture-card {
+    transform-origin: center top;
+}
+
+/* =========================================
+   HERO ACCENT LINE
+   ========================================= */
+.hero-accent-line {
+    position: absolute;
+    left: clamp(1.5rem, 4vw, 4rem);
+    top: 30%;
+    width: 1px;
+    height: 0;
+    background: var(--accent);
+    z-index: 5;
+}
+
+</style>
 </head>
-<body class="font-body selection:bg-primary-container selection:text-on-primary">
-<!-- Background Particle Placeholder (Simulated via Canvas) -->
-<canvas height="4217" id="particle-canvas" width="1278"></canvas>
-<!-- Top Navigation Bar -->
-<header class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] md:w-[90%] max-w-7xl rounded-2xl border border-white/10 bg-neutral-900/70 backdrop-blur-xl shadow-[0_0_20px_rgba(0,243,255,0.1)] flex justify-between items-center px-4 md:px-8 py-3 md:py-4 z-[100] transition-all duration-300">
-<div class="text-lg md:text-xl font-headline font-bold tracking-tighter text-cyan-400">Dr. Kervis Soo</div>
-<nav class="hidden md:flex gap-8" id="main-nav">
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#about">About</a>
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#ventures">Ventures</a>
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#impact">Impact</a>
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 pb-1" href="#awards">Awards</a>
-</nav>
-<div class="flex items-center gap-3">
-<button class="hidden md:block bg-primary-container text-on-primary px-4 md:px-6 py-2 rounded-xl font-headline font-bold uppercase text-xs md:text-sm hover:scale-105 hover:shadow-[0_0_15px_rgba(0,243,255,0.3)] transition-all duration-300">
-        Contact
-    </button>
-<button id="mobile-menu-btn" class="md:hidden text-white p-1">
-<span class="material-symbols-outlined text-2xl">menu</span>
-</button>
-</div>
-<!-- Mobile Menu -->
-<div id="mobile-menu" class="hidden absolute top-full left-0 right-0 mt-2 mx-2 rounded-xl bg-neutral-900/95 backdrop-blur-xl border border-white/10 p-4 flex flex-col gap-3 md:hidden">
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 py-2 px-4" href="#about">About</a>
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 py-2 px-4" href="#ventures">Ventures</a>
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 py-2 px-4" href="#impact">Impact</a>
-<a class="nav-link font-['Space_Grotesk'] tracking-tight font-bold uppercase text-sm text-neutral-400 hover:text-white transition-colors duration-300 py-2 px-4" href="#awards">Awards</a>
-<a class="bg-primary-container text-on-primary px-4 py-2 rounded-xl font-headline font-bold uppercase text-xs text-center" href="#">Contact</a>
-</div>
+
+<body>
+
+<!-- Custom Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<!-- Film Grain -->
+<div class="grain-overlay"></div>
+
+<!-- =================== NAVIGATION =================== -->
+<header class="nav" id="nav">
+    <div class="container nav-inner">
+        <a href="#" class="nav-logo">Dr. Kervis Soo</a>
+        <nav class="nav-links" id="navLinks">
+            <a href="#about" class="nav-link">About</a>
+            <a href="#journey" class="nav-link">Journey</a>
+            <a href="#ventures" class="nav-link">Ventures</a>
+            <a href="#impact" class="nav-link">Impact</a>
+            <a href="#awards" class="nav-link">Recognition</a>
+        </nav>
+        <button class="nav-menu-btn" id="menuBtn" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
 </header>
-<!-- Hero Section -->
-<section class="relative min-height-screen pt-24 md:pt-32 pb-12 md:pb-20 px-4 md:px-6 overflow-hidden flex flex-col items-center justify-center" id="hero">
-<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-center">
-<div class="space-y-8 z-10 order-2 lg:order-1">
-<h1 class="text-3xl md:text-7xl font-headline font-bold leading-tight tracking-tight text-white">
-                苏才育博士: <br/>
-<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container to-secondary-fixed">AI 应用专家</span><br/>
-                与数字经济愿景家
-            </h1>
-<p class="text-base md:text-2xl text-on-surface-variant font-light max-w-xl">
-                星域集团 (Zocco Group) 创办人兼董事长 | 马来亚大学管理学博士 | 林肯大学学院人工智能领域荣誉院士
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="#about">About</a>
+    <a href="#journey">Journey</a>
+    <a href="#ventures">Ventures</a>
+    <a href="#impact">Impact</a>
+    <a href="#awards">Recognition</a>
+</div>
+
+<!-- =================== HERO =================== -->
+<section class="hero" id="hero">
+    <div class="hero-accent-line" id="heroAccentLine"></div>
+    <div class="hero-bg-image" id="heroBgReveal" style="opacity:0">
+        <img src="https://lh3.googleusercontent.com/aida/ADBb0ujAoe-cVc4gtMGIqO4y8gk_Wu2NlX1jpPLNkB3nYkiUOn3kCi6X2eMwU-rKzL8GxwIN4A3PQSEveaZ1Pmwe86gAoXyrHWtDljTa2l3qghskYdTeiQp4npWOFtcxBSmckEpHMiOl4Jy7FSIiXCMxWRiDYjJ6QKC0U7W0KXkIzwlggaGvRL7sXC9SudO-uyqMQpiPKJkDb-WHRot-mvh3OyIbfG5Kl3w6kN0mZDFoQrkcp84odrJtNUxZb1aStSx3Iw7r3Z8Y7kKEKA" alt="Dr. Kervis Soo" class="parallax-img" id="heroImage"/>
+    </div>
+
+    <div class="container hero-content">
+        <div class="hero-label">
+            <span class="label reveal">Founder & Chairman, Zocco Group</span>
+        </div>
+
+        <h1 class="hero-name headline headline-xl" id="heroName">
+            苏才育
+        </h1>
+
+        <div class="hero-subtitle">
+            <p class="body-lg reveal" style="margin-bottom: 0.75rem;">
+                Dr. Kervis Soo Chai Ee
             </p>
-<p class="text-sm md:text-base text-on-surface-variant/70 max-w-xl">
-                马来西亚著名青年企业家、数字经济资深从业者。长期致力于 AI、数字内容产业、MCN 生态及直播娱乐业的融合与创新，是马来西亚青年企业家的代表人物之一。
+            <p class="body-md reveal">
+                青年企业家 / AI 应用专家 / 数字经济愿景家
             </p>
-<div class="flex flex-wrap gap-3 md:gap-6 pt-4">
-<a href="#ventures" class="px-5 md:px-8 py-3 md:py-4 bg-gradient-to-r from-on-primary-container to-primary-container text-on-primary rounded-xl font-headline font-bold uppercase text-sm md:text-base tracking-wider hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(0,243,255,0.2)] inline-block">
-                    探索商业版图
-                </a>
-<a href="#impact" class="px-5 md:px-8 py-3 md:py-4 border border-outline-variant hover:bg-white/5 text-white rounded-xl font-headline font-bold uppercase text-sm md:text-base tracking-wider transition-all duration-300 inline-block">
-                    了解社会公益
-                </a>
-</div>
-</div>
-<div class="relative order-1 lg:order-2 flex justify-center">
-<div class="relative w-72 h-72 md:w-[450px] md:h-[450px]">
-<!-- Outer Glow Effect -->
-<div class="absolute inset-0 rounded-full bg-primary-container/20 blur-[80px] animate-pulse"></div>
-<div class="absolute -inset-2 rounded-full border border-primary-container/30 border-dashed animate-[spin_20s_linear_infinite]"></div>
-<div class="relative w-full h-full rounded-full overflow-hidden border-4 border-primary-container/50 hero-glow z-10 glass-panel">
-<img alt="Dr. Kervis Soo" class="w-full h-full object-cover transition-all duration-700" src="https://lh3.googleusercontent.com/aida/ADBb0ujAoe-cVc4gtMGIqO4y8gk_Wu2NlX1jpPLNkB3nYkiUOn3kCi6X2eMwU-rKzL8GxwIN4A3PQSEveaZ1Pmwe86gAoXyrHWtDljTa2l3qghskYdTeiQp4npWOFtcxBSmckEpHMiOl4Jy7FSIiXCMxWRiDYjJ6QKC0U7W0KXkIzwlggaGvRL7sXC9SudO-uyqMQpiPKJkDb-WHRot-mvh3OyIbfG5Kl3w6kN0mZDFoQrkcp84odrJtNUxZb1aStSx3Iw7r3Z8Y7kKEKA"/>
-</div>
-</div>
-</div>
-</div>
+        </div>
+
+        <a href="#ventures" class="magnetic-btn" data-magnetic style="opacity:0; transform:translateY(30px)">
+            <div class="btn-fill"></div>
+            <span>Explore Ventures</span>
+            <span class="arrow-icon">&rarr;</span>
+        </a>
+
+        <div class="hero-scroll-indicator reveal">
+            <div class="hero-scroll-line"></div>
+            <span class="label">Scroll to explore</span>
+        </div>
+    </div>
 </section>
-<!-- About & Education Section -->
-<section class="py-12 md:py-24 bg-surface-container-low relative overflow-hidden" id="about">
-<div class="max-w-7xl mx-auto px-6">
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-<div class="lg:col-span-4 lg:sticky lg:top-32">
-<h2 class="text-4xl font-headline font-bold text-white mb-6 uppercase tracking-tight">
-                    学者型企业家 <br/>
-<span class="text-primary-container">Academic Entrepreneur</span>
-</h2>
-<div class="mb-8 rounded-2xl overflow-hidden neon-border-cyan glass-panel aspect-[4/5] relative group">
-<img alt="Dr. Kervis Soo Professional Background" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida/ADBb0ugv74JExl9VrKFBLygDfMDuvDENLAyiihRyQDpcPE9VTxJfNkan_Zswstc3y6B5PAZElWS1Dnh7ALz3YjySGm9ZXQ0FMHluGKIy28pZz1RbnMQbNkI8P2kQTC-Zb9xuOmMw-k0YzmwEX6nbMiVgOXeFJvCP9utLIg-RD2JnKYrcKBYzNdSJ_hG-DbYCbZY3qG4wbZsfT0iYxJetqD8Nbqm7h9yWzVurLMpymPxO8y6Gbsyy4dhlPLohECsVuYqMcQwNiLA3ZA6CbA"/>
-<div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
-<div class="absolute bottom-6 left-6 right-6">
-<p class="text-white font-headline font-bold text-lg">Leadership &amp; Professionalism</p>
+
+<!-- =================== INTRO MARQUEE =================== -->
+<div class="intro-marquee">
+    <div class="intro-marquee-inner" id="marquee">
+        <span>马来亚大学管理学博士</span>
+        <span class="separator">/</span>
+        <span>林肯大学学院 AI 荣誉院士</span>
+        <span class="separator">/</span>
+        <span>星域集团创办人兼董事长</span>
+        <span class="separator">/</span>
+        <span>MCN 生态架构师</span>
+        <span class="separator">/</span>
+        <span>百万慈善基金发起人</span>
+        <span class="separator">/</span>
+        <span>马来亚大学管理学博士</span>
+        <span class="separator">/</span>
+        <span>林肯大学学院 AI 荣誉院士</span>
+        <span class="separator">/</span>
+        <span>星域集团创办人兼董事长</span>
+        <span class="separator">/</span>
+        <span>MCN 生态架构师</span>
+        <span class="separator">/</span>
+        <span>百万慈善基金发起人</span>
+        <span class="separator">/</span>
+    </div>
 </div>
-</div>
-<p class="text-on-surface-variant leading-relaxed text-lg mb-6">
-                    苏才育（Kervis Soo Chai Ee，1992年—），出生于马来西亚。从居銮中华中学出发，始终保持对知识的渴求与对商业的敏锐触觉。他完美融合了学术严谨性与商业前瞻性，致力于将最前沿的 AI 技术转化为可规模化的商业应用。
+
+<!-- =================== ABOUT =================== -->
+<section class="about section-padding" id="about">
+    <div class="container">
+        <div class="label reveal" style="margin-bottom: 2rem;">About</div>
+        <div class="about-grid">
+            <div class="about-text-col">
+                <h2 class="headline headline-lg" style="margin-bottom: 2rem;">
+                    <span class="split-word"><span>学者型</span></span>
+                    <span class="split-word"><span>企业家</span></span>
+                </h2>
+                <div class="about-intro">
+                    <p class="body-lg reveal">
+                        苏才育（Kervis Soo Chai Ee，1992年—），出生于马来西亚。马来西亚著名青年企业家、数字经济资深从业者、人工智能应用专家。现任星域集团（Zocco Group）创办人兼董事长。
+                    </p>
+                    <p class="body-md reveal" style="margin-top: 1.5rem;">
+                        从居銮中华中学出发，始终保持对知识的渴求与对商业的敏锐触觉。他完美融合了学术严谨性与商业前瞻性，致力于将最前沿的 AI 技术转化为可规模化的商业应用。
+                    </p>
+                    <p class="body-md reveal" style="margin-top: 1.5rem;">
+                        长期致力于 AI、数字内容产业、MCN 生态及直播娱乐业的融合与创新，是马来西亚青年企业家的代表人物之一。
+                    </p>
+                </div>
+                <div class="about-stats reveal">
+                    <div>
+                        <div class="stat-number">1992</div>
+                        <div class="stat-label">Born in Malaysia</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">DBA</div>
+                        <div class="stat-label">University of Malaya</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">4+</div>
+                        <div class="stat-label">Business Verticals</div>
+                    </div>
+                </div>
+            </div>
+            <div class="about-image-col">
+                <div class="about-image-wrapper img-reveal">
+                    <img src="https://lh3.googleusercontent.com/aida/ADBb0ugv74JExl9VrKFBLygDfMDuvDENLAyiihRyQDpcPE9VTxJfNkan_Zswstc3y6B5PAZElWS1Dnh7ALz3YjySGm9ZXQ0FMHluGKIy28pZz1RbnMQbNkI8P2kQTC-Zb9xuOmMw-k0YzmwEX6nbMiVgOXeFJvCP9utLIg-RD2JnKYrcKBYzNdSJ_hG-DbYCbZY3qG4wbZsfT0iYxJetqD8Nbqm7h9yWzVurLMpymPxO8y6Gbsyy4dhlPLohECsVuYqMcQwNiLA3ZA6CbA" alt="Dr. Kervis Soo" class="parallax-img"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =================== TIMELINE =================== -->
+<section class="timeline section-padding" id="journey">
+    <div class="container">
+        <div class="timeline-header">
+            <div class="label reveal" style="margin-bottom: 2rem;">Journey</div>
+            <h2 class="headline headline-md reveal">Education & Career</h2>
+        </div>
+
+        <div class="timeline-items">
+            <div class="timeline-item reveal">
+                <div class="timeline-year">2026</div>
+                <div class="timeline-content">
+                    <h3>人工智能领域荣誉院士</h3>
+                    <p>马来西亚林肯大学学院（Lincoln University College）正式授予其"人工智能领域荣誉院士"（Honorary Fellow in Artificial Intelligence）称号。这一荣誉标志着其从纯粹的商业经营者向"学者型企业家"的成功转型。</p>
+                    <span class="tag">Lincoln University College</span>
+                </div>
+            </div>
+
+            <div class="timeline-item reveal">
+                <div class="timeline-year">2025</div>
+                <div class="timeline-content">
+                    <h3>管理学博士 (DBA)</h3>
+                    <p>进入马来西亚最高学府马来亚大学（University of Malaya）深造，研究方向聚焦于"数字经济背景下的企业转型"与"人工智能对传统内容产业的赋能"。2025年4月顺利通过论文答辩并取得博士学位。</p>
+                    <span class="tag">University of Malaya</span>
+                </div>
+            </div>
+
+            <div class="timeline-item reveal">
+                <div class="timeline-year">创业</div>
+                <div class="timeline-content">
+                    <h3>创办星域集团 Zocco Group</h3>
+                    <p>敏锐察觉全球数字化浪潮对东南亚市场的冲击，以短视频内容与直播运营为切入点创办星域集团。在极短时间内，将公司从单一的内容工作室发展成为涵盖 MCN、电商营销、艺人孵化及影视投资的综合性集团。</p>
+                    <span class="tag">Zocco Group</span>
+                </div>
+            </div>
+
+            <div class="timeline-item reveal">
+                <div class="timeline-year">求学</div>
+                <div class="timeline-content">
+                    <h3>居銮中华中学 (CHHS)</h3>
+                    <p>就读于柔佛州著名华文独立中学，在校期间表现出对商业逻辑与社会公益的浓厚兴趣，奠定了深厚的中华文化底蕴与坚毅的拼搏精神。</p>
+                    <span class="tag">Foundation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =================== VENTURES (ZOCCO GROUP) =================== -->
+<section class="ventures section-padding" id="ventures">
+    <div class="container">
+        <div class="ventures-header">
+            <div>
+                <div class="label reveal" style="margin-bottom: 2rem;">Business Empire</div>
+                <h2 class="headline headline-lg">
+                    <span class="split-word"><span>星域集团</span></span><br/>
+                    <span class="split-word"><span>Zocco</span></span>
+                    <span class="split-word"><span>Group</span></span>
+                </h2>
+            </div>
+            <div class="ventures-header-right">
+                <p class="body-lg reveal">
+                    围绕"AI、内容、创作者经济与品牌商业化"搭建可持续运转的闭环生态系统——从内容生产、流量聚合、品牌合作到商业转化形成完整闭环。
                 </p>
-<!-- Key Stats -->
-<div class="grid grid-cols-2 gap-4 mt-6">
-<div class="p-4 rounded-xl bg-surface-container border border-white/5 text-center">
-<div class="text-primary-container font-headline font-bold text-2xl">1992</div>
-<div class="text-on-surface-variant text-xs font-label uppercase tracking-wider mt-1">出生年份</div>
-</div>
-<div class="p-4 rounded-xl bg-surface-container border border-white/5 text-center">
-<div class="text-secondary-fixed font-headline font-bold text-2xl">DBA</div>
-<div class="text-on-surface-variant text-xs font-label uppercase tracking-wider mt-1">管理学博士</div>
-</div>
-<div class="p-4 rounded-xl bg-surface-container border border-white/5 text-center">
-<div class="text-tertiary-container font-headline font-bold text-2xl">4+</div>
-<div class="text-on-surface-variant text-xs font-label uppercase tracking-wider mt-1">商业板块</div>
-</div>
-<div class="p-4 rounded-xl bg-surface-container border border-white/5 text-center">
-<div class="text-primary-container font-headline font-bold text-2xl">UM</div>
-<div class="text-on-surface-variant text-xs font-label uppercase tracking-wider mt-1">马来亚大学</div>
-</div>
-</div>
-</div>
-<div class="lg:col-span-8 space-y-12 pt-12">
-<!-- Timeline -->
-<div class="relative pl-8 border-l border-outline-variant/30 space-y-16">
-<!-- Item 1 -->
-<div class="relative">
-<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-primary-container shadow-[0_0_10px_rgba(0,243,255,1)]"></div>
-<div class="text-primary-container font-headline font-bold text-2xl mb-2">2026年1月</div>
-<h3 class="text-2xl font-bold text-white mb-4">人工智能领域荣誉院士 | 林肯大学学院</h3>
-<p class="text-on-surface-variant mb-3">马来西亚林肯大学学院（Lincoln University College）正式授予其"人工智能领域荣誉院士"（Honorary Fellow in Artificial Intelligence）称号。</p>
-<p class="text-on-surface-variant/70 text-sm">这一荣誉不仅是对其 AI 技术转化与数字内容产业实践能力的肯定，也标志着其从纯粹的商业经营者向"学者型企业家"的成功转型。</p>
-</div>
-<!-- Item 2 -->
-<div class="relative">
-<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-secondary-fixed shadow-[0_0_10px_rgba(96,255,153,1)]"></div>
-<div class="text-secondary-fixed font-headline font-bold text-2xl mb-2">2025年4月</div>
-<h3 class="text-2xl font-bold text-white mb-4">管理学博士 (DBA) | 马来亚大学</h3>
-<p class="text-on-surface-variant mb-3">进入马来西亚最高学府马来亚大学（University of Malaya）深造，研究方向聚焦于"数字经济背景下的企业转型"与"人工智能对传统内容产业的赋能"。</p>
-<p class="text-on-surface-variant/70 text-sm">2025年4月顺利通过论文答辩并取得博士学位，为其商业实践提供了严谨的理论支撑。</p>
-</div>
-<!-- Item 3 -->
-<div class="relative">
-<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-tertiary-container shadow-[0_0_10px_rgba(255,217,61,1)]"></div>
-<div class="text-tertiary-container font-headline font-bold text-2xl mb-2">创业起步</div>
-<h3 class="text-2xl font-bold text-white mb-4">创办星域集团 Zocco Group</h3>
-<p class="text-on-surface-variant mb-3">敏锐察觉全球数字化浪潮对东南亚市场的冲击，以短视频内容与直播运营为切入点创办星域集团。</p>
-<p class="text-on-surface-variant/70 text-sm">在极短时间内，将公司从单一的内容工作室发展成为涵盖 MCN、电商营销、艺人孵化及影视投资的综合性集团。</p>
-</div>
-<!-- Item 4 -->
-<div class="relative">
-<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-outline-variant"></div>
-<div class="text-on-surface-variant font-headline font-bold text-xl mb-2">求学时代</div>
-<h3 class="text-xl font-bold text-white mb-4">居銮中华中学 (CHHS)</h3>
-<p class="text-on-surface-variant">就读于柔佛州著名华文独立中学，在校期间表现出对商业逻辑与社会公益的浓厚兴趣，奠定了深厚的中道文化底蕴与坚毅的拼搏精神。</p>
-</div>
-</div>
-<!-- Social Roles -->
-<div class="mt-16 p-8 rounded-2xl glass-panel border border-white/5">
-<h3 class="text-xl font-headline font-bold text-white mb-6">社会职务</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<div class="flex items-center gap-3 text-on-surface-variant">
-<span class="material-symbols-outlined text-primary-container text-xl" style='font-variation-settings: "FILL" 1;'>verified</span>
-星域集团创办人兼董事长
-</div>
-<div class="flex items-center gap-3 text-on-surface-variant">
-<span class="material-symbols-outlined text-primary-container text-xl" style='font-variation-settings: "FILL" 1;'>school</span>
-林肯大学学院 AI 荣誉院士
-</div>
-<div class="flex items-center gap-3 text-on-surface-variant">
-<span class="material-symbols-outlined text-secondary-fixed text-xl" style='font-variation-settings: "FILL" 1;'>groups</span>
-MTPN 槟城分会重要成员
-</div>
-<div class="flex items-center gap-3 text-on-surface-variant">
-<span class="material-symbols-outlined text-tertiary-container text-xl" style='font-variation-settings: "FILL" 1;'>favorite</span>
-马来西亚公益节核心赞助人
-</div>
-<div class="flex items-center gap-3 text-on-surface-variant">
-<span class="material-symbols-outlined text-tertiary-container text-xl" style='font-variation-settings: "FILL" 1;'>volunteer_activism</span>
-"百万慈善基金" 发起人
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+            </div>
+        </div>
+
+        <div class="ventures-grid">
+            <!-- Card 1 -->
+            <div class="venture-card reveal">
+                <div class="venture-number">01 / AI + Content</div>
+                <h3>AI + 内容生产</h3>
+                <p>提出"AI+内容"双驱动模式，主导研发多项应用于直播与短视频领域的 AI 工具。</p>
+                <ul>
+                    <li><strong>AIGC 内容生产 —</strong> 利用生成式 AI 技术，大幅降低短视频脚本、文案及后期剪辑的时间成本</li>
+                    <li><strong>AI 音乐生态圈 —</strong> 通过 AI 创作与 IP 联动，探索数字音乐新商业高度</li>
+                    <li><strong>数据化智能运营 —</strong> 基于 AI 算法的直播流量监控系统，实现精准观众画像分析</li>
+                </ul>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="venture-card reveal">
+                <div class="venture-number">02 / MCN Ecosystem</div>
+                <h3>MCN 生态矩阵</h3>
+                <p>建立标准化创作者孵化流程，推动内容创作者与品牌的深度联名合作。</p>
+                <ul>
+                    <li><strong>多平台布局 —</strong> 在 TikTok、Facebook、YouTube 等主流平台拥有大量签约达人</li>
+                    <li><strong>跨界合作 —</strong> 推动创作者与医美、时尚、零售等品牌深度联名</li>
+                    <li><strong>艺人孵化 —</strong> 标准化头部艺人孵化体系，实现从内容创作到流量转化的完整链路</li>
+                </ul>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="venture-card reveal">
+                <div class="venture-number">03 / Film & Tech</div>
+                <h3>影视投资与科技</h3>
+                <p>将视野扩展至大银幕，主张引入 AI 预审和数字营销技术提高投资成功率。</p>
+                <ul>
+                    <li><strong>电影《Indera》 —</strong> 入围第34届马来西亚电影节及韩国富川国际奇幻影展</li>
+                    <li><strong>AI 剧本预审 —</strong> 通过数据预测市场反应，引入 AI 分镜技术</li>
+                    <li><strong>数字孪生拍摄 —</strong> 探索虚拟拍摄基地，推动影视制作数字化转型</li>
+                </ul>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="venture-card reveal">
+                <div class="venture-number">04 / Cross-Industry</div>
+                <h3>跨界商业</h3>
+                <p>以东南亚市场为起点，探索线上娱乐流量与线下商业体验的深度结合。</p>
+                <ul>
+                    <li><strong>医美产业 —</strong> 携手国际品牌打造体验馆，将流量运营逻辑引入线下实业</li>
+                    <li><strong>品牌品鉴会 —</strong> 主办星域集团 x AJEndless 马来西亚品鉴会</li>
+                    <li><strong>线下消费场景 —</strong> 持续探索线上娱乐流量向实际消费场景转化</li>
+                    <li><strong>区域化发展 —</strong> 以东南亚为基础，布局更具增长潜力的产业生态</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </section>
-<!-- Business Empire (Zocco Group) Section -->
-<section class="py-12 md:py-24 relative" id="ventures">
-<div class="max-w-7xl mx-auto px-6">
-<div class="text-center mb-12 md:mb-20">
-<h2 class="text-2xl md:text-6xl font-headline font-extrabold text-white mb-4 tracking-tighter">星域集团 ZOCCO GROUP</h2>
-<div class="h-1 w-24 bg-primary-container mx-auto rounded-full mb-6"></div>
-<p class="text-on-surface-variant max-w-3xl mx-auto text-lg">通过星域集团构建闭环数字经济生态系统——围绕"AI、内容、创作者经济与品牌商业化"搭建可持续运转的生态，从内容生产、流量聚合、品牌合作到商业转化形成完整闭环。</p>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-<!-- Card 1 -->
-<div class="glass-panel p-6 md:p-10 rounded-2xl group border border-white/5 hover:border-primary-container/30 transition-all duration-500">
-<div class="flex justify-between items-start mb-8">
-<span class="material-symbols-outlined text-5xl text-primary-container" style='font-variation-settings: "FILL" 1;'>neurology</span>
-<div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 01</div>
-</div>
-<h3 class="text-3xl font-bold text-white mb-4">AI + 内容生产</h3>
-<p class="text-on-surface-variant/70 text-sm mb-6">提出"AI+内容"双驱动模式，主导研发多项应用于直播与短视频领域的 AI 工具。</p>
-<ul class="space-y-4 text-on-surface-variant">
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span><span><strong class="text-white">AIGC 内容生产：</strong>利用生成式 AI 技术，大幅降低短视频脚本、文案及后期剪辑的时间成本</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span><span><strong class="text-white">AI 音乐生态圈：</strong>通过 AI 创作与 IP 联动，探索数字音乐新商业高度，引起《SG Scope》等媒体广泛关注</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-primary-container mt-2 shrink-0"></span><span><strong class="text-white">数据化智能运营：</strong>基于 AI 算法的直播流量监控系统，实现精准观众画像分析与商业转化预测</span></li>
-</ul>
-</div>
-<!-- Card 2 -->
-<div class="glass-panel p-6 md:p-10 rounded-2xl group border border-white/5 hover:border-secondary-fixed/30 transition-all duration-500">
-<div class="flex justify-between items-start mb-8">
-<span class="material-symbols-outlined text-5xl text-secondary-fixed" style='font-variation-settings: "FILL" 1;'>groups</span>
-<div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 02</div>
-</div>
-<h3 class="text-3xl font-bold text-white mb-4">MCN 生态矩阵</h3>
-<p class="text-on-surface-variant/70 text-sm mb-6">建立标准化创作者孵化流程，推动内容创作者与品牌的深度联名合作。</p>
-<ul class="space-y-4 text-on-surface-variant">
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed mt-2 shrink-0"></span><span><strong class="text-white">多平台布局：</strong>在 TikTok、Facebook、YouTube 等主流平台拥有大量签约达人</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed mt-2 shrink-0"></span><span><strong class="text-white">跨界合作：</strong>推动创作者与医美、时尚、零售等品牌深度联名，提升流量商业溢价能力</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed mt-2 shrink-0"></span><span><strong class="text-white">艺人孵化：</strong>标准化头部艺人孵化体系，实现从内容创作到流量转化的完整链路</span></li>
-</ul>
-</div>
-<!-- Card 3 -->
-<div class="glass-panel p-6 md:p-10 rounded-2xl group border border-white/5 hover:border-tertiary-container/30 transition-all duration-500">
-<div class="flex justify-between items-start mb-8">
-<span class="material-symbols-outlined text-5xl text-tertiary-container" style='font-variation-settings: "FILL" 1;'>movie</span>
-<div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 03</div>
-</div>
-<h3 class="text-3xl font-bold text-white mb-4">影视投资与科技</h3>
-<p class="text-on-surface-variant/70 text-sm mb-6">将视野扩展至大银幕，主张引入 AI 预审和数字营销技术提高投资成功率。</p>
-<ul class="space-y-4 text-on-surface-variant">
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container mt-2 shrink-0"></span><span><strong class="text-white">电影《Indera》：</strong>入围第34届马来西亚电影节，成功入围韩国富川国际奇幻影展</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container mt-2 shrink-0"></span><span><strong class="text-white">AI 剧本预审：</strong>通过数据预测市场反应，引入 AI 分镜技术提高影视投资成功率</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container mt-2 shrink-0"></span><span><strong class="text-white">数字孪生拍摄：</strong>探索虚拟拍摄基地，推动影视制作数字化转型</span></li>
-</ul>
-</div>
-<!-- Card 4 -->
-<div class="glass-panel p-6 md:p-10 rounded-2xl group border border-white/5 hover:border-white/20 transition-all duration-500">
-<div class="flex justify-between items-start mb-8">
-<span class="material-symbols-outlined text-5xl text-on-surface" style='font-variation-settings: "FILL" 1;'>diamond</span>
-<div class="text-xs font-label uppercase tracking-widest text-on-surface-variant">Vertical 04</div>
-</div>
-<h3 class="text-3xl font-bold text-white mb-4">跨界商业</h3>
-<p class="text-on-surface-variant/70 text-sm mb-6">以东南亚市场为起点，探索线上娱乐流量与线下商业体验的深度结合。</p>
-<ul class="space-y-4 text-on-surface-variant">
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0"></span><span><strong class="text-white">医美产业：</strong>携手国际品牌打造体验馆，将流量运营逻辑引入线下实业</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0"></span><span><strong class="text-white">品牌品鉴会：</strong>主办星域集团 × AJEndless 马来西亚品鉴会，通过社交媒体影响力赋能传统快消品</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0"></span><span><strong class="text-white">线下消费场景：</strong>持续探索线上娱乐流量向实际消费场景转化</span></li>
-<li class="flex items-start gap-3"><span class="w-1.5 h-1.5 rounded-full bg-white mt-2 shrink-0"></span><span><strong class="text-white">区域化发展：</strong>以东南亚为基础，布局更具增长潜力的内容、娱乐与消费产业生态</span></li>
-</ul>
-</div>
-</div>
-</div>
+
+<!-- =================== SOCIAL IMPACT =================== -->
+<section class="impact section-padding" id="impact">
+    <div class="container">
+        <!-- Big Quote -->
+        <div class="impact-quote-section">
+            <div class="label reveal" style="margin-bottom: 3rem;">Philosophy</div>
+            <div class="impact-quote" id="impactQuote">
+                <span class="split-word"><span>"取之社会，</span></span><br/>
+                <span class="split-word"><span>用之社会。"</span></span>
+            </div>
+            <p class="impact-quote-attr reveal">— Dr. Kervis Soo 苏才育博士</p>
+        </div>
+
+        <!-- Impact Content -->
+        <div class="label reveal" style="margin-bottom: 2rem;">Social Responsibility</div>
+        <h2 class="headline headline-md reveal" style="margin-bottom: clamp(3rem, 6vh, 6rem); max-width: 600px;">社会责任与公益愿景</h2>
+
+        <div class="impact-grid">
+            <div class="impact-image-wrapper img-reveal">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaAX6fJnr5kZpCYSpMb521lbaxJed4hP5y9Or_5AtgjsXCtuVcOLjwVtmj62Di-n_B99aGMcoXCFLogR1tY8BTcAVNdDcuBOd6kq_rBlBuJz0TbM9LMQ-cCkDfUHHZdL93xZFlEtyt_v6lqtdmFJrnGPBeH-eCTGXMGl_xbg4c1sjsmDoOGt8Xt42wxWcEwX66UZd9oeQ5QUHKqoU8y0QApHwpkyHtHktgjZjW00OOnOUCObM_7Du3aYgai33Fz5YcUnd_4tNZy4fX" alt="Social Impact" class="parallax-img"/>
+                <div class="impact-stat">
+                    <div class="impact-stat-number">1,000,000+</div>
+                    <div class="impact-stat-label">MYR Donated</div>
+                </div>
+            </div>
+
+            <div class="impact-items">
+                <div class="impact-item reveal">
+                    <h4>百万慈善基金</h4>
+                    <p>2025年10月正式发起成立，计划在五年内投入数百万马币，专门用于扶持青年创业计划、提供数字技能培训、资助社区教育基础设施建设。</p>
+                </div>
+                <div class="impact-item reveal">
+                    <h4>NEWGEN 苏亚辉与陈亚莲夫妇百万教育基金</h4>
+                    <p>为感念父母教养之恩，在柔佛州成立的家族教育传承基金。主要面向家境贫寒但品学兼优的学生，帮助他们完成从中学到大学的学业，旨在打破贫困的代际传递。</p>
+                </div>
+                <div class="impact-item reveal">
+                    <h4>母校回馈 — 居銮中华中学</h4>
+                    <p>多次以个人和集团名义回馈母校，支持学校的硬件建设与奖助学金计划，鼓励母校学子勇于探索科技前沿。</p>
+                </div>
+                <div class="impact-item reveal">
+                    <h4>马来西亚公益节</h4>
+                    <p>星域集团冠名赞助马来西亚公益节，作为核心合作伙伴推动企业社会责任文化。</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
-<!-- Social Impact Section -->
-<section class="py-12 md:py-24 bg-gradient-to-b from-surface to-surface-container-low border-y border-white/5" id="impact">
-<div class="max-w-7xl mx-auto px-6">
-<div class="flex flex-col md:flex-row gap-16 items-center">
-<div class="flex-1 space-y-8">
-<h2 class="text-4xl font-headline font-bold text-white mb-8">社会责任与公益愿景</h2>
-<blockquote class="relative pl-12">
-<span class="absolute left-0 top-0 text-6xl text-primary-container opacity-20 font-serif">"</span>
-<p class="text-2xl md:text-3xl font-medium italic text-on-surface mb-6">取之社会，用之社会。</p>
-<footer class="text-on-surface-variant">— Dr. Kervis Soo</footer>
-</blockquote>
-<div class="space-y-6">
-<div class="flex items-start gap-6 p-6 rounded-xl bg-surface-container border border-white/5">
-<span class="material-symbols-outlined text-tertiary-container text-4xl shrink-0" style='font-variation-settings: "FILL" 1;'>volunteer_activism</span>
-<div>
-<h4 class="text-xl font-bold text-white mb-2">百万慈善基金</h4>
-<p class="text-on-surface-variant mb-2">2025年10月正式发起成立，计划在五年内投入数百万马币，专门用于：</p>
-<ul class="text-on-surface-variant/80 text-sm space-y-1 ml-4">
-<li>- 扶持青年创业计划</li>
-<li>- 提供数字技能培训</li>
-<li>- 资助社区教育基础设施建设</li>
-</ul>
-</div>
-</div>
-<div class="flex items-start gap-6 p-6 rounded-xl bg-surface-container border border-white/5">
-<span class="material-symbols-outlined text-secondary-fixed text-4xl shrink-0" style='font-variation-settings: "FILL" 1;'>school</span>
-<div>
-<h4 class="text-xl font-bold text-white mb-2">NEWGEN 苏亚辉与陈亚莲夫妇百万教育基金</h4>
-<p class="text-on-surface-variant mb-2">为感念父母教养之恩，在柔佛州成立的家族教育传承基金。主要面向家境贫寒但品学兼优的学生，帮助他们完成从中学到大学的学业，旨在打破贫困的代际传递。</p>
-</div>
-</div>
-<div class="flex items-start gap-6 p-6 rounded-xl bg-surface-container border border-white/5">
-<span class="material-symbols-outlined text-primary-container text-4xl shrink-0" style='font-variation-settings: "FILL" 1;'>account_balance</span>
-<div>
-<h4 class="text-xl font-bold text-white mb-2">母校回馈 — 居銮中华中学</h4>
-<p class="text-on-surface-variant">多次以个人和集团名义回馈母校，支持学校的硬件建设与奖助学金计划，鼓励母校学子勇于探索科技前沿。</p>
-</div>
-</div>
-<div class="flex items-start gap-6 p-6 rounded-xl bg-surface-container border border-white/5">
-<span class="material-symbols-outlined text-tertiary-container text-4xl shrink-0" style='font-variation-settings: "FILL" 1;'>celebration</span>
-<div>
-<h4 class="text-xl font-bold text-white mb-2">马来西亚公益节</h4>
-<p class="text-on-surface-variant">星域集团冠名赞助马来西亚公益节，作为核心合作伙伴推动企业社会责任文化。</p>
-</div>
-</div>
-</div>
-</div>
-<div class="flex-1 relative">
-<div class="aspect-square rounded-2xl overflow-hidden shadow-2xl neon-border-cyan glass-panel">
-<img alt="Charity Impact" class="w-full h-full object-cover opacity-80 grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaAX6fJnr5kZpCYSpMb521lbaxJed4hP5y9Or_5AtgjsXCtuVcOLjwVtmj62Di-n_B99aGMcoXCFLogR1tY8BTcAVNdDcuBOd6kq_rBlBuJz0TbM9LMQ-cCkDfUHHZdL93xZFlEtyt_v6lqtdmFJrnGPBeH-eCTGXMGl_xbg4c1sjsmDoOGt8Xt42wxWcEwX66UZd9oeQ5QUHKqoU8y0QApHwpkyHtHktgjZjW00OOnOUCObM_7Du3aYgai33Fz5YcUnd_4tNZy4fX"/>
-</div>
-<div class="mt-6 md:mt-0 md:absolute md:-bottom-8 md:-left-8 bg-surface-container-high p-6 md:p-8 rounded-2xl shadow-2xl border border-white/10 text-center md:text-left">
-<div class="text-primary-container text-4xl font-headline font-bold mb-1">1,000,000+</div>
-<div class="text-on-surface-variant text-sm font-label uppercase">Donated (MYR)</div>
-</div>
-</div>
-</div>
-</div>
+
+<!-- =================== ROLES =================== -->
+<section class="roles section-padding" style="padding-top: 0; padding-bottom: 0;">
+    <div class="container" style="padding: 0;">
+        <div style="padding: clamp(2rem, 4vw, 4rem) clamp(1.5rem, 4vw, 4rem);">
+            <div class="label" style="margin-bottom: 1.5rem;">Social Roles</div>
+        </div>
+        <div class="roles-grid">
+            <div class="role-item reveal">
+                <div class="role-title">星域集团创办人兼董事长</div>
+            </div>
+            <div class="role-item reveal">
+                <div class="role-title">林肯大学学院 AI 荣誉院士</div>
+            </div>
+            <div class="role-item reveal">
+                <div class="role-title">MTPN 槟城分会重要成员</div>
+            </div>
+            <div class="role-item reveal">
+                <div class="role-title">马来西亚公益节核心赞助人</div>
+            </div>
+            <div class="role-item reveal">
+                <div class="role-title">"百万慈善基金" 发起人</div>
+            </div>
+        </div>
+    </div>
 </section>
-<!-- Awards & Quotes Section -->
-<section class="py-12 md:py-24 overflow-hidden" id="awards">
-<div class="max-w-7xl mx-auto px-6">
-<h2 class="text-center text-3xl font-headline font-bold text-white mb-6 uppercase tracking-widest">权威媒体报道与荣誉</h2>
-<p class="text-center text-on-surface-variant max-w-2xl mx-auto mb-16">苏才育的实践代表了新一代企业家的特质——具备敏锐的技术嗅觉与强烈的社会责任感，致力于将 AI 技术有效转化为实际生产力。</p>
-<!-- Honours -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-<div class="p-8 rounded-2xl glass-panel border border-primary-container/20">
-<div class="flex items-center gap-4 mb-4">
-<span class="material-symbols-outlined text-3xl text-primary-container" style='font-variation-settings: "FILL" 1;'>workspace_premium</span>
-<div>
-<h4 class="text-lg font-bold text-white">管理学博士 (DBA)</h4>
-<p class="text-on-surface-variant text-sm">马来亚大学 (University of Malaya) · 2025</p>
-</div>
-</div>
-</div>
-<div class="p-8 rounded-2xl glass-panel border border-secondary-fixed/20">
-<div class="flex items-center gap-4 mb-4">
-<span class="material-symbols-outlined text-3xl text-secondary-fixed" style='font-variation-settings: "FILL" 1;'>military_tech</span>
-<div>
-<h4 class="text-lg font-bold text-white">人工智能领域荣誉院士</h4>
-<p class="text-on-surface-variant text-sm">林肯大学学院 (Lincoln University College) · 2026</p>
-</div>
-</div>
-</div>
-</div>
-<!-- Media Logos -->
-<div class="flex flex-wrap justify-center gap-x-12 gap-y-4 opacity-60 mb-16">
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">ONASIANEWS</span>
-</div>
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">INSIDER NEWS ASIA</span>
-</div>
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">SG SCOPE</span>
-</div>
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">TIDE NEWS</span>
-</div>
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">THE INSIDER X</span>
-</div>
-<div class="flex items-center gap-4 grayscale hover:grayscale-0 transition-all cursor-default">
-<span class="text-xl font-bold font-headline text-white">搜狐新闻</span>
-</div>
-</div>
-<!-- Quotes Grid -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-<!-- Media Quote -->
-<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/20">
-<div class="text-xs font-label uppercase tracking-widest text-primary-container mb-4">媒体评价</div>
-<p class="italic text-on-surface-variant">"苏才育博士代表了东南亚新一代科技创业者的精神——具备敏锐的技术嗅觉与强烈的社会责任感，致力于将 AI 技术有效转化为数字内容产业和直播运营中的实际生产力。"</p>
-<div class="not-italic mt-6 font-bold text-white">— Insider News Asia</div>
-</div>
-<!-- Industry Quote -->
-<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/20">
-<div class="text-xs font-label uppercase tracking-widest text-secondary-fixed mb-4">业界评价</div>
-<p class="italic text-on-surface-variant">"在马来西亚数字娱乐产业中，苏才育被视为 MCN 生态的架构师。他不仅是在经营一家公司，更是在构建一套适应 AI 时代的数字内容准则，展示了传统商业如何通过 AI 实现'老树发新芽'。"</p>
-<div class="not-italic mt-6 font-bold text-white">— 业界观察</div>
-</div>
-<!-- Academic Quote -->
-<div class="p-8 rounded-xl bg-surface-container-low border border-outline-variant/20">
-<div class="text-xs font-label uppercase tracking-widest text-tertiary-container mb-4">学术界评价</div>
-<p class="italic text-on-surface-variant">"林肯大学学院认可其在 AI 产业化方面的实践。他的探索在技术发展、产业实践与社会责任之间建立了联系，为人工智能在商业场景中的应用提供了宝贵的参考案例。"</p>
-<div class="not-italic mt-6 font-bold text-white">— Lincoln University College</div>
-</div>
-</div>
-<!-- References -->
-<div class="mt-12 p-8 rounded-2xl glass-panel border border-white/5">
-<h3 class="text-lg font-headline font-bold text-white mb-6">参考资料</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-on-surface-variant/70">
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">01.</span>《Dr Kervis AI Honorary Fellow: A New Era for Zocco Group》— OnAsiaNews</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">02.</span>《星域集团 Dr.Kervis 苏才育院士冠名赞助马来西亚公益节》— Tide News</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">03.</span>《星域集团 AI 音乐生态圈开启大马产业商业新高度》— SG Scope</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">04.</span>《追星还是投资？星域集团 AI 音乐生态圈解析》— The Insider X</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">05.</span>《Dr Kervis 苏才育——跨界企业家多元版图》— 搜狐新闻</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">06.</span>《星域集团携手医美品牌打造体验馆》— 新浪社区</div>
-<div class="flex items-start gap-2"><span class="text-primary-container shrink-0">07.</span>《星域集团百万慈善基金计划：用数字经济回馈社会》— Insider News Asia</div>
-</div>
-</div>
-</div>
+
+<!-- =================== AWARDS & MEDIA =================== -->
+<section class="awards section-padding" id="awards">
+    <div class="container">
+        <div class="awards-header">
+            <div class="label reveal" style="margin-bottom: 2rem;">Recognition</div>
+            <h2 class="headline headline-md reveal">权威媒体报道与荣誉</h2>
+            <p class="body-md reveal" style="margin-top: 1.5rem;">苏才育的实践代表了新一代企业家的特质——具备敏锐的技术嗅觉与强烈的社会责任感。</p>
+        </div>
+
+        <!-- Awards -->
+        <div class="awards-grid">
+            <div class="award-card reveal">
+                <div class="award-year">2025</div>
+                <h4>管理学博士 (DBA)</h4>
+                <p>University of Malaya (马来亚大学)</p>
+            </div>
+            <div class="award-card reveal">
+                <div class="award-year">2026</div>
+                <h4>人工智能领域荣誉院士</h4>
+                <p>Lincoln University College (林肯大学学院)</p>
+            </div>
+        </div>
+
+        <!-- Media -->
+        <div class="media-section">
+            <div class="media-label">
+                <span class="label">Featured In</span>
+            </div>
+            <div class="media-logos">
+                <span class="media-logo">OnAsiaNews</span>
+                <span class="media-logo">Insider News Asia</span>
+                <span class="media-logo">SG Scope</span>
+                <span class="media-logo">Tide News</span>
+                <span class="media-logo">The Insider X</span>
+                <span class="media-logo">搜狐新闻</span>
+            </div>
+        </div>
+
+        <!-- Quotes — Horizontal Scroll -->
+        <div class="label" style="margin-bottom: 2rem;">What They Say</div>
+        <div class="hscroll-section" id="quotesScroll">
+            <div class="hscroll-track" id="quotesTrack">
+                <div class="hscroll-card">
+                    <div class="quote-source-label">媒体评价</div>
+                    <blockquote>"苏才育博士代表了东南亚新一代科技创业者的精神——具备敏锐的技术嗅觉与强烈的社会责任感，致力于将 AI 技术有效转化为数字内容产业和直播运营中的实际生产力。"</blockquote>
+                    <cite>— Insider News Asia</cite>
+                </div>
+                <div class="hscroll-card">
+                    <div class="quote-source-label">业界评价</div>
+                    <blockquote>"在马来西亚数字娱乐产业中，苏才育被视为 MCN 生态的架构师。他不仅是在经营一家公司，更是在构建一套适应 AI 时代的数字内容准则。"</blockquote>
+                    <cite>— 业界观察</cite>
+                </div>
+                <div class="hscroll-card">
+                    <div class="quote-source-label">学术界评价</div>
+                    <blockquote>"林肯大学学院认可其在 AI 产业化方面的实践。他的探索在技术发展、产业实践与社会责任之间建立了联系，为人工智能在商业场景中的应用提供了宝贵的参考案例。"</blockquote>
+                    <cite>— Lincoln University College</cite>
+                </div>
+            </div>
+        </div>
+        <div class="section-line" id="quotesLine" style="margin: clamp(3rem, 6vh, 5rem) 0;"></div>
+
+        <!-- References -->
+        <div class="references">
+            <div class="references-header">
+                <span class="label">References</span>
+            </div>
+            <div class="references-list">
+                <div class="reference-item reveal">
+                    <span class="ref-num">01</span>
+                    <span>《Dr Kervis AI Honorary Fellow: A New Era for Zocco Group》— OnAsiaNews</span>
+                </div>
+                <div class="reference-item reveal">
+                    <span class="ref-num">02</span>
+                    <span>《星域集团 Dr.Kervis 苏才育院士冠名赞助马来西亚公益节》— Tide News</span>
+                </div>
+                <div class="reference-item reveal">
+                    <span class="ref-num">03</span>
+                    <span>《星域集团 AI 音乐生态圈开启大马产业商业新高度》— SG Scope</span>
+                </div>
+                <div class="reference-item reveal">
+                    <span class="ref-num">04</span>
+                    <span>《追星还是投资？星域集团 AI 音乐生态圈解析》— The Insider X</span>
+                </div>
+                <div class="reference-item reveal">
+                    <span class="ref-num">05</span>
+                    <span>《Dr Kervis 苏才育——跨界企业家多元版图》— 搜狐新闻</span>
+                </div>
+                <div class="reference-item reveal">
+                    <span class="ref-num">06</span>
+                    <span>《星域集团携手医美品牌打造体验馆》— 新浪社区</span>
+                </div>
+                <div class="reference-item reveal">
+                    <span class="ref-num">07</span>
+                    <span>《星域集团百万慈善基金计划：用数字经济回馈社会》— Insider News Asia</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
-<!-- Bottom Navigation Bar -->
-<footer class="w-full bg-neutral-950 border-t border-white/5">
-<div class="w-full py-12 pb-24 md:pb-12 px-6 md:px-8 flex flex-col md:flex-row justify-between items-center max-w-7xl mx-auto">
-<div class="mb-8 md:mb-0">
-<div class="text-lg font-['Space_Grotesk'] font-bold text-white mb-4">Dr. Kervis Soo</div>
-<p class="font-['Manrope'] text-neutral-400 text-sm">© 2026 Dr. Kervis Soo. All Rights Reserved.</p>
-</div>
-<div class="flex gap-8">
-<a class="font-['Manrope'] text-neutral-400 text-sm hover:text-cyan-300 transition-colors" href="#">Privacy Policy</a>
-<a class="font-['Manrope'] text-neutral-400 text-sm hover:text-cyan-300 transition-colors" href="#">Terms of Service</a>
-<a class="font-['Manrope'] text-neutral-400 text-sm hover:text-cyan-300 transition-colors" href="#">AI Ethics</a>
-</div>
-</div>
+
+<!-- =================== FOOTER =================== -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-left">
+                <div class="footer-name">Dr. Kervis Soo<br/>苏才育博士</div>
+                <p class="footer-desc">Founder & Chairman of Zocco Group. DBA, University of Malaya. Honorary Fellow in AI, Lincoln University College.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#about" class="footer-link">About</a>
+                <a href="#journey" class="footer-link">Journey</a>
+                <a href="#ventures" class="footer-link">Ventures</a>
+                <a href="#impact" class="footer-link">Impact</a>
+                <a href="#awards" class="footer-link">Recognition</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span class="footer-copyright">&copy; 2026 Dr. Kervis Soo. All Rights Reserved.</span>
+            <span class="label" style="opacity: 0.3;">The Architect</span>
+        </div>
+    </div>
 </footer>
-<!-- Bottom Floating Nav -->
-<nav class="fixed bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 rounded-full border border-white/5 px-4 md:px-6 bg-neutral-950/80 backdrop-blur-md shadow-2xl shadow-cyan-900/20 z-50 flex gap-4 md:gap-8 py-2 md:py-3 items-center">
-<a class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-200 hover:scale-110 transition-transform" href="https://www.linkedin.com" target="_blank">
-<span class="material-symbols-outlined" data-icon="share">share</span>
-<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-widest">LinkedIn</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-200 hover:scale-110 transition-transform" href="https://twitter.com" target="_blank">
-<span class="material-symbols-outlined" data-icon="rss_feed">rss_feed</span>
-<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-widest">X</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-200 hover:scale-110 transition-transform" href="https://github.com" target="_blank">
-<span class="material-symbols-outlined" data-icon="code">code</span>
-<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-widest">GitHub</span>
-</a>
-<a class="flex flex-col items-center gap-1 text-neutral-500 hover:text-neutral-200 hover:scale-110 transition-transform" href="#">
-<span class="material-symbols-outlined" data-icon="article">article</span>
-<span class="font-['Space_Grotesk'] text-[10px] uppercase tracking-widest">Medium</span>
-</a>
-</nav>
-<!-- Simple Script for Background Particle Simulation -->
-<script>
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    let mouse = { x: null, y: null };
 
-    function init() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        particles = [];
-        for (let i = 0; i < 80; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2 + 1,
-                speedX: Math.random() * 0.5 - 0.25,
-                speedY: Math.random() * 0.5 - 0.25,
-                color: Math.random() > 0.5 ? '#00f3ff' : '#34ff8d'
-            });
-        }
+<!-- =================== SCRIPTS =================== -->
+<!-- Lenis Smooth Scroll -->
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+<!-- GSAP + ScrollTrigger -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+(function() {
+    'use strict';
+
+    // =============================================
+    // LENIS SMOOTH SCROLL
+    // =============================================
+    const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        smooth: true,
+    });
+
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
     }
+    requestAnimationFrame(raf);
 
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-            p.x += p.speedX;
-            p.y += p.speedY;
-
-            if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
-            if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
-
-            if (mouse.x && mouse.y) {
-                let dx = mouse.x - p.x;
-                let dy = mouse.y - p.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 150) {
-                    p.x -= dx * 0.01;
-                    p.y -= dy * 0.01;
-                }
-            }
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fillStyle = p.color;
-            ctx.globalAlpha = 0.3;
-            ctx.fill();
-
-            // Draw lines between close particles
-            particles.forEach(p2 => {
-                let dx = p.x - p2.x;
-                let dy = p.y - p2.y;
-                let dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist < 100) {
-                    ctx.beginPath();
-                    ctx.strokeStyle = p.color;
-                    ctx.globalAlpha = 1 - (dist / 100);
-                    ctx.lineWidth = 0.5;
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(p2.x, p2.y);
-                    ctx.stroke();
-                }
-            });
-        });
-        requestAnimationFrame(animate);
-    }
-
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.x;
-        mouse.y = e.y;
+    // Connect GSAP ScrollTrigger to Lenis
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
     });
-    window.addEventListener('touchmove', (e) => {
-        mouse.x = e.touches[0].clientX;
-        mouse.y = e.touches[0].clientY;
-    });
+    gsap.ticker.lagSmoothing(0);
 
-    window.addEventListener('resize', init);
-    init();
-    animate();
-</script>
-
-<!-- Mobile Menu Toggle -->
-<script>
-    const menuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuIcon = menuBtn.querySelector('.material-symbols-outlined');
-    menuBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-        menuIcon.textContent = mobileMenu.classList.contains('hidden') ? 'menu' : 'close';
-    });
-    // Close menu when clicking a link
-    mobileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-            menuIcon.textContent = 'menu';
-        });
-    });
-</script>
-
-<!-- Active Nav Highlight Script -->
-<script>
+    // =============================================
+    // NAVIGATION
+    // =============================================
+    const nav = document.getElementById('nav');
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileLinks = mobileMenu.querySelectorAll('a');
     const navLinks = document.querySelectorAll('.nav-link');
-    const navSections = ['about', 'ventures', 'impact', 'awards'].map(id => document.getElementById(id)).filter(Boolean);
-    let scrollLocked = false;
 
-    function setActive(link) {
-        navLinks.forEach(l => {
-            l.classList.remove('text-cyan-400', 'border-b-2', 'border-cyan-400');
-            l.classList.add('text-neutral-400');
-        });
-        link.classList.remove('text-neutral-400');
-        link.classList.add('text-cyan-400', 'border-b-2', 'border-cyan-400');
-    }
-
-    function clearActive() {
-        navLinks.forEach(l => {
-            l.classList.remove('text-cyan-400', 'border-b-2', 'border-cyan-400');
-            l.classList.add('text-neutral-400');
-        });
-    }
-
-    // Highlight on scroll
+    // Scroll state for nav
     window.addEventListener('scroll', () => {
-        if (scrollLocked) return;
+        if (window.scrollY > 80) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
+    });
 
+    // Mobile menu toggle
+    menuBtn.addEventListener('click', () => {
+        menuBtn.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+        document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    });
+
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            menuBtn.classList.remove('open');
+            mobileMenu.classList.remove('open');
+            document.body.style.overflow = '';
+        });
+    });
+
+    // Active nav on scroll
+    const sections = ['about', 'journey', 'ventures', 'impact', 'awards'].map(id => document.getElementById(id)).filter(Boolean);
+
+    window.addEventListener('scroll', () => {
         let current = '';
-        navSections.forEach(section => {
+        sections.forEach(section => {
             const rect = section.getBoundingClientRect();
-            if (rect.top <= 150) {
+            if (rect.top <= 200) {
                 current = section.getAttribute('id');
             }
         });
 
-        if (!current) {
-            clearActive();
-            return;
-        }
-
         navLinks.forEach(link => {
+            link.classList.remove('active');
             if (link.getAttribute('href') === '#' + current) {
-                setActive(link);
+                link.classList.add('active');
             }
         });
     });
 
-    // On click: lock scroll updates during smooth scroll
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            setActive(link);
-            scrollLocked = true;
-            clearTimeout(window._scrollTimer);
-            window._scrollTimer = setTimeout(() => { scrollLocked = false; }, 1000);
+    // =============================================
+    // CUSTOM CURSOR
+    // =============================================
+    const cursor = document.getElementById('cursorDot');
+    if (cursor && window.innerWidth > 768) {
+        let cx = 0, cy = 0, tx = 0, ty = 0;
+        document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+        (function moveCursor() {
+            cx += (tx - cx) * 0.15;
+            cy += (ty - cy) * 0.15;
+            cursor.style.transform = `translate(${cx - 6}px, ${cy - 6}px)`;
+            requestAnimationFrame(moveCursor);
+        })();
+        document.querySelectorAll('a, button, .venture-card, .hscroll-card, .award-card').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+    }
+
+    // =============================================
+    // MAGNETIC BUTTON EFFECT
+    // =============================================
+    document.querySelectorAll('[data-magnetic]').forEach(btn => {
+        btn.addEventListener('mousemove', e => {
+            const rect = btn.getBoundingClientRect();
+            const x = (e.clientX - rect.left - rect.width / 2) * 0.3;
+            const y = (e.clientY - rect.top - rect.height / 2) * 0.3;
+            gsap.to(btn, { x, y, duration: 0.3, ease: 'power2.out' });
+        });
+        btn.addEventListener('mouseleave', () => {
+            gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.5)' });
         });
     });
+
+    // =============================================
+    // GSAP ANIMATIONS
+    // =============================================
+    gsap.registerPlugin(ScrollTrigger);
+
+    // -- Hero orchestrated entrance timeline --
+    const heroTl = gsap.timeline({ delay: 0.2 });
+
+    // Accent line grows
+    heroTl.to('#heroAccentLine', {
+        height: '40%',
+        duration: 1.2,
+        ease: 'power3.inOut',
+    }, 0);
+
+    // Hero image fade in
+    heroTl.to('#heroBgReveal', {
+        opacity: 1,
+        duration: 1.5,
+        ease: 'power2.inOut',
+    }, 0.2);
+
+    // Hero name split text
+    const heroName = document.getElementById('heroName');
+    if (heroName) {
+        const text = heroName.textContent.trim();
+        heroName.innerHTML = '';
+        text.split('').forEach(char => {
+            const span = document.createElement('span');
+            span.className = 'char';
+            span.textContent = char;
+            span.style.display = 'inline-block';
+            span.style.opacity = '0';
+            span.style.transform = 'translateY(100%) rotateX(-80deg)';
+            span.style.transformOrigin = 'top center';
+            heroName.appendChild(span);
+        });
+
+        heroTl.to('#heroName .char', {
+            y: 0,
+            rotateX: 0,
+            opacity: 1,
+            duration: 1,
+            stagger: 0.1,
+            ease: 'power4.out',
+        }, 0.4);
+    }
+
+    // Magnetic button reveal
+    heroTl.to('.magnetic-btn', {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power3.out',
+    }, 1.2);
+
+    // Hero reveals staggered
+    heroTl.to('.hero .reveal', {
+        y: 0,
+        opacity: 1,
+        duration: 0.9,
+        stagger: 0.12,
+        ease: 'power3.out',
+    }, 0.9);
+
+    // -- Hero parallax image (deeper) --
+    gsap.to('#heroImage', {
+        y: -120,
+        scale: 1.08,
+        ease: 'none',
+        scrollTrigger: {
+            trigger: '.hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true,
+        }
+    });
+
+    // -- Marquee animation --
+    const marquee = document.getElementById('marquee');
+    if (marquee) {
+        gsap.to(marquee, {
+            x: '-50%',
+            duration: 25,
+            ease: 'none',
+            repeat: -1,
+        });
+    }
+
+    // -- Split word animations (with rotation) --
+    gsap.utils.toArray('.split-word > span').forEach(span => {
+        gsap.to(span, {
+            y: 0,
+            rotateX: 0,
+            duration: 1,
+            ease: 'power4.out',
+            scrollTrigger: {
+                trigger: span.parentElement,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    // -- General reveal animations --
+    gsap.utils.toArray('.reveal').forEach(el => {
+        if (el.closest('.hero')) return;
+        gsap.to(el, {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            ease: 'power3.out',
+            scrollTrigger: {
+                trigger: el,
+                start: 'top 88%',
+                toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    // -- Image reveal clips on scroll --
+    gsap.utils.toArray('.img-reveal').forEach(el => {
+        if (el.closest('.hero')) return;
+        ScrollTrigger.create({
+            trigger: el,
+            start: 'top 85%',
+            onEnter: () => el.classList.add('revealed'),
+        });
+    });
+
+    // -- Parallax images (about + impact) --
+    gsap.utils.toArray('.about-image-wrapper .parallax-img, .impact-image-wrapper .parallax-img').forEach(img => {
+        gsap.fromTo(img, {
+            y: -60,
+            scale: 1.15,
+        }, {
+            y: 60,
+            scale: 1.0,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: img.parentElement,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: true,
+            }
+        });
+    });
+
+    // -- Impact quote split text with stagger --
+    const impactQuote = document.getElementById('impactQuote');
+    if (impactQuote) {
+        const iqTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: impactQuote,
+                start: 'top 80%',
+                toggleActions: 'play none none none',
+            }
+        });
+        iqTl.to('#impactQuote .split-word > span', {
+            y: 0,
+            duration: 1.2,
+            stagger: 0.15,
+            ease: 'power4.out',
+        });
+    }
+
+    // -- Timeline items stagger with clip --
+    gsap.utils.toArray('.timeline-item').forEach((item, i) => {
+        gsap.fromTo(item, {
+            opacity: 0,
+            y: 50,
+            clipPath: 'inset(10% 0 10% 0)',
+        }, {
+            opacity: 1,
+            y: 0,
+            clipPath: 'inset(0% 0 0% 0)',
+            duration: 0.9,
+            delay: i * 0.08,
+            ease: 'power3.out',
+            scrollTrigger: {
+                trigger: item,
+                start: 'top 88%',
+                toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    // -- Venture cards — scale up with rotation --
+    gsap.utils.toArray('.venture-card').forEach((card, i) => {
+        gsap.fromTo(card, {
+            opacity: 0,
+            y: 60,
+            scale: 0.95,
+        }, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            delay: i * 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+                trigger: card,
+                start: 'top 90%',
+                toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    // -- Media logos cascade --
+    gsap.utils.toArray('.media-logo').forEach((logo, i) => {
+        gsap.fromTo(logo, {
+            opacity: 0,
+            y: 30,
+            scale: 0.8,
+        }, {
+            opacity: 0.5,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            delay: i * 0.12,
+            ease: 'back.out(1.4)',
+            scrollTrigger: {
+                trigger: logo.parentElement,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    // -- Horizontal scroll quotes --
+    const quotesTrack = document.getElementById('quotesTrack');
+    const quotesScroll = document.getElementById('quotesScroll');
+    if (quotesTrack && quotesScroll) {
+        const totalWidth = Math.max(0, quotesTrack.scrollWidth - quotesScroll.offsetWidth);
+        if (totalWidth > 0) {
+            gsap.to(quotesTrack, {
+                x: -totalWidth,
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: quotesScroll,
+                    start: 'top 70%',
+                    end: () => '+=' + (totalWidth * 1.5),
+                    scrub: 1,
+                    pin: false,
+                }
+            });
+        }
+    }
+
+    // -- Section divider lines grow --
+    gsap.utils.toArray('.section-line').forEach(line => {
+        gsap.to(line, {
+            width: '100%',
+            duration: 1.5,
+            ease: 'power3.inOut',
+            scrollTrigger: {
+                trigger: line,
+                start: 'top 90%',
+                toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    // -- Stat numbers fade reveal (no counter for meaningful numbers like years) --
+    gsap.utils.toArray('.stat-number').forEach(el => {
+        gsap.fromTo(el, { opacity: 0, y: 20 }, {
+            opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+        });
+    });
+
+    // -- Counter for donation stat --
+    const donationStat = document.querySelector('.impact-stat-number');
+    if (donationStat) {
+        ScrollTrigger.create({
+            trigger: donationStat,
+            start: 'top 88%',
+            onEnter: () => {
+                const obj = { val: 0 };
+                gsap.to(obj, {
+                    val: 1000000,
+                    duration: 2,
+                    ease: 'power2.out',
+                    onUpdate: () => {
+                        donationStat.textContent = Math.round(obj.val).toLocaleString() + '+';
+                    }
+                });
+            }
+        });
+    }
+
+    // -- Role items stagger from left --
+    gsap.utils.toArray('.role-item').forEach((item, i) => {
+        gsap.fromTo(item, {
+            opacity: 0,
+            x: -30,
+        }, {
+            opacity: 1,
+            x: 0,
+            duration: 0.6,
+            delay: i * 0.08,
+            ease: 'power3.out',
+            scrollTrigger: {
+                trigger: item,
+                start: 'top 90%',
+                toggleActions: 'play none none none',
+            }
+        });
+    });
+
+    // =============================================
+    // SMOOTH SCROLL FOR ANCHOR LINKS
+    // =============================================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                lenis.scrollTo(target, {
+                    offset: -60,
+                    duration: 1.5,
+                });
+            }
+        });
+    });
+
+})();
 </script>
-</body></html>
+
+</body>
+</html>
