@@ -837,73 +837,60 @@ img {
 }
 
 /* =========================================
-   IMPACT IMAGE GALLERY
+   IMPACT IMAGE SLIDESHOW
    ========================================= */
-.impact-gallery {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.impact-gallery-main {
+.impact-slideshow {
     position: relative;
     overflow: hidden;
-    aspect-ratio: 4/3;
+    aspect-ratio: 4/5;
+    border: 1px solid var(--border);
 }
 
-.impact-gallery-main img {
+.impact-slideshow-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+}
+
+.impact-slideshow-slide.active {
+    opacity: 1;
+}
+
+.impact-slideshow-slide img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: grayscale(30%);
+    filter: grayscale(20%);
     transition: filter 0.6s ease;
 }
 
-.impact-gallery-main:hover img {
+.impact-slideshow-slide.active img {
     filter: grayscale(0%);
 }
 
-.impact-gallery-main::before {
-    content: '';
+.impact-slideshow-dots {
     position: absolute;
-    inset: 0;
-    border: 1px solid var(--border);
-    z-index: 2;
-    pointer-events: none;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.4rem;
+    z-index: 3;
 }
 
-.impact-gallery-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
+.impact-slideshow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    transition: background 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
 }
 
-.impact-gallery-thumb {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 1/1;
-}
-
-.impact-gallery-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(30%);
-    transition: filter 0.6s ease, transform 0.6s ease;
-}
-
-.impact-gallery-thumb:hover img {
-    filter: grayscale(0%);
-    transform: scale(1.04);
-}
-
-.impact-gallery-thumb::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border: 1px solid var(--border);
-    z-index: 2;
-    pointer-events: none;
+.impact-slideshow-dot.active {
+    background: var(--accent);
+    transform: scale(1.3);
 }
 
 /* =========================================
@@ -1877,21 +1864,24 @@ img {
         <h2 class="headline headline-md reveal" style="margin-bottom: clamp(3rem, 6vh, 6rem); max-width: 600px;">社会责任与公益愿景</h2>
 
         <div class="impact-grid">
-            <div class="impact-gallery">
-                <div class="impact-gallery-main img-reveal">
-                    <img src="images/impact1.jpg" alt="百万慈善基金" class="parallax-img"/>
-                    <div class="impact-stat">
-                        <div class="impact-stat-number">1,000,000+</div>
-                        <div class="impact-stat-label">MYR Donated</div>
-                    </div>
+            <div class="impact-slideshow img-reveal" id="impactSlideshow">
+                <div class="impact-slideshow-slide active">
+                    <img src="images/impact1.jpg" alt="百万慈善基金"/>
                 </div>
-                <div class="impact-gallery-row">
-                    <div class="impact-gallery-thumb img-reveal">
-                        <img src="images/impact2.jpg" alt="NEWGEN Johor Education Fund"/>
-                    </div>
-                    <div class="impact-gallery-thumb img-reveal">
-                        <img src="images/impact3.jpg" alt="Dr. Kervis Soo at XYG Event"/>
-                    </div>
+                <div class="impact-slideshow-slide">
+                    <img src="images/impact2.jpg" alt="NEWGEN Johor Education Fund"/>
+                </div>
+                <div class="impact-slideshow-slide">
+                    <img src="images/impact3.jpg" alt="Dr. Kervis Soo at XYG Event"/>
+                </div>
+                <div class="impact-stat">
+                    <div class="impact-stat-number">1,000,000+</div>
+                    <div class="impact-stat-label">MYR Donated</div>
+                </div>
+                <div class="impact-slideshow-dots">
+                    <div class="impact-slideshow-dot active"></div>
+                    <div class="impact-slideshow-dot"></div>
+                    <div class="impact-slideshow-dot"></div>
                 </div>
             </div>
 
@@ -2454,6 +2444,22 @@ img {
     }
 
     // -- Section divider lines grow --
+    // Impact image slideshow
+    (function() {
+        const slides = document.querySelectorAll('#impactSlideshow .impact-slideshow-slide');
+        const dots = document.querySelectorAll('#impactSlideshow .impact-slideshow-dot');
+        let current = 0;
+        function goTo(index) {
+            slides[current].classList.remove('active');
+            dots[current].classList.remove('active');
+            current = index;
+            slides[current].classList.add('active');
+            dots[current].classList.add('active');
+        }
+        dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+        setInterval(() => goTo((current + 1) % slides.length), 4000);
+    })();
+
     gsap.utils.toArray('.section-line').forEach(line => {
         gsap.to(line, {
             width: '100%',
