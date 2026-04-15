@@ -748,7 +748,7 @@ img {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: clamp(3rem, 6vw, 8rem);
-    align-items: start;
+    align-items: stretch;
 }
 
 .impact-image-wrapper {
@@ -842,7 +842,8 @@ img {
 .impact-slideshow {
     position: relative;
     overflow: hidden;
-    aspect-ratio: 4/5;
+    min-height: 300px;
+    height: 100%;
     border: 1px solid var(--border);
 }
 
