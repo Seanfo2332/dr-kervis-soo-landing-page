@@ -350,6 +350,7 @@
         if (progress >= 1) {
             warpFlash.classList.add('active');
             setTimeout(() => {
+                sessionStorage.setItem('allowLandingAccess', '1');
                 window.location.href = 'landing.html';
             }, 350);
             return;

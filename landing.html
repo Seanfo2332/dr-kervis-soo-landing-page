@@ -1982,6 +1982,12 @@ img {
 (function() {
     'use strict';
 
+    // Prevent direct access to landing page without entering from splash screen.
+    if (sessionStorage.getItem('allowLandingAccess') !== '1') {
+        window.location.replace('index.html');
+        return;
+    }
+
     // =============================================
     // LENIS SMOOTH SCROLL
     // =============================================
