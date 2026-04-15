@@ -503,6 +503,33 @@ img {
    ========================================= */
 .timeline {
     background: var(--bg-dark);
+    position: relative;
+    overflow: hidden;
+}
+
+.timeline-video-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.timeline-video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.timeline-video-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 20, 20, 0.82);
+}
+
+.timeline .container {
+    position: relative;
+    z-index: 1;
 }
 
 .timeline-header {
@@ -807,24 +834,6 @@ img {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-top: 0.3rem;
-}
-
-/* =========================================
-   TIMELINE VIDEO
-   ========================================= */
-.timeline-video-feature {
-    width: 100%;
-    margin-bottom: clamp(3rem, 6vh, 6rem);
-    position: relative;
-    overflow: hidden;
-    border: 1px solid var(--border);
-}
-
-.timeline-video-feature video {
-    width: 100%;
-    display: block;
-    max-height: 500px;
-    object-fit: cover;
 }
 
 /* =========================================
@@ -1727,16 +1736,15 @@ img {
 
 <!-- =================== TIMELINE =================== -->
 <section class="timeline section-padding" id="journey">
+    <div class="timeline-video-bg">
+        <video autoplay muted loop playsinline>
+            <source src="images/career.mp4" type="video/mp4">
+        </video>
+    </div>
     <div class="container">
         <div class="timeline-header">
             <div class="label reveal" style="margin-bottom: 2rem;">Journey</div>
             <h2 class="headline headline-md reveal">Education & Career</h2>
-        </div>
-
-        <div class="timeline-video-feature reveal">
-            <video autoplay muted loop playsinline>
-                <source src="images/career.mp4" type="video/mp4">
-            </video>
         </div>
 
         <div class="timeline-items">
