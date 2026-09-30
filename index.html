@@ -192,7 +192,7 @@
     <div class="title fade-in">Dr. Kervis Soo</div>
     <div class="subtitle fade-in">苏才育博士 — AI 应用专家与数字经济愿景家</div>
     <div class="subtitle fade-in" style="margin-top:-32px; font-size:clamp(14px,2vw,18px); color:rgba(255,255,255,0.35); letter-spacing:3px;">以科技驱动创新，让数字连接全球</div>
-    <a href="#" id="enter-btn" class="enter-btn fade-in">Enter</a>
+    <a href="/landing.html" id="enter-btn" class="enter-btn fade-in">Enter</a>
 </div>
 
 <!-- Bottom hint -->
@@ -202,6 +202,12 @@
 </div>
 
 <!-- 3D Earth Scene -->
+<script>
+    // Keep the real link usable when the optional 3D library cannot load.
+    document.getElementById('enter-btn').addEventListener('click', () => {
+        try { sessionStorage.setItem('allowLandingAccess', '1'); } catch (error) {}
+    });
+</script>
 <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -350,7 +356,7 @@
         if (progress >= 1) {
             warpFlash.classList.add('active');
             setTimeout(() => {
-                sessionStorage.setItem('allowLandingAccess', '1');
+                try { sessionStorage.setItem('allowLandingAccess', '1'); } catch (error) {}
                 window.location.href = 'landing.html';
             }, 350);
             return;

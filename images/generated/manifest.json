@@ -1,0 +1,29 @@
+{
+  "business-city": {
+    "provider": "Kie.ai",
+    "model": "nano-banana-pro",
+    "taskId": "4f75784645be35394b91a5869e8e3d08",
+    "prompt": "Photographic architectural editorial for an entrepreneur website. A beautifully composed contemporary Southeast Asian city business district, viewed from an elevated quiet terrace with tropical planting. Restrained modern glass towers and pale concrete architecture, blue grey windows, soft bright morning sky, subtle warm sun. Strong horizontal composition with architectural depth, natural atmosphere, sophisticated business magazine photography, realistic materials, no dramatic effects, no oversaturation. Clean white and slate blue palette. No people, no logos, no words, no graphics or UI. This is a conceptual editorial image, not documentation of a particular office.",
+    "purpose": "Conceptual editorial illustration",
+    "output": "business-city.jpg",
+    "creditsConsumed": 18.0
+  },
+  "ai-perspective": {
+    "provider": "Kie.ai",
+    "model": "nano-banana-pro",
+    "taskId": "b5bb086314af79074f2c65b3c9c301ad",
+    "prompt": "A refined photographic editorial still life about artificial intelligence and human creativity. One sculptural precision-machined brushed aluminium folded ribbon resting on a cool white stone table, with a single deep navy glass panel behind it. Soft directional daylight, delicate real shadows, tactile material detail, extremely restrained and sophisticated composition for an architectural design magazine. Asymmetrical arrangement, quiet white negative space, natural reflections, no glowing effects, no neon, no robot, no brain, no text, no logos, no infographics, no UI. Premium studio photography, silver, white and deep blue.",
+    "purpose": "Conceptual editorial illustration",
+    "output": "ai-perspective.jpg",
+    "creditsConsumed": 18.0
+  },
+  "creator-studio": {
+    "provider": "Kie.ai",
+    "model": "nano-banana-pro",
+    "taskId": "98b71698d267f17cecfe0c6f94339fa8",
+    "prompt": "Editorial photographic image for a sophisticated creator economy article. An unbranded professional cinema camera in the foreground of a quiet contemporary content studio, a subtle large softbox and folded navy backdrop in the distance, bright natural window light, pale grey wall, soft shadows, careful cinematic composition, real tactile equipment and clean purposeful workspace. The camera fills the right half with generous calm space at left. Muted blue, silver and cool white. No people, no text, no logos, no watermark, no exaggerated color grade. Not a photograph of a named company, a conceptual creative-work image.",
+    "purpose": "Conceptual editorial illustration",
+    "output": "creator-studio.jpg",
+    "creditsConsumed": 18.0
+  }
+}
