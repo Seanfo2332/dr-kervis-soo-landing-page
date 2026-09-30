@@ -1,0 +1,264 @@
+/* Design tokens, reset and typography. Navy / white / warm gold. */
+@font-face {
+  font-family: "Inter Tight";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/assets/fonts/inter-tight-latin.woff2") format("woff2");
+}
+
+:root {
+  --navy: #102638;
+  --navy-deep: #081824;
+  --navy-lift: #173a56;
+  --paper: #fff;
+  --sand: #f3f0e9;
+  --ink: #14263a;
+  --muted: #566372;
+  --line: #dfe2e4;
+  --gold: #d4af6a;
+  --gold-bright: #e7cb8f;
+  --gold-ink: #8a6420;
+
+  /* Surface-aware colours: light by default, swapped inside .on-navy. */
+  --fg: var(--ink);
+  --fg-muted: var(--muted);
+  --rule: var(--line);
+  --accent: var(--gold-ink);
+
+  --font: "Inter Tight", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+  --gutter: clamp(20px, 4.4vw, 72px);
+  --wrap: 1360px;
+  --radius: 28px;
+  --radius-sm: 16px;
+  --pill: 999px;
+  --ease: cubic-bezier(0.22, 0.7, 0.2, 1);
+  --header-h: 76px;
+  --pill-nav-space: 104px;
+}
+/* Keep the focus ring visible on the dark chrome (gold, not gold-ink). */
+.site-header,
+.pill-nav,
+.mobile-menu {
+  --accent: var(--gold);
+}
+
+.on-navy {
+  --fg: #fff;
+  --fg-muted: rgba(255, 255, 255, 0.66);
+  --rule: rgba(255, 255, 255, 0.16);
+  --accent: var(--gold);
+  background: var(--navy);
+  color: var(--fg);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
+  scroll-padding-bottom: var(--pill-nav-space);
+  background: var(--navy-deep);
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 16px/1.8 var(--font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+body.menu-open {
+  overflow: hidden;
+}
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+h1,
+h2,
+h3 {
+  line-height: 1.3;
+  font-weight: 500;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+  color: inherit;
+}
+img,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+[hidden] {
+  display: none !important;
+}
+::selection {
+  color: var(--navy);
+  background: var(--gold);
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Layout primitives */
+.wrap {
+  width: calc(100% - var(--gutter) * 2);
+  max-width: var(--wrap);
+  margin-inline: auto;
+}
+.section {
+  padding-block: clamp(72px, 9vw, 140px);
+}
+.bg-sand {
+  background: var(--sand);
+}
+
+/* Typography. Chinese is never negatively tracked; Latin display type is. */
+.title {
+  font-size: clamp(30px, 3.7vw, 58px);
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.005em;
+  text-wrap: balance;
+}
+.english-title {
+  font-size: clamp(44px, 6vw, 92px);
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+.lead {
+  font-size: clamp(19px, 1.7vw, 25px);
+  line-height: 1.7;
+  font-weight: 450;
+}
+.body-copy {
+  font-size: 16px;
+  line-height: 1.95;
+  color: var(--fg-muted);
+}
+.small {
+  font-size: 13px;
+}
+.serif {
+  font-family: var(--font);
+}
+.eyebrow,
+.section-label {
+  display: block;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.7;
+}
+.section-label {
+  margin-bottom: 26px;
+}
+.photo-caption {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--fg-muted);
+  padding-top: 12px;
+}
+
+/* Motion: a small, refined reveal. Disabled for reduced-motion visitors. */
+.js-motion .reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s var(--ease);
+}
+.js-motion .reveal.in-view {
+  opacity: 1;
+  transform: none;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 680px) {
+  :root {
+    --header-h: 64px;
+    --pill-nav-space: 96px;
+  }
+  .body-copy {
+    font-size: 15px;
+  }
+  .section-label {
+    margin-bottom: 20px;
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .js-motion .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

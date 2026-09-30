@@ -1,19 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dr. Kervis Soo | 苏才育博士</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <meta name="description" content="Dr Kervis Soo 苏才育博士个人官方网站入口。星域集团创办人兼董事长，关注 AI 应用、数字经济与社会贡献。">
+    <meta name="theme-color" content="#081824">
+    <link rel="canonical" href="https://drkervis.com/">
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+    <link rel="preload" href="/assets/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin>
     <style>
+        @font-face {
+            font-family: 'Inter Tight';
+            font-style: normal;
+            font-weight: 100 900;
+            font-display: swap;
+            src: url('/assets/fonts/inter-tight-latin.woff2') format('woff2');
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             overflow: hidden;
-            background: #000;
-            font-family: 'Space Grotesk', sans-serif;
+            background: #081824;
+            font-family: 'Inter Tight', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
             color: #e2e2e2;
         }
+
+        /* The 3D canvas is rendered on black; screen-blending lets the navy page show through. */
+        canvas { display: block; mix-blend-mode: screen; }
 
         /* Overlay content */
         #overlay {
@@ -38,7 +51,7 @@
             border-radius: 9999px;
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
-            color: #00f3ff;
+            color: #d4af6a;
             font-size: 12px;
             letter-spacing: 3px;
             text-transform: uppercase;
@@ -54,7 +67,7 @@
             position: absolute;
             inset: 0;
             border-radius: 50%;
-            background: #00f3ff;
+            background: #d4af6a;
             animation: ping 1.5s cubic-bezier(0,0,0.2,1) infinite;
             opacity: 0.75;
         }
@@ -64,7 +77,7 @@
             display: block;
             width: 8px; height: 8px;
             border-radius: 50%;
-            background: #00f3ff;
+            background: #d4af6a;
         }
         @keyframes ping {
             75%, 100% { transform: scale(2); opacity: 0; }
@@ -73,15 +86,15 @@
         /* Title */
         .title {
             font-size: clamp(36px, 8vw, 96px);
-            font-weight: 700;
-            letter-spacing: -2px;
+            font-weight: 500;
+            letter-spacing: -0.05em;
             text-align: center;
             margin-bottom: 16px;
-            text-shadow: 0 0 60px rgba(0,243,255,0.3);
+            text-shadow: 0 0 60px rgba(212,175,106,0.3);
             padding: 0 16px;
         }
         .subtitle {
-            font-family: 'Manrope', sans-serif;
+            font-family: 'Inter Tight', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
             font-size: clamp(14px, 2.5vw, 24px);
             color: rgba(255,255,255,0.5);
             font-weight: 300;
@@ -94,22 +107,22 @@
         /* Enter button */
         .enter-btn {
             display: inline-block;
-            padding: 14px 40px;
-            background: linear-gradient(135deg, #00f3ff, #34ff8d);
-            color: #000;
-            font-family: 'Space Grotesk', sans-serif;
+            padding: 16px 44px;
+            background: #d4af6a;
+            color: #102638;
+            font-family: 'Inter Tight', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
             font-size: 14px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
             text-decoration: none;
-            border-radius: 12px;
+            border-radius: 999px;
             transition: all 0.3s ease;
-            box-shadow: 0 0 40px rgba(0,243,255,0.3);
+            box-shadow: 0 0 40px rgba(212,175,106,0.3);
         }
         .enter-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 60px rgba(0,243,255,0.5);
+            box-shadow: 0 0 60px rgba(212,175,106,0.5);
         }
 
         /* Scroll hint at bottom */
@@ -131,9 +144,10 @@
             letter-spacing: 3px;
             text-transform: uppercase;
         }
-        .scroll-hint .material-symbols-outlined {
+        .scroll-hint .scroll-arrow {
             color: rgba(255,255,255,0.3);
-            font-size: 28px;
+            font-size: 22px;
+            letter-spacing: 0;
         }
         @keyframes bounce {
             0%, 100% { transform: translateX(-50%) translateY(0); }
@@ -189,7 +203,7 @@
 <div id="warp-flash"></div>
 <!-- Overlay Content -->
 <div id="overlay">
-    <div class="title fade-in">Dr. Kervis Soo</div>
+    <h1 class="title fade-in">Dr. Kervis Soo</h1>
     <div class="subtitle fade-in">苏才育博士 — AI 应用专家与数字经济愿景家</div>
     <div class="subtitle fade-in" style="margin-top:-32px; font-size:clamp(14px,2vw,18px); color:rgba(255,255,255,0.35); letter-spacing:3px;">以科技驱动创新，让数字连接全球</div>
     <a href="/landing.html" id="enter-btn" class="enter-btn fade-in">Enter</a>
@@ -198,16 +212,10 @@
 <!-- Bottom hint -->
 <div class="scroll-hint">
     <span>Explore the Universe</span>
-    <span class="material-symbols-outlined">expand_more</span>
+    <span class="scroll-arrow" aria-hidden="true">↓</span>
 </div>
 
 <!-- 3D Earth Scene -->
-<script>
-    // Keep the real link usable when the optional 3D library cannot load.
-    document.getElementById('enter-btn').addEventListener('click', () => {
-        try { sessionStorage.setItem('allowLandingAccess', '1'); } catch (error) {}
-    });
-</script>
 <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -356,7 +364,6 @@
         if (progress >= 1) {
             warpFlash.classList.add('active');
             setTimeout(() => {
-                try { sessionStorage.setItem('allowLandingAccess', '1'); } catch (error) {}
                 window.location.href = 'landing.html';
             }, 350);
             return;

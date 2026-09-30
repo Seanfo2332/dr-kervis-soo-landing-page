@@ -94,9 +94,6 @@ class PreviewHandler(SimpleHTTPRequestHandler):
             # Capture the version before reading so a concurrent edit reloads again.
             version = preview_version()
             content = path.read_text(encoding='utf-8')
-            if direct_preview:
-                access = "<script>try{sessionStorage.setItem('allowLandingAccess','1');}catch(error){}</script>"
-                content = content.replace('<head>', '<head>' + access, 1)
             content = content.replace('</body>', live_reload_script(version) + '</body>', 1)
             return self.bytes_response(content.encode('utf-8'), 'text/html; charset=utf-8')
 

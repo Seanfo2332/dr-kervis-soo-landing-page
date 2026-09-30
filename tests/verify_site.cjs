@@ -15,14 +15,82 @@ const root = path.resolve(__dirname, '..');
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
 
-    // A fresh session retains the animated entrance and its working Enter action.
+    // The homepage opens directly (no redirect gate); the entrance at / still leads into it.
     await page.goto(`${BASE}/landing.html`);
-    await page.waitForURL(`${BASE}/`);
+    assert.equal(new URL(page.url()).pathname, '/landing.html', 'landing.html must not redirect a fresh visitor');
+    await page.locator('#hero-title').waitFor();
+    assert.match(await page.locator('h1').innerText(), /Dr\s+Kervis/);
+    await page.goto(`${BASE}/`);
     await page.locator('#enter-btn').click();
     await page.waitForURL(`${BASE}/landing.html`, { timeout: 15000 });
     await page.locator('#hero-title').waitFor();
-    assert.match(await page.locator('h1').innerText(), /Dr Kervis/);
-    console.log('PASS: fresh-session entrance → homepage');
+    console.log('PASS: homepage opens directly and the entrance Enter button leads into it');
+
+    // Hero: layered cut-out portrait, PDF wording and buttons.
+    await page.goto(`${BASE}/landing.html`);
+    const cutout = page.locator('.hero-cutout');
+    await cutout.waitFor();
+    assert.ok(await cutout.evaluate(img => img.complete && img.naturalWidth > 0), 'hero cut-out loads');
+    assert.match(await page.locator('.hero').innerText(), /ENTREPRENEUR · AI & DIGITAL ECONOMY ADVOCATE · PHILANTHROPIST/i);
+    assert.match(await page.locator('.hero').innerText(), /Building businesses\. Empowering people\. Creating impact\./);
+    assert.match(await page.locator('.hero a[href="/story/"]').innerText(), /Discover His Journey/);
+    assert.match(await page.locator('.hero a[href="/business/"]').innerText(), /Explore His Work/);
+    assert.match(await page.locator('.closing h2').innerText(), /Let.s Create a Better Tomorrow/);
+    assert.equal(await page.locator('.photo-pill').count(), 1, 'one photo pill');
+    assert.equal(await page.locator('.photo-pill img:not([aria-hidden])').count() > 0, true, 'photo pill has real images');
+    console.log('PASS: hero cut-out, PDF wording, buttons, photo pill');
+
+    // Navigation: floating pill with four primary links + Menu; overlay lists all eight pages.
+    const pillLinks = await page.locator('.pill-nav a').evaluateAll(links => links.map(link => link.getAttribute('href')));
+    assert.deepEqual(pillLinks, ['/dr-kervis-soo/', '/story/', '/business/', '/insights/']);
+    assert.equal(await page.locator('.pill-nav .menu-toggle').count(), 1);
+    assert.equal(await page.locator('.site-footer a[href="/speaking/"]').count(), 1, 'Speaking is linked from the footer');
+    const overlayLinks = await page.locator('.mobile-menu a[href^="/"]').evaluateAll(links => links.map(link => link.getAttribute('href')));
+    for (const href of ['/dr-kervis-soo/', '/story/', '/business/', '/insights/', '/social-impact/', '/media/', '/speaking/', '/contact/']) {
+      assert.ok(overlayLinks.includes(href), `overlay menu links to ${href}`);
+    }
+    await page.locator('.menu-toggle').click();
+    assert.equal(await page.locator('.mobile-menu').isVisible(), true, 'menu opens on desktop too');
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('.mobile-menu').isVisible(), false);
+    console.log('PASS: floating pill navigation and full-screen menu overlay');
+
+    // Placeholders are explicit, labelled and machine-findable; the doubtful clip is gone.
+    const placeholders = await page.context().request.get(`${BASE}/speaking/zocco-group-opening/`);
+    const speakingHtml = await placeholders.text();
+    assert.ok(!speakingHtml.includes('career.mp4'), 'career.mp4 must not be referenced');
+    assert.ok(speakingHtml.includes('data-placeholder="video"'), 'speaking opening page has a video placeholder');
+    await page.goto(`${BASE}/media/`);
+    assert.ok(await page.locator('[data-placeholder]').count() > 0, 'media rows carry placeholders');
+    for (const text of await page.locator('[data-placeholder]').allInnerTexts()) assert.ok(text.trim().length > 0, 'placeholder has a visible label');
+    console.log('PASS: placeholders labelled, video placeholder in place of career.mp4');
+
+    // Self-hosted type: no Google Fonts request from the entrance or the homepage.
+    const fontRequests = [];
+    page.on('request', request => { if (/fonts\.(googleapis|gstatic)\.com/.test(request.url())) fontRequests.push(request.url()); });
+    await page.goto(`${BASE}/`);
+    await page.goto(`${BASE}/landing.html`);
+    assert.deepEqual(fontRequests, [], 'fonts must be self-hosted');
+    await page.evaluate(() => document.fonts.ready);
+    assert.equal(await page.evaluate(() => [...document.fonts].some(face => face.family.replace(/"/g, '') === 'Inter Tight' && face.status === 'loaded')), true, 'Inter Tight loaded');
+    console.log('PASS: self-hosted Inter Tight, no Google Fonts requests');
+
+    // Reduced motion switches the photo pill animation off.
+    assert.equal(await page.locator('.photo-pill-track').evaluate(track => getComputedStyle(track).animationName), 'none');
+    console.log('PASS: reduced motion disables the photo pill animation');
+
+    // Normal-motion path (the main context above runs with reduced motion): reveals fire and the portrait drifts.
+    const motionContext = await browser.newContext({ baseURL: BASE, viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
+    const motionPage = await motionContext.newPage();
+    await motionPage.goto(`${BASE}/landing.html`);
+    assert.equal(await motionPage.evaluate(() => document.documentElement.classList.contains('js-motion')), true);
+    await motionPage.locator('.business-section .reveal').first().scrollIntoViewIfNeeded();
+    await motionPage.waitForFunction(() => document.querySelector('.business-section .reveal.in-view'));
+    await motionPage.evaluate(() => scrollTo(0, 300));
+    await motionPage.waitForFunction(() => document.querySelector('.hero-cutout').style.getPropertyValue('--hero-shift') === '36.0px');
+    assert.match(await motionPage.locator('.site-footer').innerText(), new RegExp(String(new Date().getFullYear())), 'footer shows the current year');
+    await motionContext.close();
+    console.log('PASS: normal-motion reveals, hero parallax and current-year footer');
 
     // Check every generated page, local asset and link, metadata and schema.
     const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');

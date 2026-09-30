@@ -1,12 +1,26 @@
 (() => {
   'use strict';
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const header = document.querySelector('.site-header');
   const progress = document.querySelector('.progress');
+  const hero = document.querySelector('.hero');
+  const cutout = hero?.querySelector('.hero-cutout');
+  const PARALLAX_RATE = 0.12;
+  let heroHeight = hero ? hero.offsetHeight : 0;
   let scheduled = false;
+
+  document.querySelectorAll('[data-year]').forEach(element => { element.textContent = String(new Date().getFullYear()); });
+  // Cache the hero height so scrolling never forces a layout read.
+  window.addEventListener('resize', () => { heroHeight = hero ? hero.offsetHeight : 0; }, { passive: true });
+
   function updateScroll() {
     header?.classList.toggle('scrolled', window.scrollY > 30);
     const distance = document.documentElement.scrollHeight - window.innerHeight;
     if (progress) progress.style.transform = `scaleX(${distance > 0 ? Math.min(window.scrollY / distance, 1) : 0})`;
+    if (cutout && !reduced.matches) {
+      const travelled = Math.min(window.scrollY, heroHeight);
+      cutout.style.setProperty('--hero-shift', `${(travelled * PARALLAX_RATE).toFixed(1)}px`);
+    }
     scheduled = false;
   }
   window.addEventListener('scroll', () => {
@@ -14,16 +28,16 @@
   }, { passive: true });
   updateScroll();
 
+  // Full-screen menu, opened from the floating pill on every screen size.
   const toggle = document.querySelector('.menu-toggle');
   const menu = document.querySelector('.mobile-menu');
+  const inertWhileOpen = ['main', '.site-footer', '.site-header', '.skip-link'];
   function setMenu(open) {
     if (!menu || !toggle) return;
     menu.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? '关闭导航 / Close menu' : '打开导航 / Open menu');
     document.body.classList.toggle('menu-open', open);
-    document.querySelector('main')?.toggleAttribute('inert', open);
-    document.querySelector('.site-footer')?.toggleAttribute('inert', open);
+    inertWhileOpen.forEach(selector => document.querySelector(selector)?.toggleAttribute('inert', open));
     if (open) menu.querySelector('a')?.focus();
     else toggle.focus({ preventScroll: true });
   }
@@ -39,10 +53,7 @@
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }
   });
-  const desktop = matchMedia('(min-width: 961px)');
-  desktop.addEventListener('change', () => { if (desktop.matches && menu && !menu.hidden) setMenu(false); });
 
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   if ('IntersectionObserver' in window && !reduced.matches) {
     document.documentElement.classList.add('js-motion');
     const observer = new IntersectionObserver(entries => {
@@ -60,12 +71,14 @@
     const items = [...list.querySelectorAll('[data-category]')];
     const summary = list.querySelector('.filter-summary');
     const empty = list.querySelector('.no-results');
+    // Search only real content, never the labels of placeholder slots.
+    const searchText = new Map(items.map(item => [item, [...item.children].filter(child => !child.hasAttribute('data-placeholder')).map(child => child.textContent).join(' ').toLocaleLowerCase()]));
     let category = 'all';
     function applyFilters() {
       const term = (search?.value || '').trim().toLocaleLowerCase();
       let count = 0;
       items.forEach(item => {
-        const match = (category === 'all' || item.dataset.category.split(' ').includes(category)) && item.textContent.toLocaleLowerCase().includes(term);
+        const match = (category === 'all' || item.dataset.category.split(' ').includes(category)) && searchText.get(item).includes(term);
         item.hidden = !match;
         if (match) { count++; item.classList.add('in-view'); }
       });
