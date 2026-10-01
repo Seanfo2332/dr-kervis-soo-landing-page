@@ -8,7 +8,10 @@ from pathlib import Path
 from datetime import date
 from html import escape
 import json
+from event_layout import EVENT_ID, EVENT_NAME, EVENT_PATH, OG_IMAGE, appearance_cards, event_schema, event_sections
 from home_layout import render_home
+from press_data import ARTICLES as COVERAGE
+from press_layout import coverage_rows, filter_groups, sort_by_date, type_legend
 
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = 'https://drkervis.com'
@@ -27,6 +30,7 @@ NAV = [('About', '人物简介', '/dr-kervis-soo/'), ('His Journey', '来时路'
        ('Business', '事业版图', '/business/'), ('Insights', 'AI 与观点', '/insights/'),
        ('Impact', '社会贡献', '/social-impact/'), ('Media', '媒体记录', '/media/'),
        ('Speaking', '演讲与活动', '/speaking/')]
+ARCHIVE_SIZES = '(max-width: 680px) calc(100vw - 48px), (max-width: 960px) 46vw, 410px'
 PILL = [('About', '/dr-kervis-soo/'), ('Journey', '/story/'), ('Business', '/business/'), ('Insights', '/insights/')]
 CSS_SOURCES = ROOT / 'scripts' / 'css'
 PERSON = {
@@ -56,8 +60,7 @@ def placeholder(kind, label, cls='', poster=''):
     mark = '▶' if kind == 'video' else '+'
     safe_label = escape(label, quote=True)
     backdrop = f'<img src="/images/{poster}" alt="" width="810" height="540" loading="lazy" decoding="async">' if poster else ''
-    access = 'aria-hidden="true"' if kind == 'thumbnail' else f'role="img" aria-label="{safe_label}"'
-    return f'<div class="placeholder {cls}" data-placeholder="{kind}" {access}>{backdrop}<span class="placeholder-mark" aria-hidden="true">{mark}</span><span class="placeholder-label">{safe_label}</span></div>'
+    return f'<div class="placeholder {cls}" data-placeholder="{kind}" role="img" aria-label="{safe_label}">{backdrop}<span class="placeholder-mark" aria-hidden="true">{mark}</span><span class="placeholder-label">{safe_label}</span></div>'
 
 
 def build_stylesheet():
@@ -68,10 +71,13 @@ def build_stylesheet():
     (ROOT / 'assets' / 'site.css').write_text(css, encoding='utf-8')
 
 
-def image(name, alt, cls='', eager=False):
-    sizes = {'hero.jpg': (1200, 800), 'about.png': (1200, 800), 'impact1.jpg': (1920, 1280), 'impact2.jpg': (1080, 891), 'impact3.jpg': (810, 540)}
-    sizes.update({'generated/business-city.webp': (1600, 1073), 'generated/ai-perspective.webp': (1400, 939), 'generated/creator-studio.webp': (1400, 939)})
-    w, h = sizes[name]
+def image(name, alt, cls='', eager=False, sizes=None):
+    """<img> with a 640px srcset variant for .webp files; `sizes` describes the slot (default: article width)."""
+    dimensions = {'hero.jpg': (1200, 800), 'about.png': (1200, 800), 'impact1.jpg': (1920, 1280), 'impact2.jpg': (1080, 891), 'impact3.jpg': (810, 540)}
+    dimensions.update({'generated/business-city.webp': (1600, 1073), 'generated/ai-perspective.webp': (1400, 939), 'generated/creator-studio.webp': (1400, 939)})
+    dimensions.update({f'events/{name}.webp': (1800, 1200) for name in ('gala-podium', 'gala-degree', 'gala-birthday', 'vybe-event')})
+    dimensions['events/csr-portrait.webp'] = (1200, 1800)
+    w, h = dimensions[name]
     load = 'fetchpriority="high"' if eager else 'loading="lazy"'
     source = {'about.png': 'about.webp', 'impact1.jpg': 'impact1.webp'}.get(name, name)
     responsive = ''
@@ -80,7 +86,8 @@ def image(name, alt, cls='', eager=False):
             w, h = 1200, 800
         small = source.removesuffix('.webp') + '-640.webp'
         desktop = 'min(1296px, 91vw)' if 'business-city' in source else 'min(790px, 55vw)'
-        responsive = f' srcset="/images/{small} 640w, /images/{source} {w}w" sizes="(max-width: 680px) calc(100vw - 48px), {desktop}"'
+        slot = sizes or f'(max-width: 680px) calc(100vw - 48px), {desktop}'
+        responsive = f' srcset="/images/{small} 640w, /images/{source} {w}w" sizes="{slot}"'
     return f'<img src="/images/{source}"{responsive} alt="{escape(alt)}" width="{w}" height="{h}" class="{cls}" {load} decoding="async">'
 
 
@@ -118,7 +125,7 @@ def closing():
     return f'''<section class="closing on-navy"><div class="wrap"><div class="reveal"><h2>Let’s Create a <em>Better Tomorrow</em></h2><p>商业合作 · 媒体采访 · 演讲邀请 · 公益交流</p></div>{link('Get In Touch<small>联系 Dr Kervis 团队</small>', '/contact/', True)}</div></section>'''
 
 
-def write_page(path, title, description, body, active='', home=False, extra_schema=None):
+def write_page(path, title, description, body, active='', home=False, extra_schema=None, og_image='/images/hero.jpg'):
     canonical = DOMAIN + path
     schema = {'@context': 'https://schema.org', '@graph': [PERSON, {
         '@type': 'WebSite', '@id': DOMAIN + '/#website', 'name': 'Dr Kervis Soo 官方网站', 'url': DOMAIN + '/', 'inLanguage': 'zh-CN', 'about': {'@id': PERSON['@id']}
@@ -131,13 +138,14 @@ def write_page(path, title, description, body, active='', home=False, extra_sche
         schema['@graph'].append({'@type': 'BreadcrumbList', 'itemListElement': [
             {'@type': 'ListItem', 'position': 1, 'name': '首页', 'item': DOMAIN + '/landing.html'},
             {'@type': 'ListItem', 'position': 2, 'name': title, 'item': canonical}]})
-    if extra_schema:
-        schema['@graph'].append(extra_schema)
+    extras = extra_schema if isinstance(extra_schema, list) else ([extra_schema] if extra_schema else [])
+    schema['@graph'].extend(extras)
+    og_type = 'article' if any(item.get('@type') == 'Article' for item in extras) else 'website'
     html = f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{escape(title)} | Dr Kervis Soo 苏才育博士</title><meta name="description" content="{escape(description, quote=True)}">
 <meta name="theme-color" content="#102638"><link rel="canonical" href="{canonical}">
-<meta property="og:type" content="{'article' if extra_schema and extra_schema.get('@type') == 'Article' else 'website'}"><meta property="og:title" content="{escape(title, quote=True)} | Dr Kervis Soo"><meta property="og:description" content="{escape(description, quote=True)}"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{DOMAIN}/images/hero.jpg"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="{og_type}"><meta property="og:title" content="{escape(title, quote=True)} | Dr Kervis Soo"><meta property="og:description" content="{escape(description, quote=True)}"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{DOMAIN}{og_image}"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="preload" href="/assets/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css">
 <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False).replace('</', '<\\/')}</script><script src="/assets/site.js" defer></script>
 </head><body id="top" class="{'home' if home else 'inner-page'}">{header(active)}<main id="main" class="{'home-main' if home else 'page-main'}">{body}</main>{footer()}</body></html>'''
@@ -147,8 +155,8 @@ def write_page(path, title, description, body, active='', home=False, extra_sche
     PAGES.append(path)
 
 
-def intro(en, zh, description, photo=None, article=False):
-    media = image(photo, '苏才育博士人物照片', 'intro-photo', True) if photo else ''
+def intro(en, zh, description, photo=None, article=False, photo_alt='苏才育博士人物照片'):
+    media = image(photo, photo_alt, 'intro-photo', True) if photo else ''
     heading_class = 'latin-title' if not any('\u4e00' <= c <= '\u9fff' for c in zh) else ''
     return f'''<section class="page-intro on-navy {'with-photo' if photo else ''}">{media}<div class="wrap {'article-head' if article else ''}"><nav class="breadcrumbs" aria-label="面包屑"><a href="/landing.html">首页 Home</a><span aria-hidden="true">/</span><span>{zh}</span></nav>{eyebrow(en)}<h1 class="{heading_class}">{zh}</h1><p class="page-subtitle">{en}</p><p class="lead">{description}</p></div></section>'''
 
@@ -174,21 +182,6 @@ BUSINESSES = [
      'sections': [('影视投资', '参与电影《Indera》等影视项目，关注作品内容、受众与传播方式之间的关系，将数字内容领域的经验延伸至电影产业。'), ('制作流程探索', '探索 AI 剧本预审、分镜辅助及虚拟拍摄的应用空间，用数字工具支持创意沟通与制作规划。'), ('数字营销', '结合内容运营与传播经验，思考影视作品如何通过数字平台触达观众，建立从内容制作到传播的连接。')]},
     {'slug': 'brand-business', 'en': 'Brands & Business', 'title': '品牌与跨界商业', 'desc': '从线上影响力走向线下体验，拓展数字商业的边界。', 'intro': '以东南亚市场为基础，把内容、品牌与线下消费场景连接起来，探索跨行业合作的实际价值。',
      'sections': [('线上与线下', '围绕医美、时尚及零售等领域，探索线上娱乐内容与线下品牌体验之间的连接，让流量运营与实际服务相互配合。'), ('品牌交流', '通过星域集团与 AJEndless 的马来西亚品鉴会等合作形式，促进品牌、创作者与消费者之间的交流。'), ('区域发展', '立足东南亚市场，关注不同地区的消费习惯、文化与平台特点，在业务拓展中建立更具本地理解的合作关系。')]},
-]
-
-REFERENCES = [
-    ('Dr Kervis AI Honorary Fellow: A New Era for Zocco Group', 'OnAsiaNews', 'ai'),
-    ('星域集团 Dr.Kervis 苏才育院士冠名赞助马来西亚公益节', 'Tide News', 'impact'),
-    ('星域集团 AI 音乐生态圈开启大马产业商业新高度', 'SG Scope', 'ai'),
-    ('追星还是投资？星域集团 AI 音乐生态圈解析', 'The Insider X', 'ai'),
-    ('Dr Kervis 苏才育——跨界企业家多元版图', '搜狐新闻', 'business'),
-    ('星域集团携手医美品牌打造体验馆', '新浪社区', 'business'),
-    ('星域集团百万慈善基金计划：用数字经济回馈社会', 'Insider News Asia', 'impact'),
-]
-QUOTES = [
-    ('苏才育博士代表了东南亚新一代科技创业者的精神——具备敏锐的技术嗅觉与强烈的社会责任感，致力于将 AI 技术有效转化为数字内容产业和直播运营中的实际生产力。', 'Insider News Asia'),
-    ('在马来西亚数字娱乐产业中，苏才育被视为 MCN 生态的架构师。他不仅是在经营一家公司，更是在构建一套适应 AI 时代的数字内容准则。', '业界观察'),
-    ('林肯大学学院认可其在 AI 产业化方面的实践。他的探索在技术发展、产业实践与社会责任之间建立了联系，为人工智能在商业场景中的应用提供了宝贵的参考案例。', 'Lincoln University College'),
 ]
 
 ARTICLES = [
@@ -223,15 +216,19 @@ def article_image(article):
     return image(name, alt)
 
 
-def reference_rows(items=REFERENCES, thumbs=False):
-    thumb = placeholder('thumbnail', '配图待补充', 'ref-thumb') if thumbs else ''
-    row_class = 'reference-row reference-row--thumb' if thumbs else 'reference-row'
-    return ''.join(f'<article class="{row_class}" data-category="{cat}"><span class="ref-number">{i:02}</span>{thumb}<h3>《{title}》</h3><span class="publication-name">{publication}</span></article>' for i, (title, publication, cat) in enumerate(items, 1))
+def filter_buttons(categories):
+    return ''.join(f'<button type="button" data-filter="{key}" aria-pressed="{"true" if i == 0 else "false"}">{label}</button>' for i, (key, label) in enumerate(categories))
 
 
-def filter_controls(categories, search_hint='搜索记录 / Search records'):
-    buttons = ''.join(f'<button type="button" data-filter="{key}" aria-pressed="{"true" if i == 0 else "false"}">{label}</button>' for i, (key, label) in enumerate(categories))
-    return f'<div class="filter-bar"><div class="filter-buttons" role="group" aria-label="按主题筛选">{buttons}</div><label class="search-label"><span class="sr-only">搜索</span><input type="search" placeholder="{search_hint}" aria-label="{search_hint}"><span aria-hidden="true">⌕</span></label></div><p class="filter-summary" aria-live="polite"></p>'
+def filter_controls(categories, search_hint='搜索记录 / Search records', groups=None):
+    """One group of filter buttons, or several independent groups (a row must match every group)."""
+    if groups is None:
+        controls = f'<div class="filter-buttons" role="group" aria-label="按主题筛选">{filter_buttons(categories)}</div>'
+    else:
+        blocks = ''.join(f'<div class="filter-group" data-filter-group role="group" aria-label="{label}"><span class="filter-label" aria-hidden="true">{label.removeprefix("按").removesuffix("筛选")}</span>'
+                         f'<div class="filter-buttons">{filter_buttons(buttons)}</div></div>' for label, buttons in groups)
+        controls = f'<div class="filter-groups">{blocks}</div>'
+    return f'<div class="filter-bar">{controls}<label class="search-label"><span class="sr-only">搜索</span><input type="search" placeholder="{search_hint}" aria-label="{search_hint}"><span aria-hidden="true">⌕</span></label></div><p class="filter-summary" aria-live="polite"></p>'
 
 
 def no_results():
@@ -239,7 +236,7 @@ def no_results():
 
 
 def home_page():
-    html = render_home(image, link, BIO, BUSINESSES, ARTICLES, insight_item, reference_rows, REFERENCES, closing)
+    html = render_home(image, link, BIO, BUSINESSES, ARTICLES, insight_item, coverage_rows, sort_by_date(COVERAGE), closing)
     write_page('/landing.html', '首页 · Building businesses. Creating impact.', 'Dr Kervis Soo 苏才育博士个人官方网站。了解星域集团创办人的创业历程、AI 与数字经济实践、社会贡献及媒体记录。', html, home=True)
 
 
@@ -327,9 +324,10 @@ def impact_pages():
 
 
 def media_awards_pages():
-    filters = filter_controls([('all', '全部 All'), ('ai', 'AI 与科技'), ('business', '事业与品牌'), ('impact', '社会贡献')])
-    quotes = ''.join(f'<blockquote>「{q}」<cite>— {source}</cite></blockquote>' for q, source in QUOTES)
-    write_page('/media/', '媒体与公众记录', '汇集关于 Dr Kervis Soo、星域集团、AI 应用与社会贡献的媒体报道条目及媒体评价。', intro('Media & public record', '从不同视角，看见实践。', '关于人物、事业、科技与社会贡献的媒体记录。') + page_section(f'<div data-filter-list><h2 class="sr-only">媒体报道 / Coverage</h2>{filters}{reference_rows(thumbs=True)}{no_results()}</div>') + page_section(eyebrow('In their words / 媒体与业界评价') + f'<div class="quote-grid" style="margin-top:35px">{quotes}</div>') + page_section(link('获取人物简介与媒体照片', '/press/')) + closing(), '/media/')
+    filters = filter_controls(None, '搜索报道 / Search coverage', groups=filter_groups())
+    coverage = sort_by_date(COVERAGE)
+    lead = f'关于人物、事业、科技与社会贡献的第三方报道，共 {len(coverage)} 条。每条均已核对并链接到原文，按发布方式标注类型。'
+    write_page('/media/', '媒体与公众记录', '汇集关于 Dr Kervis Soo、星域集团、AI 应用与社会贡献的第三方报道：逐条核对、链接原文，并按发布方式分类。', intro('Media & public record', '从不同视角，看见实践。', lead) + page_section(f'<div class="media-legend">{eyebrow("How to read this list / 类型说明")}{type_legend()}</div><div data-filter-list><h2 class="sr-only">媒体报道 / Coverage</h2>{filters}{coverage_rows(coverage)}{no_results()}</div>') + page_section(link('获取人物简介与媒体照片', '/press/')) + closing(), '/media/')
 
     recognition = '<div class="feature-list"><article class="feature-item">' + eyebrow('Honorary appointment / 荣誉身份') + '<h2>人工智能领域荣誉院士</h2><p>2026 · Lincoln University College<br>林肯大学学院授予的 Honorary Fellow in Artificial Intelligence 荣誉身份。</p>' + link('View recognition record · 查看记录', '/awards/ai-honorary-fellow/') + '</article><article class="feature-item">' + eyebrow('Academic qualification / 学术学历') + '<h2>管理学博士 · DBA</h2><p>2025 · University of Malaya<br>马来亚大学管理学博士。教育背景在人物简介中独立记录。</p>' + link('View education · 教育经历', '/dr-kervis-soo/#education') + '</article></div>'
     write_page('/awards/', '学历与荣誉', '分别了解苏才育博士的学术学历与人工智能领域荣誉身份。', intro('Education & recognition', '学习与实践的印记。', '以清晰的分类，记录学术经历与荣誉身份。') + page_section(recognition) + closing())
@@ -359,7 +357,7 @@ def speaking_press_pages():
         ('Social impact', '企业发展与社会责任', '从教育、青年与社区参与出发，交流企业资源与社会需要之间的连接。'),
     ]
     features = ''.join(f'<article class="feature-item">{eyebrow(en)}<h2>{title}</h2><p>{desc}</p></article>' for en, title, desc in topics)
-    record = f'<div class="impact-layout"><figure>{image("impact3.jpg", "星域集团开幕仪式上，苏才育博士持麦克风发言")}<figcaption class="photo-caption">星域集团开幕仪式 · 现场影像</figcaption></figure><div>{eyebrow("Public appearance")}<h2 class="title" style="margin-top:24px">星域集团开幕仪式</h2><p class="body-copy" style="margin-top:24px">以星域集团创办人兼董事长的身份参与集团开幕活动，分享事业发展与业务方向。</p><div class="actions">{link("View appearance · 查看活动", "/speaking/zocco-group-opening/")}</div></div></div>'
+    record = '<h2 class="sr-only">公开活动记录 / Appearances</h2>' + appearance_cards(image, link)
     write_page('/speaking/', '演讲与公开活动', 'Dr Kervis Soo 的交流主题与公开活动记录。联系 AI、数字经济、创业及社会贡献相关演讲邀请。', intro('Speaking & appearances', '在对话中，打开新的视角。', 'AI 与数字经济、创业与领导力、创作者经济、社会责任。欢迎会议、校园、媒体及行业交流。', 'impact3.jpg') + page_section(f'<div class="feature-list">{features}</div>') + page_section(record) + page_section(link('Invite Dr Kervis · 邀请演讲', '/contact/?type=speaking', True)) + closing(), '/speaking/')
     sections = [('appearance', '公开活动记录', f'<figure>{image("impact3.jpg", "苏才育博士在星域集团开幕仪式上发言")}<figcaption class="photo-caption">活动照片 · 星域集团开幕仪式</figcaption></figure><dl class="facts"><div><dt>活动</dt><dd>星域集团开幕仪式</dd></div><div><dt>出席身份</dt><dd>创办人兼董事长</dd></div></dl><p>活动现场围绕集团及个人事业方向进行介绍，呈现内容、品牌与数字商业之间的连接。</p>'),
                 ('video', '人物与事业影像', '<div class="video-wrap">' + placeholder('video', '视频待补充 · Video coming soon', 'placeholder-video', 'impact3.jpg') + '<p class="photo-caption">人物与事业影像将在取得正式影片后发布。</p></div>'),
@@ -374,7 +372,7 @@ def speaking_press_pages():
     bios_html = ''.join(f'<div class="bio-option"><h3>{label}</h3><p id="bio-{key}">{copy}</p><button class="copy-button" data-copy="bio-{key}" type="button">复制简介 / Copy biography</button><span class="copy-feedback" role="status"></span></div>' for key, label, copy in bios)
     bios_text = '\n\n'.join(label + '\n' + text for key, label, text in bios)
     (ROOT / 'assets' / 'dr-kervis-biographies.txt').write_text(bios_text, encoding='utf-8')
-    downloads = f'<div class="downloads"><div class="download-item">{image("hero.jpg", "苏才育博士正式肖像")}<a href="/images/hero.jpg" download="Dr-Kervis-Soo-portrait.jpg">下载正式肖像 · JPG ↓</a></div><div class="download-item">{image("about.png", "苏才育博士个人肖像")}<a href="/images/about.png" download="Dr-Kervis-Soo-profile.png">下载人物照片 · PNG ↓</a></div></div>'
+    downloads = f'<div class="downloads"><div class="download-item">{image("hero.jpg", "苏才育博士正式肖像")}<a href="/images/hero.jpg" download="Dr-Kervis-Soo-portrait.jpg">下载正式肖像 · JPG ↓</a></div><div class="download-item">{image("about.png", "苏才育博士个人肖像")}<a href="/images/about.png" download="Dr-Kervis-Soo-profile.png">下载人物照片 · PNG ↓</a></div><div class="download-item">{image("events/csr-portrait.webp", "苏才育博士身着米色西装的活动人像")}<a href="/images/events/csr-portrait-press.jpg" download="Dr-Kervis-Soo-event-portrait.jpg">下载活动人像 · JPG ↓</a></div></div>'
     sections = [('names', '姓名与身份', '<dl class="facts"><div><dt>公开姓名</dt><dd>Dr Kervis Soo / 苏才育博士</dd></div><div><dt>英文全名</dt><dd>Kervis Soo Chai Ee</dd></div><div><dt>主要职务</dt><dd>Founder & Chairman, Zocco Group<br>星域集团创办人兼董事长</dd></div><div><dt>媒体联系</dt><dd><a href="mailto:Drkervis@xingyu.global">Drkervis@xingyu.global</a></dd></div></dl>'),
                 ('biographies', '可用人物简介', bios_html + '<div class="actions"><a class="text-link" href="/assets/dr-kervis-biographies.txt" download>下载全部简介 · TXT ↓</a></div>'),
                 ('photos', '人物照片', '<p>用于介绍 Dr Kervis Soo 的采访、活动及人物报道。商业广告、肖像背书或其他用途，请先联系团队确认。</p>' + downloads),
@@ -383,8 +381,16 @@ def speaking_press_pages():
     write_page('/press/', '新闻资料室', '获取 Dr Kervis Soo 苏才育博士的人物简介、正式姓名与职务、媒体照片及采访联系方法。', intro('Press room', '让准确的介绍，从这里开始。', '人物简介、照片、事业资料与媒体联系，供采访与活动介绍使用。') + prose_layout(sections) + closing())
 
 
+def event_page():
+    related = coverage_rows(sort_by_date([article for article in COVERAGE if article.event == EVENT_ID]))
+    description = f'{EVENT_NAME}（2026 年 9 月 16 日，八打灵再也）：VYBE 启动、合作仪式与电影发布的精选影像、现场照片及相关报道。'
+    page_intro = intro('Public appearance · 2026.09.16', '916 星域荣耀盛典', f'{EVENT_NAME} · 八打灵再也 D Theatre, Hextar World', 'events/gala-podium.webp', photo_alt='苏才育博士在星域荣耀盛典上致辞')
+    write_page(EVENT_PATH, '916 星域荣耀盛典', description, page_intro + prose_layout(event_sections(image, link, related)) + closing(), '/speaking/', extra_schema=event_schema(DOMAIN), og_image=OG_IMAGE)
+
+
 def news_archive_pages():
     news = [
+        ('2026.09', '916 星域荣耀盛典', 'VYBE 正式启动、电影发布与多项合作仪式；查看活动影像、现场照片与相关报道。', EVENT_PATH),
         ('2026', 'AI 荣誉院士身份记录', '林肯大学学院授予人工智能领域荣誉院士称号，记录其 AI 实践历程中的节点。', '/awards/ai-honorary-fellow/'),
         ('2025.10', '星域集团慈善基金计划', '以青年创业、数字技能与社区教育为关注方向，连接企业资源与社会需要。', '/social-impact/charitable-foundation/'),
         ('2025', '管理学博士学业记录', '马来亚大学管理学博士，研究关注数字经济背景下的企业转型与 AI 应用。', '/dr-kervis-soo/#education'),
@@ -392,13 +398,18 @@ def news_archive_pages():
     rows = ''.join(f'<a class="news-row" href="{href}"><time>{year}</time><div><h2>{title}</h2><p>{desc}</p></div><span class="arrow" aria-hidden="true">↗</span></a>' for year, title, desc, href in news)
     write_page('/news/', '新闻与动态', '了解苏才育博士的事业、学习与社会贡献的重要动态。', intro('News & updates', '持续前行的记录。', '汇集人物、事业与社会参与的重要节点。') + page_section(rows) + closing())
     archive = [
+        ('events/gala-podium.webp', '916 星域荣耀盛典 · 致辞', '2026.09 · 事业与活动 / Business & appearances', 'business', EVENT_PATH),
+        ('events/gala-degree.webp', '学位颁授环节', '2026.09 · 人物与成长 / Education', 'person', EVENT_PATH + '#photos'),
+        ('events/gala-birthday.webp', '生日庆祝与合作伙伴周年', '2026.09 · 事业与活动 / Business & appearances', 'business', EVENT_PATH + '#photos'),
+        ('events/vybe-event.webp', '星域 × VYBE 活动', '2026.07 · 事业与活动 / Business & appearances', 'business', '/speaking/'),
+        ('events/csr-portrait.webp', 'CSR 活动人像', '2026.06 · 人物资料 / Portrait', 'person', '/speaking/'),
         ('hero.jpg', '人物肖像', '人物资料 / Portrait', 'person', '/dr-kervis-soo/'),
         ('about.png', '来时路与成长', '人物故事 / His journey', 'person', '/story/'),
         ('impact1.jpg', '星域集团慈善基金', '2025 · 社会贡献 / Social impact', 'impact', '/social-impact/charitable-foundation/'),
         ('impact2.jpg', 'NEWGEN 教育基金', '教育支持 / Education', 'impact', '/social-impact/newgen-education/'),
         ('impact3.jpg', '星域集团开幕仪式', '事业与活动 / Business & appearances', 'business', '/speaking/zocco-group-opening/'),
     ]
-    items = ''.join(f'<article class="archive-item {"contain" if img=="impact2.jpg" else ""}" data-category="{category}"><a href="{href}">{image(img,title)}<h2>{title}</h2></a><p>{subtitle}</p>{link("查看记录", href)}</article>' for img, title, subtitle, category, href in archive)
+    items = ''.join(f'<article class="archive-item {"contain" if img=="impact2.jpg" else ""}" data-category="{category}"><a href="{href}">{image(img, "", sizes=ARCHIVE_SIZES)}<h2>{title}</h2></a><p>{subtitle}</p>{link("查看记录", href)}</article>' for img, title, subtitle, category, href in archive)
     filters = filter_controls([('all', '全部 All'), ('person', '人物与成长'), ('business', '事业与活动'), ('impact', '教育与公益')], '搜索档案 / Search archive')
     write_page('/archive/', '人物与活动档案', '浏览苏才育博士的人物肖像、事业活动、教育与社会贡献影像及相关记录。', intro('The archive', '把每一段经历，留在时间里。', '人物、事业与社会参与的影像资料。循着一张照片，走进一段记录。') + page_section(f'<div data-filter-list>{filters}<div class="archive-grid">{items}</div>{no_results()}</div>') + page_section(link('按时间查看重要节点', '/journey/')) + closing())
 
@@ -445,6 +456,7 @@ if __name__ == '__main__':
     media_awards_pages()
     insight_pages()
     speaking_press_pages()
+    event_page()
     news_archive_pages()
     contact_privacy_pages()
     supporting_files()

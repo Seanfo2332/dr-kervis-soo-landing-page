@@ -165,22 +165,6 @@ a:hover > .arrow,
 .placeholder-video > span {
   position: relative;
 }
-.ref-thumb {
-  width: 104px;
-  aspect-ratio: 3 / 2;
-  padding: 6px;
-  gap: 4px;
-  border-radius: 12px;
-}
-.ref-thumb .placeholder-mark {
-  width: 24px;
-  height: 24px;
-  font-size: 10px;
-}
-.ref-thumb .placeholder-label {
-  font-size: 10px;
-  letter-spacing: 0;
-}
 
 /* Filters */
 .filter-bar {
@@ -190,6 +174,22 @@ a:hover > .arrow,
   gap: 24px;
   flex-wrap: wrap;
   margin-bottom: 28px;
+}
+.filter-groups {
+  display: grid;
+  gap: 12px;
+}
+.filter-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+.filter-label {
+  min-width: 2.6em;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
 }
 .filter-buttons {
   display: flex;

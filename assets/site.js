@@ -71,14 +71,24 @@
     const items = [...list.querySelectorAll('[data-category]')];
     const summary = list.querySelector('.filter-summary');
     const empty = list.querySelector('.no-results');
-    // Search only real content, never the labels of placeholder slots.
-    const searchText = new Map(items.map(item => [item, [...item.children].filter(child => !child.hasAttribute('data-placeholder')).map(child => child.textContent).join(' ').toLocaleLowerCase()]));
-    let category = 'all';
+    // Search only what people read: not placeholder labels, link boilerplate or screen-reader notes.
+    const ignored = '[data-placeholder], .ref-original, .sr-only';
+    const searchText = new Map(items.map(item => {
+      const copy = item.cloneNode(true);
+      copy.querySelectorAll(ignored).forEach(node => node.remove());
+      return [item, copy.textContent.toLocaleLowerCase()];
+    }));
+    // Each button group (or the single bar) keeps its own selection; a row must satisfy all of them.
+    const groupOf = button => button.closest('[data-filter-group]') || list;
+    const selection = new Map(buttons.map(button => [groupOf(button), 'all']));
+    const isAll = key => key.startsWith('all');
     function applyFilters() {
       const term = (search?.value || '').trim().toLocaleLowerCase();
       let count = 0;
       items.forEach(item => {
-        const match = (category === 'all' || item.dataset.category.split(' ').includes(category)) && searchText.get(item).includes(term);
+        const tokens = item.dataset.category.split(' ');
+        const inGroups = [...selection.values()].every(key => isAll(key) || tokens.includes(key));
+        const match = inGroups && searchText.get(item).includes(term);
         item.hidden = !match;
         if (match) { count++; item.classList.add('in-view'); }
       });
@@ -86,8 +96,9 @@
       if (empty) empty.hidden = count !== 0;
     }
     buttons.forEach(button => button.addEventListener('click', () => {
-      category = button.dataset.filter;
-      buttons.forEach(other => other.setAttribute('aria-pressed', String(other === button)));
+      const group = groupOf(button);
+      selection.set(group, button.dataset.filter);
+      buttons.filter(other => groupOf(other) === group).forEach(other => other.setAttribute('aria-pressed', String(other === button)));
       applyFilters();
     }));
     search?.addEventListener('input', applyFilters);

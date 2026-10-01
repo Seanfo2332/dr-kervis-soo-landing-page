@@ -4,14 +4,18 @@ Copy comes from the shared content in build_site.py; wording the PDF specifies
 (hero label, tagline, section names, button labels, closing headline) takes priority.
 """
 
+HOME_COVERAGE_COUNT = 3  # newest verified articles shown on the homepage
 IDENTITY_TAGS = ('Entrepreneur', 'Innovator', 'Philanthropist', 'Youth Advocate')
 
 # Real photographs only, shown in the journey pill: (file, width, height).
 # The pill is decorative (the link carries its own label); the same photos appear with alt text elsewhere.
 PILL_PHOTOS = (
     ('hero.jpg', 1200, 800),
+    ('events/gala-podium-640.webp', 640, 427),
     ('about.webp', 1200, 800),
+    ('events/vybe-event-640.webp', 640, 427),
     ('impact1.webp', 1200, 800),
+    ('events/gala-birthday-640.webp', 640, 427),
     ('impact3.jpg', 810, 540),
 )
 
@@ -101,17 +105,17 @@ def _recognition(link) -> str:
     </div></section>'''
 
 
-def _media(link, reference_rows, references) -> str:
+def _media(link, coverage_rows, coverage) -> str:
     return f'''
-    <section class="section bg-sand media-section"><div class="wrap"><div class="section-head reveal"><div><p class="section-label">Media &amp; Public Record · 媒体与公众记录</p><h2 class="title">从不同视角，看见实践。</h2></div>{link(cta('View Media Coverage', '查看媒体报道'), '/media/', True)}</div>{reference_rows(references[:3])}</div></section>'''
+    <section class="section bg-sand media-section"><div class="wrap"><div class="section-head reveal"><div><p class="section-label">Media &amp; Public Record · 媒体与公众记录</p><h2 class="title">从不同视角，看见实践。</h2></div>{link(cta('View Media Coverage', '查看媒体报道'), '/media/', True)}</div>{coverage_rows(coverage[:HOME_COVERAGE_COUNT])}</div></section>'''
 
 
 def _speaking(image, link) -> str:
     return f'''
-    <section class="section speaking-section"><div class="wrap speaking-strip"><figure>{image('impact3.jpg', '苏才育博士在星域集团开幕仪式上发言的真实现场照片')}</figure><div class="speaking-copy reveal"><p class="section-label">Speaking &amp; Appearances · 演讲与公开活动</p><h2 class="title">在对话中，<br>打开新的视角。</h2><p class="body-copy">AI 与数字经济、创业与领导力、创作者生态。以实际经营的视角，与不同领域的人交流。</p><div class="actions">{link(cta('Invite Dr Kervis', '邀请演讲'), '/contact/?type=speaking', True)}{link(cta('View Appearances', '查看公开活动'), '/speaking/')}</div></div></div></section>'''
+    <section class="section speaking-section"><div class="wrap speaking-strip"><figure>{image('events/gala-podium.webp', '苏才育博士在 2026 年 9 月星域荣耀盛典上致辞的现场照片')}</figure><div class="speaking-copy reveal"><p class="section-label">Speaking &amp; Appearances · 演讲与公开活动</p><h2 class="title">在对话中，<br>打开新的视角。</h2><p class="body-copy">AI 与数字经济、创业与领导力、创作者生态。以实际经营的视角，与不同领域的人交流。</p><div class="actions">{link(cta('Invite Dr Kervis', '邀请演讲'), '/contact/?type=speaking', True)}{link(cta('View Appearances', '查看公开活动'), '/speaking/')}</div></div></div></section>'''
 
 
-def render_home(image, link, bio, businesses, articles, insight_item, reference_rows, references, closing):
+def render_home(image, link, bio, businesses, articles, insight_item, coverage_rows, coverage, closing):
     return ''.join((
         _hero(link),
         _introduction(link, bio),
@@ -120,7 +124,7 @@ def render_home(image, link, bio, businesses, articles, insight_item, reference_
         _insights(link, articles, insight_item),
         _impact(image, link),
         _recognition(link),
-        _media(link, reference_rows, references),
+        _media(link, coverage_rows, coverage),
         _speaking(image, link),
         closing(),
     ))

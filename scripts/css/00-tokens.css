@@ -19,6 +19,7 @@
   --gold: #d4af6a;
   --gold-bright: #e7cb8f;
   --gold-ink: #8a6420;
+  --slate: #3d5a73;
 
   /* Surface-aware colours: light by default, swapped inside .on-navy. */
   --fg: var(--ink);

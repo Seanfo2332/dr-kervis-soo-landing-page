@@ -61,7 +61,8 @@ const root = path.resolve(__dirname, '..');
     assert.ok(!speakingHtml.includes('career.mp4'), 'career.mp4 must not be referenced');
     assert.ok(speakingHtml.includes('data-placeholder="video"'), 'speaking opening page has a video placeholder');
     await page.goto(`${BASE}/media/`);
-    assert.ok(await page.locator('[data-placeholder]').count() > 0, 'media rows carry placeholders');
+    assert.equal(await page.locator('[data-placeholder]').count(), 0, 'media thumbnails are real photos, not placeholders');
+    await page.goto(`${BASE}/awards/ai-honorary-fellow/`);
     for (const text of await page.locator('[data-placeholder]').allInnerTexts()) assert.ok(text.trim().length > 0, 'placeholder has a visible label');
     console.log('PASS: placeholders labelled, video placeholder in place of career.mp4');
 
@@ -128,18 +129,41 @@ const root = path.resolve(__dirname, '..');
     }
     console.log(`PASS: ${routes.length} pages, ${internalTargets.size} local targets, metadata, schema, and mobile/desktop overflow`);
 
-    // Media references keep their original text; category and keyword filters compose.
+    // Media: verified coverage, labelled by type, linked to the originals; topic/type filters and search compose.
     await page.goto(`${BASE}/media/`);
+    const rowCount = await page.locator('.reference-row').count();
+    assert.ok(rowCount >= 14, `media page lists the verified coverage (${rowCount})`);
+    assert.equal(await page.locator('blockquote').count(), 0, 'no unsourced quotes on the media page');
+    for (const row of await page.locator('.reference-row').all()) {
+      assert.ok((await row.locator('.ref-type').innerText()).trim().length > 0, 'every row has a type label');
+      const original = row.locator('a.ref-original');
+      assert.match(await original.getAttribute('href'), /^https:\/\//);
+      assert.match(await original.getAttribute('rel'), /noopener/);
+      assert.equal(await original.getAttribute('target'), '_blank');
+    }
+    await page.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach(image => { image.loading = 'eager'; }));
+    await page.waitForFunction(() => [...document.querySelectorAll('.ref-thumb')].every(image => image.complete && image.naturalWidth > 0));
+    const aiExpected = await page.locator('.reference-row[data-category~="ai"]').count();
+    assert.ok(aiExpected > 0 && aiExpected < rowCount, 'topic filter is meaningful');
     await page.locator('[data-filter="ai"]').click();
-    assert.equal(await page.locator('.reference-row:visible').count(), 3);
-    await page.getByRole('searchbox').fill('OnAsiaNews');
+    assert.equal(await page.locator('.reference-row:visible').count(), aiExpected);
+    // Topic and type filters combine: AI AND platform post.
+    const bothExpected = await page.locator('.reference-row[data-category~="ai"][data-category~="platform"]').count();
+    assert.ok(bothExpected > 0 && bothExpected < aiExpected, 'the combined filter narrows the list');
+    await page.locator('[data-filter="platform"]').click();
+    assert.equal(await page.locator('.reference-row:visible').count(), bothExpected);
+    await page.locator('[data-filter="all"]').click();
+    await page.locator('[data-filter="all-types"]').click();
+    await page.getByRole('searchbox').fill('查看原文');
+    assert.equal(await page.locator('.reference-row:visible').count(), 0, 'link boilerplate is not searchable');
+    await page.getByRole('searchbox').fill('On Asia News');
     assert.equal(await page.locator('.reference-row:visible').count(), 1);
     await page.getByRole('searchbox').fill('no-matching-record-123');
     assert.equal(await page.locator('.reference-row:visible').count(), 0);
     assert.equal(await page.locator('.no-results').isVisible(), true);
     await page.getByRole('searchbox').fill('');
     await page.locator('[data-filter="all"]').click();
-    assert.equal(await page.locator('.reference-row:visible').count(), 7);
+    assert.equal(await page.locator('.reference-row:visible').count(), rowCount);
 
     await page.goto(`${BASE}/insights/`);
     await page.locator('[data-filter="creators"]').click();
@@ -148,6 +172,59 @@ const root = path.resolve(__dirname, '..');
     await page.locator('[data-filter="impact"]').click();
     assert.equal(await page.locator('.archive-item:visible').count(), 2);
     console.log('PASS: media, insights and archive filters, keyword search and empty states');
+
+    // Event record: video, real photos, neutral degree caption, event structured data, event coverage.
+    await page.goto(`${BASE}/speaking/xing-yu-grand-honours-2026/`);
+    const video = page.locator('video');
+    assert.equal(await video.count(), 1);
+    assert.equal(await video.getAttribute('preload'), 'none');
+    assert.match(await video.getAttribute('poster'), /gala-reel-poster\.webp$/);
+    assert.equal(await page.locator('video source[type="video/mp4"]').count(), 1);
+    await page.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach(image => { image.loading = 'eager'; }));
+    await page.waitForFunction(() => [...document.querySelectorAll('.event-gallery img')].every(image => image.complete && image.naturalWidth > 0));
+    assert.equal(await page.locator('.event-gallery img').count(), 3);
+    assert.doesNotMatch(await page.locator('.event-gallery').innerText(), /Lincoln|Malaya|林肯|马来亚/, 'degree segment is captioned without naming an institution');
+    assert.equal(await page.locator('#coverage .reference-row').count(), 4);
+    const schemaTypes = await page.locator('script[type="application/ld+json"]').evaluate(element => JSON.parse(element.textContent)['@graph'].map(node => node['@type']));
+    assert.ok(schemaTypes.includes('Event') && schemaTypes.includes('VideoObject'), 'Event and VideoObject structured data');
+    const graph = await page.locator('script[type="application/ld+json"]').evaluate(element => JSON.parse(element.textContent)['@graph']);
+    const eventNode = graph.find(node => node['@type'] === 'Event');
+    assert.equal(eventNode.startDate, '2026-09-16');
+    assert.match(eventNode.location.name, /D Theatre/);
+    assert.ok(graph.find(node => node['@type'] === 'VideoObject').uploadDate);
+    assert.match(await page.locator('meta[property="og:image"]').getAttribute('content'), /gala-podium-og\.jpg$/);
+    assert.doesNotMatch(await page.locator('#overview').innerText(), /Lincoln|Malaya|林肯|马来亚/, 'overview names no institution');
+    for (const alt of await page.locator('.event-gallery img').evaluateAll(images => images.map(image => image.alt))) assert.doesNotMatch(alt, /Lincoln|Malaya|林肯|马来亚/);
+    assert.equal(await page.locator('.video-description li').count() > 0, true, 'the video has a text description');
+    // The article column is narrow at tablet widths: coverage rows must stay readable there.
+    for (const width of [700, 820, 1000]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.waitForTimeout(150);
+      const bodyWidths = await page.locator('#coverage .ref-body').evaluateAll(elements => elements.map(element => element.getBoundingClientRect().width));
+      assert.ok(bodyWidths.every(value => value >= 220), `coverage rows readable at ${width}px (${bodyWidths.map(Math.round)})`);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), false, `no overflow at ${width}px`);
+    }
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    // Declared image dimensions keep the real aspect ratio (prevents layout shift).
+    for (const route of ['/media/', '/speaking/', '/archive/', '/speaking/xing-yu-grand-honours-2026/']) {
+      await page.goto(`${BASE}${route}`);
+      await page.evaluate(() => document.querySelectorAll('img[loading="lazy"]').forEach(image => { image.loading = 'eager'; }));
+      await page.waitForFunction(() => [...document.images].every(image => image.complete));
+      const skewed = await page.evaluate(() => [...document.images].filter(image => image.naturalWidth && Math.abs(image.naturalWidth / image.naturalHeight - Number(image.getAttribute('width')) / Number(image.getAttribute('height'))) > 0.02).map(image => image.getAttribute('src')));
+      assert.deepEqual(skewed, [], `${route}: width/height attributes match the image aspect ratio`);
+    }
+    await page.goto(`${BASE}/speaking/xing-yu-grand-honours-2026/`);
+    const reel = await context.request.head(`${BASE}/images/events/gala-reel.mp4`);
+    assert.equal(reel.status(), 200);
+    const bytes = Number(reel.headers()['content-length']);
+    assert.ok(bytes > 1000000 && bytes < 25000000, `reel size is sensible (${bytes} bytes)`);
+    await page.goto(`${BASE}/speaking/`);
+    assert.equal(await page.locator('.appearance').count(), 4);
+    assert.equal(await page.locator('.appearance a[href="/speaking/xing-yu-grand-honours-2026/"]').count(), 1);
+    await page.goto(`${BASE}/press/`);
+    assert.equal(await page.locator('a[download][href$=".jpg"], a[download][href$=".png"]').count(), 3);
+    assert.equal((await context.request.get(`${BASE}/images/events/csr-portrait-press.jpg`)).status(), 200);
+    console.log('PASS: event record (video, photos, neutral caption, schema, coverage), appearances and press downloads');
 
     // Contact invitations preselect the correct intent, validate input, and prepare a real mailto.
     for (const type of ['speaking', 'media']) {

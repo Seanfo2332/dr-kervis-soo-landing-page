@@ -2,6 +2,13 @@
 .page-main {
   min-height: 65vh;
 }
+/* Stacked sections share one gap instead of adding their paddings together. */
+.page-main .section + .section {
+  padding-top: 0;
+}
+.media-legend {
+  margin-bottom: clamp(40px, 5vw, 72px);
+}
 .page-intro {
   position: relative;
   padding-block: calc(var(--header-h) + 36px) clamp(56px, 7vw, 104px);
@@ -128,7 +135,7 @@
   line-height: 2;
   margin-bottom: 22px;
 }
-.prose a:not(.button):not(.text-link) {
+.prose a:not(.button):not(.text-link):not(.ref-original) {
   color: var(--gold-ink);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -277,24 +284,6 @@
   color: var(--muted);
   margin-top: 22px;
 }
-.quote-grid {
-  display: grid;
-  gap: 36px;
-}
-.quote-grid blockquote {
-  font-size: clamp(18px, 1.7vw, 24px);
-  line-height: 2;
-  padding: 0 0 30px;
-  border-bottom: 1px solid var(--line);
-  max-width: 1000px;
-}
-.quote-grid cite {
-  display: block;
-  font-style: normal;
-  font-size: 13px;
-  color: var(--gold-ink);
-  margin-top: 18px;
-}
 .article-meta {
   display: flex;
   flex-wrap: wrap;
@@ -396,13 +385,14 @@
 }
 .downloads {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 26px;
 }
 .download-item img {
   width: 100%;
   height: 240px;
   object-fit: cover;
+  object-position: center 25%;
   margin-bottom: 10px;
   border-radius: var(--radius-sm);
 }
@@ -415,6 +405,125 @@
 }
 .video-wrap {
   margin-top: 30px;
+}
+.type-legend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 48px;
+  margin: 28px 0 0;
+}
+.type-legend > div {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.type-legend dt,
+.type-legend dd {
+  margin: 0;
+}
+.type-legend dd {
+  font-size: 14px;
+  color: var(--muted);
+}
+.legend-note {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.appearance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px 32px;
+}
+.appearance figure img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  object-position: center 25%;
+  border-radius: var(--radius);
+}
+.appearance > div {
+  padding-top: 20px;
+}
+.appearance-date {
+  display: block;
+  min-height: 1.6em;
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--gold-ink);
+}
+.appearance h3 {
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 500;
+}
+.appearance p {
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--muted);
+}
+.event-gallery {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.event-gallery figure:first-child {
+  grid-column: 1 / -1;
+}
+.prose .event-gallery figure {
+  margin-block: 0;
+}
+.event-gallery img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+/* Inside the narrow article column the coverage rows always use the stacked layout. */
+.prose .reference-row {
+  grid-template-columns: 88px 1fr;
+  gap: 14px 16px;
+  padding-block: 24px;
+}
+.prose .reference-row .ref-number {
+  display: none;
+}
+.prose .ref-thumb {
+  width: 88px;
+}
+.prose .ref-meta {
+  grid-column: 1 / -1;
+  grid-auto-flow: column;
+  justify-content: space-between;
+  justify-items: start;
+  text-align: left;
+}
+.video-description {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.video-description summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink);
+}
+.video-description ol {
+  margin: 8px 0 0;
+  padding-left: 22px;
+  line-height: 1.9;
+}
+.video-wrap video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius);
+  background: var(--navy-deep);
 }
 
 /* Contact */
@@ -482,7 +591,8 @@
   .feature-list {
     gap: 44px 32px;
   }
-  .archive-grid {
+  .archive-grid,
+  .appearance-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -560,9 +670,16 @@
   .news-row:hover {
     padding-left: 0;
   }
-  .archive-grid {
+  .archive-grid,
+  .appearance-grid {
     grid-template-columns: 1fr;
     gap: 38px;
+  }
+  .type-legend {
+    grid-template-columns: 1fr;
+  }
+  .event-gallery {
+    grid-template-columns: 1fr;
   }
   .archive-item img {
     height: auto;
