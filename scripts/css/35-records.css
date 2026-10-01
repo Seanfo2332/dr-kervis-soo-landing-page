@@ -299,23 +299,62 @@
   letter-spacing: 0.04em;
 }
 
-/* ---- Speaking ---- */
-.speaking-strip {
+/* ---- Speaking: the stage photo fills the panel; the copy sits on the dark side of it ---- */
+.speaking-section {
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
   align-items: center;
-  gap: clamp(32px, 7vw, 120px);
+  min-height: min(92svh, 860px);
+  padding-bottom: clamp(72px, 9vw, 140px);
+  overflow: hidden;
 }
-.speaking-strip figure img {
+.speaking-photo {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.speaking-photo img {
   width: 100%;
-  aspect-ratio: 1.25;
+  height: 100%;
   object-fit: cover;
-  object-position: 46% center;
-  border-radius: var(--radius);
+  object-position: 28% 30%;
+}
+/* Scrim: leaves the speaker untouched and darkens the right-hand side where the text sits. */
+.speaking-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(8, 24, 36, 0.3) 0%, rgba(8, 24, 36, 0.18) 34%, rgba(8, 24, 36, 0.86) 58%, rgba(8, 24, 36, 0.95) 100%),
+    linear-gradient(0deg, rgba(8, 24, 36, 0.55), rgba(8, 24, 36, 0) 40%);
+}
+.speaking-strip {
+  position: relative;
+  z-index: 2;
+}
+.speaking-copy {
+  width: min(520px, 100%);
+  margin-left: auto;
 }
 .speaking-copy .body-copy {
   margin-top: 24px;
   max-width: 440px;
+}
+/* Tablets and phones: portrait crop of the speaker with the copy stacked over a bottom scrim. */
+@media (max-width: 960px) {
+  .speaking-section {
+    align-items: end;
+  }
+  .speaking-photo img {
+    object-position: 50% 0;
+  }
+  .speaking-section::before {
+    background: linear-gradient(0deg, rgba(8, 24, 36, 0.96) 0%, rgba(8, 24, 36, 0.9) 48%, rgba(8, 24, 36, 0.08) 82%);
+  }
+  .speaking-copy {
+    margin-left: 0;
+    padding-top: 38svh;
+  }
 }
 
 @media (max-width: 1200px) {
@@ -326,8 +365,7 @@
 }
 @media (max-width: 960px) {
   .impact-layout,
-  .recognition-layout,
-  .speaking-strip {
+  .recognition-layout {
     grid-template-columns: 1fr;
   }
   .home-insights {

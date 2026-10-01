@@ -119,7 +119,7 @@ const tokenColour = (page, token) => page.evaluate(name => {
     console.log('PASS: pinned hero, sliding panel and header tone');
 
     // The header follows the panel that is actually in view, including where light and navy panels overlap.
-    for (const [selector, dark] of [['.impact-section', true], ['.recognition-section', false], ['.closing', true]]) {
+    for (const [selector, dark] of [['.impact-section', true], ['.recognition-section', false], ['.speaking-section', true], ['.closing', true]]) {
       await motionPage.evaluate(target => scrollTo({ top: document.querySelector(target).getBoundingClientRect().top + scrollY - 10, behavior: 'instant' }), selector);
       await motionPage.waitForFunction(expected => document.querySelector('.site-header').classList.contains('on-dark') === expected, dark);
     }
@@ -218,6 +218,21 @@ const tokenColour = (page, token) => page.evaluate(name => {
     assert.equal(await motionPage.evaluate(() => navigator.clipboard.readText()), 'Drkervis@xingyu.global');
     await motionContext.close();
     console.log('PASS: quick-contact drawer and copy-email button');
+
+    // The Speaking section is a full-bleed photo panel: a real image with alt text, and a portrait crop on phones and tablets.
+    await page.goto(`${BASE}/landing.html`);
+    const speakingPhoto = page.locator('.speaking-photo img');
+    await speakingPhoto.scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => { const image = document.querySelector('.speaking-photo img'); return image.complete && image.naturalWidth > 0; });
+    assert.match(await speakingPhoto.getAttribute('alt'), /星域荣耀盛典/);
+    assert.match(await speakingPhoto.evaluate(image => image.currentSrc), /gala-podium-wide\.webp$/);
+    assert.ok(await speakingPhoto.evaluate(image => image.naturalWidth >= 2000), 'the desktop photo is sharp enough for a full-bleed panel');
+    assert.equal(await page.locator('.speaking-section').evaluate(element => getComputedStyle(element).backgroundColor), await tokenColour(page, '--navy'));
+    assert.equal(await page.locator('.speaking-section a[href="/contact/?type=speaking"]').count(), 1, 'the speaking invitation link is kept');
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.waitForFunction(() => document.querySelector('.speaking-photo img').currentSrc.endsWith('gala-podium-portrait.webp'));
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    console.log('PASS: speaking section is a full-bleed photo panel with a portrait crop on small screens');
 
     // Inner pages share the light base, with a navy closing panel.
     await page.goto(`${BASE}/story/`);

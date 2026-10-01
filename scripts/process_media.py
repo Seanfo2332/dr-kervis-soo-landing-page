@@ -31,6 +31,11 @@ PRESS_PORTRAIT = ('CSR Event-165.jpg', 'csr-portrait-press.jpg', 2000)
 VIDEO = ('420b63555364dac5015816d171d01405.mp4', 'gala-reel.mp4')
 SOCIAL_NAME = 'gala-podium-og.jpg'
 SOCIAL_SIZE = (1200, 630)
+# Homepage Speaking section: a wide full-bleed version and a portrait crop for phones.
+# The crop box is (left, top, right, bottom) as fractions of the upright original, centred on the speaker.
+SPEAKING_SOURCE = PHOTOS[0][0]
+SPEAKING_WIDE = ('gala-podium-wide.webp', 2400)
+SPEAKING_PORTRAIT = ('gala-podium-portrait.webp', 900, (0.145, 0.0, 0.645, 1.0))
 POSTER_NAME = 'gala-reel-poster.webp'
 POSTER_SECONDS = 19.6  # the birthday-celebration stage with confetti
 POSTER_WIDTH = 1280
@@ -62,6 +67,18 @@ def write_photo(source: Path, name: str, width: int) -> None:
     main.save(OUT / f'{name}.webp', 'WEBP', quality=WEBP_QUALITY, method=6)
     resized(image, SMALL_WIDTH).save(OUT / f'{name}-640.webp', 'WEBP', quality=WEBP_QUALITY, method=6)
     print(f'{name}: {main.width}x{main.height}')
+
+
+def write_speaking_images(source: Path) -> None:
+    """Full-bleed backdrop for the homepage Speaking section (desktop) and a portrait crop (phones)."""
+    image = load_upright(source)
+    wide_name, wide_width = SPEAKING_WIDE
+    wide = resized(image, wide_width)
+    wide.save(OUT / wide_name, 'WEBP', quality=WEBP_QUALITY, method=6)
+    portrait_name, portrait_width, (left, top, right, bottom) = SPEAKING_PORTRAIT
+    box = (round(left * image.width), round(top * image.height), round(right * image.width), round(bottom * image.height))
+    resized(image.crop(box), portrait_width).save(OUT / portrait_name, 'WEBP', quality=WEBP_QUALITY, method=6)
+    print(f'{wide_name}: {wide.width}x{wide.height}, {portrait_name}: crop {box}')
 
 
 def write_press_portrait(source: Path, name: str, width: int) -> None:
@@ -109,6 +126,7 @@ def main() -> None:
     portrait_source, portrait_name, portrait_width = PRESS_PORTRAIT
     write_press_portrait(folder / portrait_source, portrait_name, portrait_width)
     write_social_image(folder / PHOTOS[0][0])
+    write_speaking_images(folder / SPEAKING_SOURCE)
     write_poster(folder / VIDEO[0])
     write_video(folder / VIDEO[0], VIDEO[1])
 

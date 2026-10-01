@@ -32,6 +32,11 @@ CARD_IMAGES = {
 }
 REEL_SUB = '916 星域荣耀盛典 · 1:47'
 
+# Full-bleed Speaking photo: wide for desktop, a portrait crop of the speaker for phones (see process_media.py).
+SPEAKING_WIDE = ('/images/events/gala-podium-wide.webp', 2400, 1600)
+SPEAKING_PORTRAIT = ('/images/events/gala-podium-portrait.webp', 900, 1200)
+SPEAKING_ALT = '苏才育博士在 2026 年 9 月星域荣耀盛典上致辞：他身穿白色西装、手持麦克风站在讲台前，身后大屏显示他的肖像与 VYBE、星域标识'
+
 
 def cta(en: str, zh: str) -> str:
     """Button label: what happens next in English, with the Chinese beside it."""
@@ -131,9 +136,13 @@ def _media(link, coverage_rows, coverage) -> str:
     <section class="section panel bg-sand media-section"><div class="wrap"><div class="section-head reveal"><div><p class="section-label">Media &amp; Public Record · 媒体与公众记录</p><h2 class="title">从不同视角，看见实践。</h2></div>{link(cta('View Media Coverage', '查看媒体报道'), '/media/', True)}</div>{coverage_rows(coverage[:HOME_COVERAGE_COUNT])}</div></section>'''
 
 
-def _speaking(image, link) -> str:
+def _speaking(link) -> str:
+    wide, wide_w, wide_h = SPEAKING_WIDE
+    portrait, portrait_w, portrait_h = SPEAKING_PORTRAIT
+    photo = (f'<picture class="speaking-photo"><source media="(max-width: 960px)" srcset="{portrait}" width="{portrait_w}" height="{portrait_h}">'
+             f'<img src="{wide}" alt="{SPEAKING_ALT}" width="{wide_w}" height="{wide_h}" loading="lazy" decoding="async"></picture>')
     return f'''
-    <section class="section panel speaking-section"><div class="wrap speaking-strip"><figure>{image('events/gala-podium.webp', '苏才育博士在 2026 年 9 月星域荣耀盛典上致辞的现场照片')}</figure><div class="speaking-copy reveal"><p class="section-label">Speaking &amp; Appearances · 演讲与公开活动</p><h2 class="title">在对话中，<br>打开新的视角。</h2><p class="body-copy">AI 与数字经济、创业与领导力、创作者生态。以实际经营的视角，与不同领域的人交流。</p><div class="actions">{link(cta('Invite Dr Kervis', '邀请演讲'), '/contact/?type=speaking', True)}{link(cta('View Appearances', '查看公开活动'), '/speaking/')}</div></div></div></section>'''
+    <section class="panel on-navy speaking-section" data-tone="dark" aria-labelledby="speaking-title">{photo}<div class="wrap speaking-strip"><div class="speaking-copy reveal"><p class="section-label">Speaking &amp; Appearances · 演讲与公开活动</p><h2 class="title" id="speaking-title">在对话中，<br>打开新的视角。</h2><p class="body-copy">AI 与数字经济、创业与领导力、创作者生态。以实际经营的视角，与不同领域的人交流。</p><div class="actions">{link(cta('Invite Dr Kervis', '邀请演讲'), '/contact/?type=speaking', True)}{link(cta('View Appearances', '查看公开活动'), '/speaking/')}</div></div></div></section>'''
 
 
 def _reel_dialog() -> str:
@@ -150,7 +159,7 @@ def render_home(image, link, bio, businesses, articles, insight_item, coverage_r
         _impact(image, link),
         _recognition(link),
         _media(link, coverage_rows, coverage),
-        _speaking(image, link),
+        _speaking(link),
         closing(),
         _reel_dialog(),
     ))
