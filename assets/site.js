@@ -3,18 +3,12 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const header = document.querySelector('.site-header');
   const progress = document.querySelector('.progress');
-  const hero = document.querySelector('.hero');
-  const cutout = hero?.querySelector('.hero-cutout');
-  const PARALLAX_RATE = 0.12;
-  let heroHeight = hero ? hero.offsetHeight : 0;
   let scheduled = false;
   // Everything the header can sit over, in document order (a later surface is painted on top of an earlier one).
   const surfaces = [...document.querySelectorAll('[data-tone], .panel, .site-footer')];
   const isDark = surface => (surface.dataset.tone ? surface.dataset.tone === 'dark' : surface.classList.contains('on-navy'));
 
   document.querySelectorAll('[data-year]').forEach(element => { element.textContent = String(new Date().getFullYear()); });
-  // Cache the hero height so scrolling never forces a layout read.
-  window.addEventListener('resize', () => { heroHeight = hero ? hero.offsetHeight : 0; }, { passive: true });
 
   // The header's colours follow the surface under it: light text over navy panels, dark text over light ones.
   function updateTone() {
@@ -30,10 +24,6 @@
     updateTone();
     const distance = document.documentElement.scrollHeight - window.innerHeight;
     if (progress) progress.style.transform = `scaleX(${distance > 0 ? Math.min(window.scrollY / distance, 1) : 0})`;
-    if (cutout && !reduced.matches) {
-      const travelled = Math.min(window.scrollY, heroHeight);
-      cutout.style.setProperty('--hero-shift', `${(travelled * PARALLAX_RATE).toFixed(1)}px`);
-    }
     scheduled = false;
   }
   window.addEventListener('scroll', () => {

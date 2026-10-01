@@ -32,10 +32,15 @@ CARD_IMAGES = {
 }
 REEL_SUB = '916 星域荣耀盛典 · 1:47'
 
-# Full-bleed Speaking photo: wide for desktop, a portrait crop of the speaker for phones (see process_media.py).
-SPEAKING_WIDE = ('/images/events/gala-podium-wide.webp', 2400, 1600)
-SPEAKING_PORTRAIT = ('/images/events/gala-podium-portrait.webp', 900, 1200)
-SPEAKING_ALT = '苏才育博士在 2026 年 9 月星域荣耀盛典上致辞：他身穿白色西装、手持麦克风站在讲台前，身后大屏显示他的肖像与 VYBE、星域标识'
+# Full-bleed stage photos (hero and Speaking panel): a wide image for desktop and a portrait crop of the speaker
+# for narrow screens. The files are made by process_media.py; the breakpoints match the stacked layouts in 30-home.css
+# (hero) and 35-records.css (Speaking).
+STAGE_SIZE = (2200, 1467)
+STAGE_PORTRAIT_SIZE = (900, 1200)
+HERO_STACK_BREAKPOINT = 900
+SPEAKING_STACK_BREAKPOINT = 960
+HERO_PHOTO_ALT = '苏才育博士在 2026 年 9 月星域荣耀盛典上致辞：他身穿白色西装、手持麦克风站在讲台前，身后大屏显示他的肖像与 VYBE、星域标识'
+SPEAKING_PHOTO_ALT = '苏才育博士身穿白色西装、手持麦克风在舞台上演讲，身后大屏显示他的姓名与 VYBE 标识'
 
 
 def cta(en: str, zh: str) -> str:
@@ -43,16 +48,29 @@ def cta(en: str, zh: str) -> str:
     return f'{en}<small>{zh}</small>'
 
 
+def _stage_photo(stem: str, alt: str, class_name: str, breakpoint: int, eager: bool = False) -> str:
+    """Full-bleed backdrop: the wide image, with the portrait crop swapped in at narrow widths."""
+    (wide_w, wide_h), (portrait_w, portrait_h) = STAGE_SIZE, STAGE_PORTRAIT_SIZE
+    loading = 'fetchpriority="high"' if eager else 'loading="lazy"'
+    return (f'<picture class="{class_name}"><source media="(max-width: {breakpoint}px)" srcset="/images/events/{stem}-portrait.webp" width="{portrait_w}" height="{portrait_h}">'
+            f'<img src="/images/events/{stem}-wide.webp" alt="{escape(alt)}" width="{wide_w}" height="{wide_h}" {loading} decoding="async"></picture>')
+
+
 def _hero(link, social: str) -> str:
+    photo = _stage_photo('gala-podium', HERO_PHOTO_ALT, 'hero-photo', HERO_STACK_BREAKPOINT, eager=True)
     return f'''
-    <section class="hero" aria-labelledby="hero-title"><div class="hero-inner">
-      <p class="eyebrow hero-eyebrow">ENTREPRENEUR · AI &amp; DIGITAL ECONOMY ADVOCATE · PHILANTHROPIST</p>
-      <h1 id="hero-title" class="hero-title"><span class="hero-row hero-row-1">Dr Kervis</span> <span class="hero-row hero-row-2">Soo<span class="hero-chinese">苏才育博士</span></span></h1>
-      <img class="hero-cutout" src="/images/hero-cutout.webp" width="635" height="620" alt="Dr Kervis Soo 苏才育博士的肖像：身穿牛仔外套，一手轻触太阳穴" fetchpriority="high" decoding="async">
-      <div class="hero-copy">
-        <p class="hero-sub">Building businesses. Empowering people. Creating impact.</p>
-        <p class="hero-role">Founder &amp; Chairman, Zocco Group<br>星域集团创办人兼董事长</p>
-        <div class="hero-cta actions">{link(cta('Discover His Journey', '探索他的来时路'), '/story/', True)}{link(cta('Explore His Work', '了解他的事业'), '/business/')}</div>
+    <section class="hero on-navy" data-tone="dark" aria-labelledby="hero-title"><div class="hero-inner">
+      {photo}
+      <div class="hero-content">
+        <div class="hero-main">
+          <p class="eyebrow hero-eyebrow">ENTREPRENEUR · AI &amp; DIGITAL ECONOMY ADVOCATE · PHILANTHROPIST</p>
+          <h1 id="hero-title" class="hero-title"><span class="hero-row hero-row-1">Dr Kervis</span> <span class="hero-row hero-row-2">Soo<span class="hero-chinese">苏才育博士</span></span></h1>
+          <p class="hero-sub">Building businesses. Empowering people. Creating impact.</p>
+        </div>
+        <div class="hero-side">
+          <p class="hero-role">Founder &amp; Chairman, Zocco Group<br>星域集团创办人兼董事长</p>
+          <div class="hero-cta actions">{link(cta('Discover His Journey', '探索他的来时路'), '/story/', True)}{link(cta('Explore His Work', '了解他的事业'), '/business/')}</div>
+        </div>
       </div>
       <a class="scroll-btn" href="#introduction" aria-label="向下浏览 / Scroll down"><span aria-hidden="true">↓</span></a>
       {social}
@@ -137,10 +155,7 @@ def _media(link, coverage_rows, coverage) -> str:
 
 
 def _speaking(link) -> str:
-    wide, wide_w, wide_h = SPEAKING_WIDE
-    portrait, portrait_w, portrait_h = SPEAKING_PORTRAIT
-    photo = (f'<picture class="speaking-photo"><source media="(max-width: 960px)" srcset="{portrait}" width="{portrait_w}" height="{portrait_h}">'
-             f'<img src="{wide}" alt="{SPEAKING_ALT}" width="{wide_w}" height="{wide_h}" loading="lazy" decoding="async"></picture>')
+    photo = _stage_photo('vybe-event', SPEAKING_PHOTO_ALT, 'speaking-photo', SPEAKING_STACK_BREAKPOINT)
     return f'''
     <section class="panel on-navy speaking-section" data-tone="dark" aria-labelledby="speaking-title">{photo}<div class="wrap speaking-strip"><div class="speaking-copy reveal"><p class="section-label">Speaking &amp; Appearances · 演讲与公开活动</p><h2 class="title" id="speaking-title">在对话中，<br>打开新的视角。</h2><p class="body-copy">AI 与数字经济、创业与领导力、创作者生态。以实际经营的视角，与不同领域的人交流。</p><div class="actions">{link(cta('Invite Dr Kervis', '邀请演讲'), '/contact/?type=speaking', True)}{link(cta('View Appearances', '查看公开活动'), '/speaking/')}</div></div></div></section>'''
 

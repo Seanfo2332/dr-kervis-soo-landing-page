@@ -36,11 +36,13 @@ const tokenColour = (page, token) => page.evaluate(name => {
     await page.locator('#hero-title').waitFor();
     console.log('PASS: homepage opens directly and the entrance Enter button leads into it');
 
-    // Hero: layered cut-out portrait, PDF wording and buttons.
+    // Hero: full-bleed stage photo, PDF wording and buttons.
     await page.goto(`${BASE}/landing.html`);
-    const cutout = page.locator('.hero-cutout');
-    await cutout.waitFor();
-    assert.ok(await cutout.evaluate(img => img.complete && img.naturalWidth > 0), 'hero cut-out loads');
+    const heroPhoto = page.locator('.hero-photo img');
+    await heroPhoto.waitFor();
+    assert.ok(await heroPhoto.evaluate(img => img.complete && img.naturalWidth >= 2000), 'the hero photo loads at full size');
+    assert.match(await heroPhoto.getAttribute('alt'), /星域荣耀盛典/);
+    assert.equal(await heroPhoto.getAttribute('fetchpriority'), 'high', 'the hero photo is the priority image');
     assert.match(await page.locator('.hero').innerText(), /ENTREPRENEUR · AI & DIGITAL ECONOMY ADVOCATE · PHILANTHROPIST/i);
     assert.match(await page.locator('.hero').innerText(), /Building businesses\. Empowering people\. Creating impact\./);
     assert.match(await page.locator('.hero a[href="/story/"]').innerText(), /Discover His Journey/);
@@ -49,7 +51,7 @@ const tokenColour = (page, token) => page.evaluate(name => {
     assert.equal(await page.locator('.reel').count(), 1, 'one showreel capsule');
     assert.equal(await page.locator('.reel-collage img').count(), 6, 'the reel collage uses six real photos');
     assert.equal(await page.locator('.hero-social a').count(), 5, 'five social icons in the hero');
-    console.log('PASS: hero cut-out, PDF wording, buttons, reel capsule, social icons');
+    console.log('PASS: hero photo, PDF wording, buttons, reel capsule, social icons');
 
     // Navigation: floating pill with four primary links + Menu; overlay lists all eight pages.
     const pillLinks = await page.locator('.pill-nav a').evaluateAll(links => links.map(link => link.getAttribute('href')));
@@ -100,15 +102,13 @@ const tokenColour = (page, token) => page.evaluate(name => {
     assert.equal(await motionPage.evaluate(() => document.documentElement.classList.contains('js-motion')), true);
     await motionPage.locator('.insights-section .reveal').first().scrollIntoViewIfNeeded();
     await motionPage.waitForFunction(() => document.querySelector('.insights-section .reveal.in-view'));
-    await motionPage.evaluate(() => scrollTo(0, 300));
-    await motionPage.waitForFunction(() => document.querySelector('.hero-cutout').style.getPropertyValue('--hero-shift') === '36.0px');
     assert.match(await motionPage.locator('.site-footer').innerText(), new RegExp(String(new Date().getFullYear())), 'footer shows the current year');
-    console.log('PASS: normal-motion reveals, hero parallax and current-year footer');
+    console.log('PASS: normal-motion reveals and current-year footer');
 
     // Pinned hero, the panel that slides over it, and the header colours following the surface beneath.
     await motionPage.evaluate(() => scrollTo(0, 0));
     assert.equal(await motionPage.locator('.hero').evaluate(element => getComputedStyle(element).position), 'sticky', 'the hero is pinned');
-    assert.equal(await motionPage.locator('.site-header').evaluate(element => element.classList.contains('on-dark')), false, 'dark header text over the light hero');
+    assert.equal(await motionPage.locator('.site-header').evaluate(element => element.classList.contains('on-dark')), true, 'light header text over the dark hero photo');
     await motionPage.evaluate(() => scrollTo(0, innerHeight));
     await motionPage.waitForFunction(() => Number(document.querySelector('.hero-inner').style.getPropertyValue('--cover')) > 0.9);
     await motionPage.waitForFunction(() => document.querySelector('.site-header').classList.contains('on-dark'));
@@ -224,13 +224,13 @@ const tokenColour = (page, token) => page.evaluate(name => {
     const speakingPhoto = page.locator('.speaking-photo img');
     await speakingPhoto.scrollIntoViewIfNeeded();
     await page.waitForFunction(() => { const image = document.querySelector('.speaking-photo img'); return image.complete && image.naturalWidth > 0; });
-    assert.match(await speakingPhoto.getAttribute('alt'), /星域荣耀盛典/);
-    assert.match(await speakingPhoto.evaluate(image => image.currentSrc), /gala-podium-wide\.webp$/);
+    assert.match(await speakingPhoto.getAttribute('alt'), /VYBE/);
+    assert.match(await speakingPhoto.evaluate(image => image.currentSrc), /vybe-event-wide\.webp$/);
     assert.ok(await speakingPhoto.evaluate(image => image.naturalWidth >= 2000), 'the desktop photo is sharp enough for a full-bleed panel');
     assert.equal(await page.locator('.speaking-section').evaluate(element => getComputedStyle(element).backgroundColor), await tokenColour(page, '--navy'));
     assert.equal(await page.locator('.speaking-section a[href="/contact/?type=speaking"]').count(), 1, 'the speaking invitation link is kept');
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.waitForFunction(() => document.querySelector('.speaking-photo img').currentSrc.endsWith('gala-podium-portrait.webp'));
+    await page.waitForFunction(() => document.querySelector('.speaking-photo img').currentSrc.endsWith('vybe-event-portrait.webp'));
     await page.setViewportSize({ width: 1440, height: 1000 });
     console.log('PASS: speaking section is a full-bleed photo panel with a portrait crop on small screens');
 
