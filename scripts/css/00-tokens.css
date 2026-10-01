@@ -12,13 +12,14 @@
   --navy-deep: #081824;
   --navy-lift: #173a56;
   --paper: #fff;
-  --sand: #f3f0e9;
+  --page: #e9e8e4;
+  --sand: #dddbd4;
   --ink: #14263a;
-  --muted: #566372;
+  --muted: #4d5a67;
   --line: #dfe2e4;
   --gold: #d4af6a;
   --gold-bright: #e7cb8f;
-  --gold-ink: #8a6420;
+  --gold-ink: #7a561a;
   --slate: #3d5a73;
 
   /* Surface-aware colours: light by default, swapped inside .on-navy. */
@@ -32,15 +33,17 @@
   --wrap: 1360px;
   --radius: 28px;
   --radius-sm: 16px;
+  --panel-radius: clamp(28px, 4.2vw, 60px);
   --pill: 999px;
   --ease: cubic-bezier(0.22, 0.7, 0.2, 1);
   --header-h: 76px;
   --pill-nav-space: 104px;
 }
-/* Keep the focus ring visible on the dark chrome (gold, not gold-ink). */
-.site-header,
-.pill-nav,
-.mobile-menu {
+/* Gold focus rings only where the surface behind them is navy: the open menu, the video dialog,
+   and the header while it sits over a navy panel. The white pill nav keeps the darker ring. */
+.mobile-menu,
+.reel-dialog,
+.site-header.on-dark {
   --accent: var(--gold);
 }
 
@@ -66,7 +69,7 @@ html {
 }
 body {
   margin: 0;
-  background: var(--paper);
+  background: var(--page);
   color: var(--ink);
   font: 400 16px/1.8 var(--font);
   -webkit-font-smoothing: antialiased;
@@ -154,12 +157,22 @@ video {
 .bg-sand {
   background: var(--sand);
 }
+/* A panel has rounded top corners and slides over the end of the section before it. */
+.panel {
+  position: relative;
+  border-radius: var(--panel-radius) var(--panel-radius) 0 0;
+  margin-top: calc(var(--panel-radius) * -1);
+  padding-top: calc(clamp(72px, 9vw, 140px) + var(--panel-radius));
+}
+.panel:not(.on-navy):not(.bg-sand) {
+  background: var(--page);
+}
 
 /* Typography. Chinese is never negatively tracked; Latin display type is. */
 .title {
-  font-size: clamp(30px, 3.7vw, 58px);
-  font-weight: 500;
-  line-height: 1.25;
+  font-size: clamp(32px, 4.4vw, 70px);
+  font-weight: 400;
+  line-height: 1.22;
   letter-spacing: 0.005em;
   text-wrap: balance;
 }

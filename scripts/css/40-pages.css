@@ -2,6 +2,10 @@
 .page-main {
   min-height: 65vh;
 }
+/* The page header and the first section sit on the same colour, so they share one gap too. */
+.page-intro + .section {
+  padding-top: clamp(24px, 3vw, 48px);
+}
 /* Stacked sections share one gap instead of adding their paddings together. */
 .page-main .section + .section {
   padding-top: 0;
@@ -12,7 +16,7 @@
 .page-intro {
   position: relative;
   padding-block: calc(var(--header-h) + 36px) clamp(56px, 7vw, 104px);
-  background: radial-gradient(70% 90% at 85% 0%, var(--navy-lift) 0%, var(--navy) 55%, var(--navy-deep) 100%);
+  background: var(--page);
   overflow: hidden;
 }
 .breadcrumbs {
@@ -24,14 +28,14 @@
   margin-bottom: clamp(36px, 5vw, 72px);
 }
 .breadcrumbs a:hover {
-  color: var(--gold);
+  color: var(--accent);
 }
 .page-intro .eyebrow {
   margin-bottom: 20px;
 }
 .page-intro h1 {
   font-size: clamp(40px, 6.6vw, 104px);
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.12;
   letter-spacing: 0.005em;
   max-width: 14em;

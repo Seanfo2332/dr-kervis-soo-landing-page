@@ -8,13 +8,26 @@
   const PARALLAX_RATE = 0.12;
   let heroHeight = hero ? hero.offsetHeight : 0;
   let scheduled = false;
+  // Everything the header can sit over, in document order (a later surface is painted on top of an earlier one).
+  const surfaces = [...document.querySelectorAll('[data-tone], .panel, .site-footer')];
+  const isDark = surface => (surface.dataset.tone ? surface.dataset.tone === 'dark' : surface.classList.contains('on-navy'));
 
   document.querySelectorAll('[data-year]').forEach(element => { element.textContent = String(new Date().getFullYear()); });
   // Cache the hero height so scrolling never forces a layout read.
   window.addEventListener('resize', () => { heroHeight = hero ? hero.offsetHeight : 0; }, { passive: true });
 
+  // The header's colours follow the surface under it: light text over navy panels, dark text over light ones.
+  function updateTone() {
+    if (!header) return;
+    const probe = header.offsetHeight / 2;
+    // Panels overlap by their corner radius, so the last surface that reaches the probe line is the one in view.
+    const visible = surfaces.filter(surface => { const box = surface.getBoundingClientRect(); return box.top <= probe && box.bottom > probe; }).pop();
+    header.classList.toggle('on-dark', Boolean(visible) && isDark(visible));
+  }
+
   function updateScroll() {
     header?.classList.toggle('scrolled', window.scrollY > 30);
+    updateTone();
     const distance = document.documentElement.scrollHeight - window.innerHeight;
     if (progress) progress.style.transform = `scaleX(${distance > 0 ? Math.min(window.scrollY / distance, 1) : 0})`;
     if (cutout && !reduced.matches) {
@@ -31,9 +44,10 @@
   // Full-screen menu, opened from the floating pill on every screen size.
   const toggle = document.querySelector('.menu-toggle');
   const menu = document.querySelector('.mobile-menu');
-  const inertWhileOpen = ['main', '.site-footer', '.site-header', '.skip-link'];
+  const inertWhileOpen = ['main', '.site-footer', '.site-header', '.skip-link', '.side-tab'];
   function setMenu(open) {
     if (!menu || !toggle) return;
+    if (open && drawer && !drawer.hidden) setDrawer(false, false);
     menu.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
     document.body.classList.toggle('menu-open', open);
@@ -53,6 +67,44 @@
       else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
     }
   });
+
+  // Quick-contact drawer, opened from the tab on the right edge (not modal: the page stays usable).
+  const tab = document.querySelector('.side-tab');
+  const drawer = document.querySelector('.quick-drawer');
+  function setDrawer(open, returnFocus = true) {
+    if (!drawer || !tab) return;
+    drawer.hidden = !open;
+    tab.setAttribute('aria-expanded', String(open));
+    if (open) drawer.querySelector('.drawer-close')?.focus();
+    else if (returnFocus) tab.focus({ preventScroll: true });
+  }
+  tab?.addEventListener('click', () => setDrawer(drawer.hidden));
+  drawer?.querySelector('.drawer-close')?.addEventListener('click', () => setDrawer(false));
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && drawer && !drawer.hidden) setDrawer(false); });
+  document.addEventListener('click', event => {
+    if (drawer && !drawer.hidden && !drawer.contains(event.target) && !tab.contains(event.target)) setDrawer(false, false);
+  });
+
+  // Copy-email buttons (drawer and closing panel) report the result in a live region next to them.
+  // The region is emptied first so a second copy is announced again, and again after a few seconds so it never goes stale.
+  const STATUS_CLEAR_MS = 4000;
+  const statusTimers = new WeakMap();
+  function announce(status, message) {
+    if (!status) return;
+    clearTimeout(statusTimers.get(status));
+    status.textContent = '';
+    requestAnimationFrame(() => { status.textContent = message; });
+    statusTimers.set(status, setTimeout(() => { status.textContent = ''; }, STATUS_CLEAR_MS));
+  }
+  document.querySelectorAll('[data-copy-text]').forEach(button => button.addEventListener('click', async () => {
+    const status = button.closest('.quick-drawer, .closing')?.querySelector('.copy-status');
+    try {
+      await navigator.clipboard.writeText(button.dataset.copyText);
+      announce(status, '已复制邮箱 / Email copied');
+    } catch {
+      announce(status, `请手动复制：${button.dataset.copyText}`);
+    }
+  }));
 
   if ('IntersectionObserver' in window && !reduced.matches) {
     document.documentElement.classList.add('js-motion');

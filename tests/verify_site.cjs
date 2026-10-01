@@ -7,6 +7,16 @@ const path = require('node:path');
 const BASE = process.env.SITE_URL || 'http://127.0.0.1:8000';
 const root = path.resolve(__dirname, '..');
 
+// The computed colour of a design token, so tests follow the stylesheet instead of repeating its hex values.
+const tokenColour = (page, token) => page.evaluate(name => {
+  const probe = document.createElement('i');
+  probe.style.color = `var(${name})`;
+  document.body.append(probe);
+  const colour = getComputedStyle(probe).color;
+  probe.remove();
+  return colour;
+}, token);
+
 (async () => {
   const browser = await chromium.launch({ headless: true, args: ['--enable-unsafe-swiftshader'] });
   try {
@@ -35,10 +45,11 @@ const root = path.resolve(__dirname, '..');
     assert.match(await page.locator('.hero').innerText(), /Building businesses\. Empowering people\. Creating impact\./);
     assert.match(await page.locator('.hero a[href="/story/"]').innerText(), /Discover His Journey/);
     assert.match(await page.locator('.hero a[href="/business/"]').innerText(), /Explore His Work/);
-    assert.match(await page.locator('.closing h2').innerText(), /Let.s Create a Better Tomorrow/);
-    assert.equal(await page.locator('.photo-pill').count(), 1, 'one photo pill');
-    assert.equal(await page.locator('.photo-pill img:not([aria-hidden])').count() > 0, true, 'photo pill has real images');
-    console.log('PASS: hero cut-out, PDF wording, buttons, photo pill');
+    assert.match(await page.locator('.closing h2').innerText(), /Let.s Create a\s+Better Tomorrow/);
+    assert.equal(await page.locator('.reel').count(), 1, 'one showreel capsule');
+    assert.equal(await page.locator('.reel-collage img').count(), 6, 'the reel collage uses six real photos');
+    assert.equal(await page.locator('.hero-social a').count(), 5, 'five social icons in the hero');
+    console.log('PASS: hero cut-out, PDF wording, buttons, reel capsule, social icons');
 
     // Navigation: floating pill with four primary links + Menu; overlay lists all eight pages.
     const pillLinks = await page.locator('.pill-nav a').evaluateAll(links => links.map(link => link.getAttribute('href')));
@@ -76,22 +87,143 @@ const root = path.resolve(__dirname, '..');
     assert.equal(await page.evaluate(() => [...document.fonts].some(face => face.family.replace(/"/g, '') === 'Inter Tight' && face.status === 'loaded')), true, 'Inter Tight loaded');
     console.log('PASS: self-hosted Inter Tight, no Google Fonts requests');
 
-    // Reduced motion switches the photo pill animation off.
-    assert.equal(await page.locator('.photo-pill-track').evaluate(track => getComputedStyle(track).animationName), 'none');
-    console.log('PASS: reduced motion disables the photo pill animation');
+    // Reduced motion: the reel collage stops drifting and the card row is a plain swipeable strip.
+    assert.equal(await page.locator('.reel-collage img').first().evaluate(image => getComputedStyle(image).animationName), 'none');
+    assert.equal(await page.evaluate(() => document.documentElement.classList.contains('js-hscroll')), false, 'no pinned row with reduced motion');
+    assert.equal(await page.locator('.hscroll-track').evaluate(track => getComputedStyle(track).overflowX), 'auto');
+    console.log('PASS: reduced motion disables the reel drift and the pinned card row');
 
     // Normal-motion path (the main context above runs with reduced motion): reveals fire and the portrait drifts.
     const motionContext = await browser.newContext({ baseURL: BASE, viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
     const motionPage = await motionContext.newPage();
     await motionPage.goto(`${BASE}/landing.html`);
     assert.equal(await motionPage.evaluate(() => document.documentElement.classList.contains('js-motion')), true);
-    await motionPage.locator('.business-section .reveal').first().scrollIntoViewIfNeeded();
-    await motionPage.waitForFunction(() => document.querySelector('.business-section .reveal.in-view'));
+    await motionPage.locator('.insights-section .reveal').first().scrollIntoViewIfNeeded();
+    await motionPage.waitForFunction(() => document.querySelector('.insights-section .reveal.in-view'));
     await motionPage.evaluate(() => scrollTo(0, 300));
     await motionPage.waitForFunction(() => document.querySelector('.hero-cutout').style.getPropertyValue('--hero-shift') === '36.0px');
     assert.match(await motionPage.locator('.site-footer').innerText(), new RegExp(String(new Date().getFullYear())), 'footer shows the current year');
-    await motionContext.close();
     console.log('PASS: normal-motion reveals, hero parallax and current-year footer');
+
+    // Pinned hero, the panel that slides over it, and the header colours following the surface beneath.
+    await motionPage.evaluate(() => scrollTo(0, 0));
+    assert.equal(await motionPage.locator('.hero').evaluate(element => getComputedStyle(element).position), 'sticky', 'the hero is pinned');
+    assert.equal(await motionPage.locator('.site-header').evaluate(element => element.classList.contains('on-dark')), false, 'dark header text over the light hero');
+    await motionPage.evaluate(() => scrollTo(0, innerHeight));
+    await motionPage.waitForFunction(() => Number(document.querySelector('.hero-inner').style.getPropertyValue('--cover')) > 0.9);
+    await motionPage.waitForFunction(() => document.querySelector('.site-header').classList.contains('on-dark'));
+    assert.equal(await motionPage.locator('.hero-cta').evaluate(element => element.hasAttribute('inert')), true, 'hero buttons are out of reach once the panel covers them');
+    assert.equal(await motionPage.locator('.hero h1').count(), 1, 'the hero heading stays available');
+    await motionPage.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
+    await motionPage.waitForFunction(() => !document.querySelector('.hero-cta').hasAttribute('inert'));
+    console.log('PASS: pinned hero, sliding panel and header tone');
+
+    // The header follows the panel that is actually in view, including where light and navy panels overlap.
+    for (const [selector, dark] of [['.impact-section', true], ['.recognition-section', false], ['.closing', true]]) {
+      await motionPage.evaluate(target => scrollTo({ top: document.querySelector(target).getBoundingClientRect().top + scrollY - 10, behavior: 'instant' }), selector);
+      await motionPage.waitForFunction(expected => document.querySelector('.site-header').classList.contains('on-dark') === expected, dark);
+    }
+    console.log('PASS: header tone follows the visible panel across navy and light boundaries');
+
+    // The business cards slide sideways while the section is pinned.
+    assert.equal(await motionPage.evaluate(() => document.documentElement.classList.contains('js-hscroll')), true);
+    const rowTop = await motionPage.evaluate(() => document.querySelector('[data-hscroll]').getBoundingClientRect().top + scrollY);
+    assert.ok(await motionPage.evaluate(() => document.querySelector('[data-hscroll]').offsetHeight > innerHeight * 1.4), 'the pinned section is taller than the viewport');
+    await motionPage.evaluate(top => scrollTo(0, top + 400), rowTop);
+    await motionPage.waitForFunction(() => parseFloat(document.querySelector('.hscroll-track').style.getPropertyValue('--hx')) < -100);
+    assert.equal(await motionPage.locator('.hscroll-track .card').count(), 5, 'company card plus four business fields');
+    console.log('PASS: business cards scroll sideways');
+
+    // A mouse press on a card must not move the page; only keyboard focus repositions the row.
+    await motionPage.evaluate(() => document.addEventListener('click', event => event.preventDefault(), true));
+    const cardCentre = await motionPage.evaluate(() => {
+      const card = [...document.querySelectorAll('.hscroll-track .card')].find(item => { const box = item.getBoundingClientRect(); return box.left > 40 && box.right < innerWidth - 40; });
+      const box = card.getBoundingClientRect();
+      return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+    });
+    const beforePress = await motionPage.evaluate(() => scrollY);
+    await motionPage.mouse.move(cardCentre.x, cardCentre.y);
+    await motionPage.mouse.down();
+    await motionPage.waitForTimeout(600); // a smooth scroll triggered by the press would be well under way by now
+    assert.ok(Math.abs(await motionPage.evaluate(() => scrollY) - beforePress) < 2, 'mouse focus must not scroll the page');
+    await motionPage.mouse.up();
+    for (let step = 0; step < 6; step += 1) {
+      await motionPage.keyboard.press('Tab');
+      if (await motionPage.evaluate(() => document.activeElement === document.querySelector('.hscroll-track .card:last-child'))) break;
+    }
+    await motionPage.waitForFunction(() => {
+      const box = document.querySelector('.hscroll-track .card:last-child').getBoundingClientRect();
+      return box.left >= 0 && box.right <= innerWidth + 1;
+    });
+    console.log('PASS: mouse press leaves the page alone, keyboard focus brings the last card into view');
+
+    // Resizing while scrolled inside the pinned row keeps the visitor where they were.
+    const beforeResize = await motionPage.evaluate(() => scrollY);
+    await motionPage.setViewportSize({ width: 1300, height: 900 });
+    await motionPage.waitForFunction(() => document.documentElement.classList.contains('js-hscroll'));
+    await motionPage.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+    assert.ok(Math.abs(await motionPage.evaluate(() => scrollY) - beforeResize) < 2, 'resize keeps the scroll position');
+    await motionPage.setViewportSize({ width: 1440, height: 900 });
+    console.log('PASS: resizing the window does not move the pinned row');
+
+    // The reel opens the real video in a dialog and Escape closes it.
+    await motionPage.locator('[data-reel]').evaluate(element => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    assert.match(await motionPage.locator('[data-reel]').getAttribute('aria-label'), /Play reel/, 'the accessible name contains the visible words');
+    assert.equal(await motionPage.locator('#reel-dialog video').getAttribute('poster'), null, 'the poster is not fetched until the dialog opens');
+    await motionPage.locator('[data-reel]').click();
+    assert.equal(await motionPage.locator('#reel-dialog').evaluate(element => element.open), true);
+    assert.match(await motionPage.locator('#reel-dialog video').getAttribute('src'), /gala-reel\.mp4$/);
+    assert.match(await motionPage.locator('#reel-dialog video').getAttribute('poster'), /gala-reel-poster\.webp$/);
+    assert.equal(await motionPage.locator('#reel-dialog a[href$="#video"]').count(), 1, 'the dialog links to the written description');
+    await motionPage.keyboard.press('Escape');
+    assert.equal(await motionPage.locator('#reel-dialog').evaluate(element => element.open), false);
+    assert.equal(await motionPage.evaluate(() => document.activeElement === document.querySelector('[data-reel]')), true, 'focus returns to the reel button');
+    console.log('PASS: reel dialog plays the 916 video, closes with Escape and returns focus');
+
+    // Dragging out of the video and releasing on the backdrop must not close it; a real backdrop click does.
+    await motionPage.locator('[data-reel]').click();
+    const videoBox = await motionPage.locator('#reel-dialog video').boundingBox();
+    await motionPage.mouse.move(videoBox.x + videoBox.width / 2, videoBox.y + videoBox.height / 3);
+    await motionPage.mouse.down();
+    await motionPage.mouse.move(6, 6);
+    await motionPage.mouse.up();
+    assert.equal(await motionPage.locator('#reel-dialog').evaluate(element => element.open), true, 'drag-release on the backdrop keeps the dialog open');
+    await motionPage.mouse.click(6, 6);
+    assert.equal(await motionPage.locator('#reel-dialog').evaluate(element => element.open), false, 'a plain backdrop click closes it');
+    console.log('PASS: reel dialog ignores drag-release on the backdrop');
+
+    // On a short window the close button, the video controls and the description link all stay on screen.
+    await motionPage.setViewportSize({ width: 1280, height: 560 });
+    await motionPage.locator('[data-reel]').evaluate(element => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await motionPage.locator('[data-reel]').click();
+    const onScreen = await motionPage.evaluate(() => ['.dialog-close', 'video', '.dialog-note'].map(selector => {
+      const box = document.querySelector(`#reel-dialog ${selector}`).getBoundingClientRect();
+      return box.top >= 0 && box.bottom <= innerHeight && box.left >= 0 && box.right <= innerWidth;
+    }));
+    assert.deepEqual(onScreen, [true, true, true], 'dialog parts fit a 560px-tall window');
+    await motionPage.keyboard.press('Escape');
+    await motionPage.setViewportSize({ width: 1440, height: 900 });
+    console.log('PASS: reel dialog fits short windows');
+
+    // Quick-contact drawer and the copy-email button in the closing panel.
+    await motionPage.locator('.side-tab').click();
+    assert.equal(await motionPage.locator('#quick-drawer').isVisible(), true);
+    assert.equal(await motionPage.locator('#quick-drawer a[href="mailto:Drkervis@xingyu.global"]').count(), 1);
+    await motionPage.keyboard.press('Escape');
+    assert.equal(await motionPage.locator('#quick-drawer').isVisible(), false);
+    await motionContext.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await motionPage.locator('.copy-email').evaluate(element => element.scrollIntoView({ block: 'center' }));
+    await motionPage.locator('.copy-email').click();
+    await motionPage.waitForFunction(() => document.querySelector('.closing .copy-status').textContent.includes('copied'));
+    assert.equal(await motionPage.evaluate(() => navigator.clipboard.readText()), 'Drkervis@xingyu.global');
+    await motionContext.close();
+    console.log('PASS: quick-contact drawer and copy-email button');
+
+    // Inner pages share the light base, with a navy closing panel.
+    await page.goto(`${BASE}/story/`);
+    assert.equal(await page.locator('.page-intro').evaluate(element => getComputedStyle(element).backgroundColor), await tokenColour(page, '--page'));
+    assert.equal(await page.locator('.closing').evaluate(element => getComputedStyle(element).backgroundColor), await tokenColour(page, '--navy'));
+    console.log('PASS: inner pages use the light base and a navy closing panel');
 
     // Check every generated page, local asset and link, metadata and schema.
     const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');

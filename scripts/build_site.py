@@ -91,6 +91,33 @@ def image(name, alt, cls='', eager=False, sizes=None):
     return f'<img src="/images/{source}"{responsive} alt="{escape(alt)}" width="{w}" height="{h}" class="{cls}" {load} decoding="async">'
 
 
+ICON_PATHS = {
+    'Facebook': '<path d="M15 4h-2.2A3.8 3.8 0 0 0 9 7.8V10H6.5v3.5H9V21h3.8v-7.5h2.6L16 10h-3.2V8c0-.7.3-1 1-1H15z"/>',
+    'Instagram': '<rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="16.8" cy="7.2" r=".6"/>',
+    'WhatsApp': '<path d="M4 20l1.2-3.9A8 8 0 1 1 8.2 19z"/><path d="M9.2 8.5c.2 2.9 2.8 5.5 5.7 5.9l1-1.3-1.9-1-.8.7a4 4 0 0 1-1.9-1.9l.7-.8-1-1.9z"/>',
+    'X': '<path d="M5 5l14 14M19 5L5 19"/>',
+    'LinkedIn': '<rect x="4" y="9.5" width="3.4" height="10"/><circle cx="5.7" cy="5.7" r="1.8"/><path d="M10.5 9.5H14v1.5c.6-1 1.7-1.8 3.2-1.8 3 0 3.8 1.9 3.8 4.5v5.8h-3.4v-5.2c0-1.3-.3-2.1-1.5-2.1s-1.7 1-1.7 2.2v5.1h-3.4z"/>',
+}
+
+
+def social_icons(css_class=''):
+    """Round outline icons linking to the official accounts (opens in a new window)."""
+    items = ''.join(f'<li><a href="{url}" target="_blank" rel="noopener noreferrer" aria-label="{label}（在新窗口打开）"><svg viewBox="0 0 24 24" aria-hidden="true">{ICON_PATHS[label]}</svg></a></li>' for label, url in SOCIALS)
+    return f'<ul class="social-icons {css_class}" aria-label="社交媒体 / Social media">{items}</ul>'
+
+
+def quick_contact():
+    """Side tab on the right edge and the small drawer it opens (email, WhatsApp, press kit)."""
+    whatsapp = dict(SOCIALS)['WhatsApp']
+    return (f'<button class="side-tab" type="button" aria-expanded="false" aria-controls="quick-drawer"><span>快速联系</span><span class="tab-en"> · Quick contact</span></button>'
+            f'<aside class="quick-drawer" id="quick-drawer" aria-label="快速联系" hidden><button class="drawer-close" type="button" aria-label="关闭 / Close"><span aria-hidden="true">✕</span></button>'
+            f'<div class="drawer-title">Quick contact</div><p>合作、媒体与演讲邀请</p><div class="drawer-links"><a href="mailto:{EMAIL}">{EMAIL}<span aria-hidden="true">↗</span></a>'
+            f'<button type="button" data-copy-text="{EMAIL}">复制邮箱 / Copy email<span aria-hidden="true">⧉</span></button>'
+            f'<a href="{whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp<span aria-hidden="true">↗</span></a>'
+            f'<a href="/press/">Press kit · 媒体资料<span aria-hidden="true">→</span></a><a href="/contact/?type=speaking">Invite to speak · 邀请演讲<span aria-hidden="true">→</span></a></div>'
+            f'<p class="copy-status" role="status"></p></aside>')
+
+
 def current(path, active):
     return ' aria-current="page"' if path == active else ''
 
@@ -105,6 +132,7 @@ def header(active):
       <a class="header-contact" href="/contact/">Let’s connect <span class="circle-arrow" aria-hidden="true">↗</span></a>
     </div><div class="progress" aria-hidden="true"></div></header>
     <nav class="pill-nav" aria-label="快速导航">{pill}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu"><span class="menu-bars" aria-hidden="true"><i></i><i></i></span><span class="menu-text-open">Menu</span><span class="menu-text-close">Close</span></button></nav>
+    {quick_contact()}
     <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="站点菜单" hidden><nav aria-label="全站导航">{overlay}<a href="/contact/"{current('/contact/', active)}>Contact<small>合作与联系</small></a></nav><div class="menu-bottom"><a href="mailto:{EMAIL}">{EMAIL}</a><div class="menu-socials">{socials}</div></div></div>'''
 
 
@@ -113,16 +141,25 @@ def footer():
     records = [('Media', '/media/'), ('Recognition', '/awards/'), ('Press Room', '/press/'), ('News', '/news/'), ('Archive', '/archive/'), ('Speaking', '/speaking/'), ('Contact', '/contact/')]
     records = ''.join(f'<a href="{url}">{text}</a>' for text, url in records)
     socials = ''.join(f'<a href="{url}" target="_blank" rel="noopener noreferrer">{text} ↗</a>' for text, url in SOCIALS)
-    return f'''<footer class="site-footer"><div class="wrap"><div class="footer-grid">
-    <div><a class="footer-brand" href="/landing.html">Dr Kervis Soo<small>苏才育博士</small></a><p class="footer-summary">以科技连接可能，以事业创造价值。<br>Building businesses. Empowering people.<br>Creating impact.</p></div>
+    return f'''<footer class="site-footer" data-tone="dark"><div class="wrap"><div class="footer-grid">
+    <div><a class="footer-brand" href="/landing.html">Dr Kervis Soo<small>苏才育博士</small></a><p class="footer-summary">以科技连接可能，以事业创造价值。<br>Building businesses. Empowering people.<br>Creating impact.</p>{social_icons()}</div>
     <div><div class="footer-heading">Explore / 探索</div><nav class="footer-links" aria-label="探索页面">{explore}</nav></div>
     <div><div class="footer-heading">Public record / 记录</div><nav class="footer-links" aria-label="档案页面">{records}</nav></div>
     <div><div class="footer-heading">Stay connected / 关注</div><div class="footer-links">{socials}<a href="mailto:{EMAIL}">Email ↗</a></div></div>
     </div><div class="footer-bottom"><span>© <span data-year>{date.today().year}</span> Dr Kervis Soo. All rights reserved. · 个人官方网站</span><div><a href="/privacy/">Privacy &amp; Legal</a><a href="/" aria-label="The entrance - 重看入口动画">The entrance ↗</a><a class="back-top" href="#top">Back to top ↑</a></div></div></div></footer>'''
 
 
+CLOSING_PORTRAIT = ('about-640.webp', 640, 427)  # name, width, height
+
+
 def closing():
-    return f'''<section class="closing on-navy"><div class="wrap"><div class="reveal"><h2>Let’s Create a <em>Better Tomorrow</em></h2><p>商业合作 · 媒体采访 · 演讲邀请 · 公益交流</p></div>{link('Get In Touch<small>联系 Dr Kervis 团队</small>', '/contact/', True)}</div></section>'''
+    name, width, height = CLOSING_PORTRAIT
+    portrait = f'<img class="closing-portrait" src="/images/{name}" alt="" width="{width}" height="{height}" loading="lazy" decoding="async">'
+    mail = (f'<span class="closing-mail"><a href="mailto:{EMAIL}">{EMAIL}</a><button class="copy-email" type="button" data-copy-text="{EMAIL}" aria-label="复制邮箱 / Copy email">'
+            '<span aria-hidden="true">⧉</span></button></span>')
+    return (f'<section class="closing panel on-navy" data-tone="dark"><div class="wrap"><div class="reveal"><h2><span class="line">Let’s Create a</span> {portrait}<span class="line"><em>Better Tomorrow</em></span></h2>'
+            f'<p>商业合作 · 媒体采访 · 演讲邀请 · 公益交流</p></div><div class="closing-actions">{link("Get In Touch<small>联系 Dr Kervis 团队</small>", "/contact/", True)}{mail}</div>'
+            '<p class="copy-status" role="status"></p></div></section>')
 
 
 def write_page(path, title, description, body, active='', home=False, extra_schema=None, og_image='/images/hero.jpg'):
@@ -147,7 +184,7 @@ def write_page(path, title, description, body, active='', home=False, extra_sche
 <meta name="theme-color" content="#102638"><link rel="canonical" href="{canonical}">
 <meta property="og:type" content="{og_type}"><meta property="og:title" content="{escape(title, quote=True)} | Dr Kervis Soo"><meta property="og:description" content="{escape(description, quote=True)}"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{DOMAIN}{og_image}"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="preload" href="/assets/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css">
-<script type="application/ld+json">{json.dumps(schema, ensure_ascii=False).replace('</', '<\\/')}</script><script src="/assets/site.js" defer></script>
+<script type="application/ld+json">{json.dumps(schema, ensure_ascii=False).replace('</', '<\\/')}</script><script src="/assets/site.js" defer></script>{'<script src="/assets/home.js" defer></script>' if home else ''}
 </head><body id="top" class="{'home' if home else 'inner-page'}">{header(active)}<main id="main" class="{'home-main' if home else 'page-main'}">{body}</main>{footer()}</body></html>'''
     output = ROOT / (path.lstrip('/') if path.endswith('.html') else path.strip('/') + '/index.html')
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -158,7 +195,7 @@ def write_page(path, title, description, body, active='', home=False, extra_sche
 def intro(en, zh, description, photo=None, article=False, photo_alt='苏才育博士人物照片'):
     media = image(photo, photo_alt, 'intro-photo', True) if photo else ''
     heading_class = 'latin-title' if not any('\u4e00' <= c <= '\u9fff' for c in zh) else ''
-    return f'''<section class="page-intro on-navy {'with-photo' if photo else ''}">{media}<div class="wrap {'article-head' if article else ''}"><nav class="breadcrumbs" aria-label="面包屑"><a href="/landing.html">首页 Home</a><span aria-hidden="true">/</span><span>{zh}</span></nav>{eyebrow(en)}<h1 class="{heading_class}">{zh}</h1><p class="page-subtitle">{en}</p><p class="lead">{description}</p></div></section>'''
+    return f'''<section class="page-intro {'with-photo' if photo else ''}">{media}<div class="wrap {'article-head' if article else ''}"><nav class="breadcrumbs" aria-label="面包屑"><a href="/landing.html">首页 Home</a><span aria-hidden="true">/</span><span>{zh}</span></nav>{eyebrow(en)}<h1 class="{heading_class}">{zh}</h1><p class="page-subtitle">{en}</p><p class="lead">{description}</p></div></section>'''
 
 
 def page_section(content, cls=''):
@@ -236,7 +273,7 @@ def no_results():
 
 
 def home_page():
-    html = render_home(image, link, BIO, BUSINESSES, ARTICLES, insight_item, coverage_rows, sort_by_date(COVERAGE), closing)
+    html = render_home(image, link, BIO, BUSINESSES, ARTICLES, insight_item, coverage_rows, sort_by_date(COVERAGE), closing, social_icons('hero-social'))
     write_page('/landing.html', '首页 · Building businesses. Creating impact.', 'Dr Kervis Soo 苏才育博士个人官方网站。了解星域集团创办人的创业历程、AI 与数字经济实践、社会贡献及媒体记录。', html, home=True)
 
 

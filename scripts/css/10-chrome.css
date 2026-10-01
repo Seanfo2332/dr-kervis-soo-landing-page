@@ -1,4 +1,4 @@
-/* Site chrome: header, floating pill navigation, full-screen menu, closing, footer. */
+/* Site chrome: header, floating pill, side tab + drawer, full-screen menu, social icons, closing panel, footer. */
 .skip-link {
   position: fixed;
   left: 16px;
@@ -14,21 +14,27 @@
   top: 12px;
 }
 
-/* Header: name left, contact pill right. Turns into a navy bar once scrolled. */
+/* Header: name left, contact pill right. Its colours follow whatever surface sits beneath it (see site.js). */
 .site-header {
   position: fixed;
   inset: 0 0 auto;
   height: var(--header-h);
   z-index: 50;
-  color: #fff;
+  color: var(--ink);
   transition:
     background 0.3s,
-    backdrop-filter 0.3s;
+    color 0.3s;
+}
+.site-header.on-dark {
+  color: #fff;
 }
 .site-header.scrolled {
-  background: rgba(8, 24, 36, 0.82);
+  background: rgba(233, 232, 228, 0.82);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+}
+.site-header.scrolled.on-dark {
+  background: rgba(8, 24, 36, 0.82);
 }
 .site-header .wrap {
   display: flex;
@@ -42,10 +48,13 @@
 .brand {
   white-space: nowrap;
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: -0.04em;
 }
 .brand-dot {
+  color: var(--gold-ink);
+}
+.on-dark .brand-dot {
   color: var(--gold);
 }
 .header-contact {
@@ -101,12 +110,12 @@
   gap: 2px;
   padding: 6px;
   border-radius: var(--pill);
-  background: rgba(8, 24, 36, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(16, 38, 56, 0.1);
   backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  box-shadow: 0 14px 40px rgba(4, 12, 20, 0.35);
-  color: #fff;
+  box-shadow: 0 14px 40px rgba(8, 24, 36, 0.2);
+  color: var(--ink);
   white-space: nowrap;
 }
 .pill-nav a,
@@ -119,7 +128,7 @@
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.78);
+  color: rgba(16, 38, 56, 0.72);
   background: transparent;
   border: 0;
   transition:
@@ -127,8 +136,8 @@
     color 0.25s;
 }
 .pill-nav a:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
+  color: var(--ink);
+  background: rgba(16, 38, 56, 0.07);
 }
 .pill-nav a[aria-current="page"] {
   background: var(--gold);
@@ -136,13 +145,13 @@
 }
 .pill-nav .menu-toggle {
   margin-left: 4px;
-  background: #fff;
-  color: var(--navy);
+  background: var(--navy);
+  color: #fff;
   font-weight: 600;
   gap: 10px;
 }
 .pill-nav .menu-toggle:hover {
-  background: var(--gold-bright);
+  background: var(--navy-lift);
 }
 .menu-toggle .menu-bars {
   display: grid;
@@ -171,6 +180,130 @@
   display: inline;
 }
 
+/* Quick-contact tab on the right edge, opening a small drawer. */
+.side-tab {
+  position: fixed;
+  right: 0;
+  top: 42%;
+  z-index: 55;
+  padding: 18px 9px;
+  border: 0;
+  border-radius: 14px 0 0 14px;
+  background: #fff;
+  color: var(--navy);
+  box-shadow: 0 8px 28px rgba(8, 24, 36, 0.16);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  writing-mode: vertical-rl;
+  transition: background 0.25s;
+}
+.side-tab:hover {
+  background: var(--gold-bright);
+}
+.quick-drawer {
+  position: fixed;
+  right: 14px;
+  top: 50%;
+  z-index: 56;
+  width: min(340px, calc(100vw - 28px));
+  transform: translateY(-50%);
+  padding: 26px 24px 22px;
+  border-radius: var(--radius);
+  background: var(--navy);
+  color: #fff;
+  box-shadow: 0 24px 60px rgba(4, 12, 20, 0.45);
+  --accent: var(--gold);
+}
+.drawer-title {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.quick-drawer p {
+  margin-top: 6px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.62);
+}
+.drawer-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 18px;
+}
+.drawer-links {
+  display: grid;
+  margin-top: 18px;
+}
+.drawer-links a,
+.drawer-links button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: none;
+  color: #fff;
+  font-size: 15px;
+  text-align: left;
+}
+.drawer-links a:hover,
+.drawer-links button:hover {
+  color: var(--gold);
+}
+.copy-status {
+  min-height: 1.4em;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--gold);
+}
+
+/* Social icons (inline SVG, drawn as simple outlines). */
+.social-icons {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.social-icons a {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.8;
+  transition:
+    opacity 0.2s,
+    background 0.2s,
+    color 0.2s;
+}
+.social-icons a:hover {
+  opacity: 1;
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+}
+.social-icons svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* Full-screen menu overlay listing every page. */
 .mobile-menu {
   position: fixed;
@@ -184,6 +317,7 @@
   padding: calc(var(--header-h) + 24px) var(--gutter) var(--pill-nav-space);
   background: radial-gradient(80% 60% at 80% 0%, var(--navy-lift) 0%, var(--navy) 55%, var(--navy-deep) 100%);
   color: #fff;
+  --accent: var(--gold);
 }
 .mobile-menu nav {
   display: grid;
@@ -202,7 +336,7 @@
   padding: clamp(10px, 1.6vh, 18px) 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   font-size: clamp(30px, min(5.2vw, 8svh), 72px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.04em;
   line-height: 1.1;
   transition:
@@ -243,36 +377,81 @@
   gap: 4px 22px;
 }
 
-/* Closing call to action */
+/* Closing panel: giant line of type with a small round portrait sitting between its two lines. */
 .closing {
-  padding-block: clamp(72px, 10vw, 150px);
-  text-align: left;
+  padding-block: clamp(96px, 12vw, 180px) clamp(72px, 9vw, 130px);
 }
 .closing .wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 44px;
+  display: grid;
+  justify-items: center;
+  gap: clamp(28px, 3.4vw, 44px);
+  text-align: center;
 }
 .closing h2 {
+  position: relative;
   font-size: clamp(54px, 10.5vw, 176px);
-  font-weight: 500;
-  line-height: 0.92;
+  font-weight: 400;
+  line-height: 0.96;
   letter-spacing: -0.055em;
-  max-width: 12ch;
+}
+.closing h2 .line {
+  display: block;
 }
 .closing h2 em {
   font-style: normal;
   color: var(--gold);
 }
+.closing-portrait {
+  position: absolute;
+  left: 95%;
+  top: 41%;
+  z-index: 2;
+  width: clamp(52px, 6.6vw, 100px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border: 4px solid var(--navy);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 22%;
+  background: var(--navy-lift);
+}
 .closing p {
-  margin-top: clamp(22px, 2.4vw, 34px);
   color: var(--fg-muted);
   font-size: 15px;
   letter-spacing: 0.04em;
 }
-.closing .button {
-  flex-shrink: 0;
+.closing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px 32px;
+}
+.closing-mail {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+.closing-mail a {
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid var(--gold);
+}
+.copy-email {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 15px;
+}
+.copy-email:hover {
+  background: var(--gold-bright);
 }
 
 /* Footer */
@@ -292,7 +471,7 @@
 }
 .footer-brand {
   font-size: clamp(28px, 3vw, 40px);
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -0.045em;
   line-height: 1.1;
 }
@@ -309,6 +488,9 @@
   color: var(--fg-muted);
   font-size: 13px;
   line-height: 2;
+}
+.site-footer .social-icons {
+  margin-top: 22px;
 }
 .footer-heading {
   font-size: 12px;
@@ -395,18 +577,14 @@
     flex: 1.15 1 auto;
     gap: 7px;
   }
-}
-@media (max-width: 400px) {
-  .pill-nav a,
-  .pill-nav .menu-toggle {
-    padding: 0 6px;
-    font-size: 12px;
+  .side-tab {
+    top: 38%;
+    padding: 14px 7px;
+    font-size: 11px;
   }
-  .pill-nav .menu-bars {
+  .side-tab .tab-en {
     display: none;
   }
-}
-@media (max-width: 680px) {
   .mobile-menu nav {
     grid-template-columns: 1fr;
   }
@@ -414,9 +592,6 @@
     padding-block: 9px;
     font-size: clamp(28px, 8.8vw, 42px);
     flex-wrap: wrap;
-  }
-  .closing .wrap {
-    gap: 34px;
   }
   .site-footer {
     padding-top: 56px;
@@ -433,5 +608,15 @@
   .footer-bottom {
     font-size: 11px;
     line-height: 1.9;
+  }
+}
+@media (max-width: 400px) {
+  .pill-nav a,
+  .pill-nav .menu-toggle {
+    padding: 0 6px;
+    font-size: 12px;
+  }
+  .pill-nav .menu-bars {
+    display: none;
   }
 }
