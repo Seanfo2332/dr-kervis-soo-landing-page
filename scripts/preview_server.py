@@ -10,7 +10,7 @@ from hashlib import sha256
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from io import BytesIO
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import quote, unquote, urlsplit
 import argparse
 import json
 
@@ -74,6 +74,14 @@ class PreviewHandler(SimpleHTTPRequestHandler):
         self.end_headers()
         return BytesIO(content)
 
+    def redirect_page(self, destination):
+        query = urlsplit(self.path).query
+        self.send_response(308)
+        self.send_header('Location', quote(destination, safe='/') + ('?' + query if query else ''))
+        self.send_header('Content-Length', '0')
+        self.end_headers()
+        return None
+
     def send_head(self):
         request_path = unquote(urlsplit(self.path).path)
         if request_path == '/__preview_version__':
@@ -87,8 +95,22 @@ class PreviewHandler(SimpleHTTPRequestHandler):
 
         direct_preview = request_path.rstrip('/') == '/preview'
         path = ROOT / 'landing.html' if direct_preview else Path(self.translate_path(self.path))
-        if path.is_dir() and request_path.endswith('/'):
+
+        # Match the production cleanUrls / trailingSlash settings, including old bookmarks.
+        if not direct_preview and path.is_file() and path.suffix == '.html':
+            relative = path.relative_to(ROOT).as_posix()
+            destination = relative[:-10] if path.name == 'index.html' else relative[:-5] + '/'
+            return self.redirect_page('/' + destination)
+        if path.is_dir():
+            if not request_path.endswith('/'):
+                return self.redirect_page('/' + path.relative_to(ROOT).as_posix() + '/')
             path = path / 'index.html'
+        elif not direct_preview and not path.suffix:
+            candidate = path.with_suffix('.html')
+            if candidate.is_file():
+                if not request_path.endswith('/'):
+                    return self.redirect_page('/' + path.relative_to(ROOT).as_posix() + '/')
+                path = candidate
 
         if path.is_file() and path.suffix.lower() == '.html':
             # Capture the version before reading so a concurrent edit reloads again.

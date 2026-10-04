@@ -25,33 +25,53 @@ const tokenColour = (page, token) => page.evaluate(name => {
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
 
+    // Legacy filenames redirect permanently; bookmarks keep enquiry queries and section anchors.
+    for (const [source, destination] of [
+      ['/index.html', '/'],
+      ['/landing.html', '/landing/'],
+      ['/landing', '/landing/'],
+      ['/contact/index.html?type=speaking', '/contact/?type=speaking'],
+      ['/business/ai-content/index.html', '/business/ai-content/'],
+    ]) {
+      const response = await context.request.get(BASE + source, { maxRedirects: 0 });
+      assert.equal(response.status(), 308, `${source}: permanent clean URL redirect`);
+      assert.equal(new URL(response.headers().location, BASE).pathname + new URL(response.headers().location, BASE).search,
+        destination, `${source}: canonical destination`);
+    }
+    await page.goto(`${BASE}/contact/index.html?type=speaking#main`);
+    assert.equal(new URL(page.url()).pathname, '/contact/');
+    assert.equal(new URL(page.url()).hash, '#main');
+    assert.equal(await page.locator('#type').inputValue(), 'speaking');
+    assert.equal((await context.request.get(`${BASE}/missing-page-for-qa/`)).status(), 404);
+    console.log('PASS: clean URL redirects preserve queries and anchors; missing pages stay 404');
+
     // The homepage opens directly (no redirect gate); the entrance at / still leads into it.
-    await page.goto(`${BASE}/landing.html`);
-    assert.equal(new URL(page.url()).pathname, '/landing.html', 'landing.html must not redirect a fresh visitor');
+    await page.goto(`${BASE}/landing/`);
+    assert.equal(new URL(page.url()).pathname, '/landing/', 'the clean homepage URL must not redirect a fresh visitor');
     await page.locator('#hero-title').waitFor();
-    assert.match(await page.locator('h1').innerText(), /Dr\s+Kervis/);
+    assert.match(await page.locator('h1').innerText(), /苏才育\s*博士/);
     await page.goto(`${BASE}/`);
     await page.locator('#enter-btn').click();
-    await page.waitForURL(`${BASE}/landing.html`, { timeout: 15000 });
+    await page.waitForURL(`${BASE}/landing/`, { timeout: 15000 });
     await page.locator('#hero-title').waitFor();
     console.log('PASS: homepage opens directly and the entrance Enter button leads into it');
 
-    // Hero: full-bleed stage photo, PDF wording and buttons.
-    await page.goto(`${BASE}/landing.html`);
+    // Hero: full-bleed stage photo, Chinese wording and buttons.
+    await page.goto(`${BASE}/landing/`);
     const heroPhoto = page.locator('.hero-photo img');
     await heroPhoto.waitFor();
     assert.ok(await heroPhoto.evaluate(img => img.complete && img.naturalWidth >= 2000), 'the hero photo loads at full size');
     assert.match(await heroPhoto.getAttribute('alt'), /星域荣耀盛典/);
     assert.equal(await heroPhoto.getAttribute('fetchpriority'), 'high', 'the hero photo is the priority image');
-    assert.match(await page.locator('.hero').innerText(), /ENTREPRENEUR · AI & DIGITAL ECONOMY ADVOCATE · PHILANTHROPIST/i);
-    assert.match(await page.locator('.hero').innerText(), /Building businesses\. Empowering people\. Creating impact\./);
-    assert.match(await page.locator('.hero a[href="/story/"]').innerText(), /Discover His Journey/);
-    assert.match(await page.locator('.hero a[href="/business/"]').innerText(), /Explore His Work/);
-    assert.match(await page.locator('.closing h2').innerText(), /Let.s Create a\s+Better Tomorrow/);
+    assert.match(await page.locator('.hero').innerText(), /企业家 · 人工智能与数字经济倡导者 · 慈善家/);
+    assert.match(await page.locator('.hero').innerText(), /成就事业，助人成长，创造影响。/);
+    assert.match(await page.locator('.hero a[href="/story/"]').innerText(), /探索他的来时路/);
+    assert.match(await page.locator('.hero a[href="/business/"]').innerText(), /了解他的事业/);
+    assert.match(await page.locator('.closing h2').innerText(), /携手共创\s*美好明天/);
     assert.equal(await page.locator('.reel').count(), 1, 'one showreel capsule');
     assert.equal(await page.locator('.reel-collage img').count(), 6, 'the reel collage uses six real photos');
     assert.equal(await page.locator('.hero-social a').count(), 5, 'five social icons in the hero');
-    console.log('PASS: hero photo, PDF wording, buttons, reel capsule, social icons');
+    console.log('PASS: hero photo, Chinese copy, buttons, reel capsule, social icons');
 
     // Navigation: floating pill with four primary links + Menu; overlay lists all eight pages.
     const pillLinks = await page.locator('.pill-nav a').evaluateAll(links => links.map(link => link.getAttribute('href')));
@@ -83,7 +103,7 @@ const tokenColour = (page, token) => page.evaluate(name => {
     const fontRequests = [];
     page.on('request', request => { if (/fonts\.(googleapis|gstatic)\.com/.test(request.url())) fontRequests.push(request.url()); });
     await page.goto(`${BASE}/`);
-    await page.goto(`${BASE}/landing.html`);
+    await page.goto(`${BASE}/landing/`);
     assert.deepEqual(fontRequests, [], 'fonts must be self-hosted');
     await page.evaluate(() => document.fonts.ready);
     assert.equal(await page.evaluate(() => [...document.fonts].some(face => face.family.replace(/"/g, '') === 'Inter Tight' && face.status === 'loaded')), true, 'Inter Tight loaded');
@@ -98,7 +118,7 @@ const tokenColour = (page, token) => page.evaluate(name => {
     // Normal-motion path (the main context above runs with reduced motion): reveals fire and the portrait drifts.
     const motionContext = await browser.newContext({ baseURL: BASE, viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
     const motionPage = await motionContext.newPage();
-    await motionPage.goto(`${BASE}/landing.html`);
+    await motionPage.goto(`${BASE}/landing/`);
     assert.equal(await motionPage.evaluate(() => document.documentElement.classList.contains('js-motion')), true);
     await motionPage.locator('.insights-section .reveal').first().scrollIntoViewIfNeeded();
     await motionPage.waitForFunction(() => document.querySelector('.insights-section .reveal.in-view'));
@@ -168,7 +188,7 @@ const tokenColour = (page, token) => page.evaluate(name => {
 
     // The reel opens the real video in a dialog and Escape closes it.
     await motionPage.locator('[data-reel]').evaluate(element => element.scrollIntoView({ block: 'center', behavior: 'instant' }));
-    assert.match(await motionPage.locator('[data-reel]').getAttribute('aria-label'), /Play reel/, 'the accessible name contains the visible words');
+    assert.match(await motionPage.locator('[data-reel]').getAttribute('aria-label'), /播放精选影像/, 'the accessible name contains the visible words');
     assert.equal(await motionPage.locator('#reel-dialog video').getAttribute('poster'), null, 'the poster is not fetched until the dialog opens');
     await motionPage.locator('[data-reel]').click();
     assert.equal(await motionPage.locator('#reel-dialog').evaluate(element => element.open), true);
@@ -214,13 +234,13 @@ const tokenColour = (page, token) => page.evaluate(name => {
     await motionContext.grantPermissions(['clipboard-read', 'clipboard-write']);
     await motionPage.locator('.copy-email').evaluate(element => element.scrollIntoView({ block: 'center' }));
     await motionPage.locator('.copy-email').click();
-    await motionPage.waitForFunction(() => document.querySelector('.closing .copy-status').textContent.includes('copied'));
+    await motionPage.waitForFunction(() => document.querySelector('.closing .copy-status').textContent.includes('已复制邮箱'));
     assert.equal(await motionPage.evaluate(() => navigator.clipboard.readText()), 'Drkervis@xingyu.global');
     await motionContext.close();
     console.log('PASS: quick-contact drawer and copy-email button');
 
     // The Speaking section is a full-bleed photo panel: a real image with alt text, and a portrait crop on phones and tablets.
-    await page.goto(`${BASE}/landing.html`);
+    await page.goto(`${BASE}/landing/`);
     const speakingPhoto = page.locator('.speaking-photo img');
     await speakingPhoto.scrollIntoViewIfNeeded();
     await page.waitForFunction(() => { const image = document.querySelector('.speaking-photo img'); return image.complete && image.naturalWidth > 0; });
@@ -243,11 +263,17 @@ const tokenColour = (page, token) => page.evaluate(name => {
     // Check every generated page, local asset and link, metadata and schema.
     const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
     const routes = [...sitemap.matchAll(/<loc>https:\/\/drkervis\.com([^<]*)<\/loc>/g)].map(match => match[1]).filter(route => route !== '/');
+    assert.ok(routes.every(route => !route.includes('.html')), 'sitemap uses clean URLs');
     const internalTargets = new Set();
     for (const route of routes) {
       const response = await page.goto(BASE + route);
       assert.equal(response.status(), 200, route);
       assert.equal(await page.locator('h1').count(), 1, `${route}: one H1`);
+      assert.equal(await page.locator('html').getAttribute('lang'), 'zh-CN', `${route}: Chinese document language`);
+      const copy = await page.evaluate(() => [document.title, document.body.innerText,
+        ...[...document.querySelectorAll('[aria-label], [placeholder], img[alt]')].map(element =>
+          [element.getAttribute('aria-label'), element.getAttribute('placeholder'), element.getAttribute('alt')].filter(Boolean).join(' '))].join('\n'));
+      assert.doesNotMatch(copy, /\b(?:About|Journey|Business|Insights|Menu|Close|Contact|Explore|Privacy|Search|Read|Copy|Play|Founder|Entrepreneur|Dr Kervis|AI|MCN)\b/i, `${route}: translated site copy`);
       assert.ok(await page.locator('meta[name="description"]').getAttribute('content'), `${route}: description`);
       assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://drkervis.com' + route);
       await page.locator('script[type="application/ld+json"]').evaluate(element => JSON.parse(element.textContent));
@@ -255,6 +281,7 @@ const tokenColour = (page, token) => page.evaluate(name => {
       for (const href of links) {
         if (href.startsWith('/') || href.startsWith('#')) {
           const url = new URL(href, BASE + route);
+          assert.ok(!url.pathname.endsWith('.html'), `Internal links use clean URLs: ${href}`);
           internalTargets.add(url.pathname + url.search + url.hash);
         }
       }
@@ -311,6 +338,7 @@ const tokenColour = (page, token) => page.evaluate(name => {
     await page.getByRole('searchbox').fill('');
     await page.locator('[data-filter="all"]').click();
     assert.equal(await page.locator('.reference-row:visible').count(), rowCount);
+    assert.equal(await page.locator('.filter-summary').innerText(), `${rowCount} 条记录`);
 
     await page.goto(`${BASE}/insights/`);
     await page.locator('[data-filter="creators"]').click();
@@ -380,7 +408,10 @@ const tokenColour = (page, token) => page.evaluate(name => {
     }
     await page.locator('button[type="submit"]').click();
     assert.equal(await page.locator('.email-ready').isVisible(), false);
+    assert.equal(await page.locator('#name').evaluate(field => field.validationMessage), '请填写姓名。');
     await page.locator('#name').fill('Site QA');
+    await page.locator('#email').fill('invalid-address');
+    assert.match(await page.locator('#email').evaluate(field => field.validationMessage), /请输入有效的邮箱地址/);
     await page.locator('#email').fill('qa@example.com');
     await page.locator('#organisation').fill('Preview review');
     await page.locator('#message').fill('测试中文 & English + symbols\nSecond line');
@@ -390,6 +421,7 @@ const tokenColour = (page, token) => page.evaluate(name => {
     assert.equal(mail.protocol, 'mailto:');
     assert.equal(mail.pathname, 'Drkervis@xingyu.global');
     assert.match(mail.searchParams.get('subject'), /媒体采访/);
+    assert.match(mail.searchParams.get('body'), /姓名：.*\n邮箱：.*\n机构：.*\n联系类型：媒体采访/);
     assert.match(mail.searchParams.get('body'), /测试中文 & English \+ symbols\nSecond line/);
     await page.locator('#message').fill('Updated text');
     assert.equal(await page.locator('.email-ready').isVisible(), false);
@@ -397,7 +429,7 @@ const tokenColour = (page, token) => page.evaluate(name => {
 
     // Mobile menu closes with Escape and traps keyboard navigation while open.
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(`${BASE}/landing.html`);
+    await page.goto(`${BASE}/landing/`);
     await page.locator('.menu-toggle').click();
     assert.equal(await page.locator('.mobile-menu').isVisible(), true);
     assert.equal(await page.locator('main').getAttribute('inert'), '');
@@ -416,7 +448,7 @@ const tokenColour = (page, token) => page.evaluate(name => {
     await page.goto(`${BASE}/press/`);
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.locator('[data-copy="bio-short"]').click();
-    await page.waitForFunction(() => document.querySelector('.copy-feedback').textContent.includes('Copied'));
+    await page.waitForFunction(() => document.querySelector('.copy-feedback').textContent.includes('已复制'));
     assert.match(await page.evaluate(() => navigator.clipboard.readText()), /苏才育博士/);
     const downloadPromise = page.waitForEvent('download');
     await page.locator('a[href="/assets/dr-kervis-biographies.txt"]').click();
@@ -440,14 +472,14 @@ const tokenColour = (page, token) => page.evaluate(name => {
     const fallbackPage = await fallback.newPage();
     await fallbackPage.goto(BASE + '/');
     await fallbackPage.locator('#enter-btn').click();
-    await fallbackPage.waitForURL(BASE + '/landing.html');
+    await fallbackPage.waitForURL(BASE + '/landing/');
     assert.equal(await fallbackPage.locator('#hero-title').isVisible(), true);
     await fallback.close();
     console.log('PASS: entrance fallback when the animation CDN is unavailable');
 
     // Archive review screenshots after lazy images have been loaded.
     await page.setViewportSize({ width: 1440, height: 1000 });
-    await page.goto(`${BASE}/landing.html`, { waitUntil: 'networkidle' });
+    await page.goto(`${BASE}/landing/`, { waitUntil: 'networkidle' });
     await page.locator('img[loading="lazy"]').evaluateAll(images => images.forEach(image => image.loading = 'eager'));
     await page.waitForFunction(() => [...document.images].every(image => image.complete && image.naturalWidth > 0));
     await page.locator('img').evaluateAll(images => Promise.all(images.map(image => image.decode())));

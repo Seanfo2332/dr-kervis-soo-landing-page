@@ -90,7 +90,7 @@
     const status = button.closest('.quick-drawer, .closing')?.querySelector('.copy-status');
     try {
       await navigator.clipboard.writeText(button.dataset.copyText);
-      announce(status, '已复制邮箱 / Email copied');
+      announce(status, '已复制邮箱');
     } catch {
       announce(status, `请手动复制：${button.dataset.copyText}`);
     }
@@ -134,7 +134,7 @@
         item.hidden = !match;
         if (match) { count++; item.classList.add('in-view'); }
       });
-      if (summary) summary.textContent = `${count} 条记录 / ${count} ${count === 1 ? 'record' : 'records'}`;
+      if (summary) summary.textContent = `${count} 条记录`;
       if (empty) empty.hidden = count !== 0;
     }
     buttons.forEach(button => button.addEventListener('click', () => {
@@ -153,7 +153,7 @@
       const feedback = button.parentElement.querySelector('.copy-feedback');
       try {
         await navigator.clipboard.writeText(text);
-        if (feedback) feedback.textContent = '已复制 / Copied';
+        if (feedback) feedback.textContent = '已复制';
       } catch {
         if (feedback) feedback.textContent = '请选中文字复制，或下载简介。';
       }
@@ -166,14 +166,25 @@
     const select = form.querySelector('[name="type"]');
     if ([...select.options].some(option => option.value === type)) select.value = type;
     const ready = document.querySelector('.email-ready');
-    form.addEventListener('input', () => { ready.hidden = true; });
+    const fieldNames = { name: '姓名', email: '邮箱', type: '联系类型', message: '留言' };
+    function chineseValidation(field) {
+      field.setCustomValidity('');
+      if (field.validity.valueMissing) field.setCustomValidity(`请填写${fieldNames[field.name] || '此项'}。`);
+      else if (field.validity.typeMismatch) field.setCustomValidity('请输入有效的邮箱地址，例如：name@example.com。');
+      else if (field.validity.tooLong) field.setCustomValidity(`请将内容缩短至 ${field.maxLength} 个字符以内。`);
+    }
+    form.addEventListener('invalid', event => chineseValidation(event.target), true);
+    form.addEventListener('input', event => {
+      ready.hidden = true;
+      if (event.target.matches('input, select, textarea')) chineseValidation(event.target);
+    });
     form.addEventListener('submit', event => {
       event.preventDefault();
       if (!form.reportValidity()) return;
       const data = new FormData(form);
       const label = select.selectedOptions[0].textContent;
       const subject = `${label} — ${data.get('name')}`;
-      const body = `姓名 / Name: ${data.get('name')}\n邮箱 / Email: ${data.get('email')}\n机构 / Organisation: ${data.get('organisation') || '—'}\n联系类型 / Enquiry: ${label}\n\n${data.get('message')}`;
+      const body = `姓名：${data.get('name')}\n邮箱：${data.get('email')}\n机构：${data.get('organisation') || '—'}\n联系类型：${label}\n\n${data.get('message')}`;
       ready.querySelector('a').href = `mailto:Drkervis@xingyu.global?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       ready.hidden = false;
       ready.focus({ preventScroll: true });

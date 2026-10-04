@@ -15,9 +15,9 @@ from press_layout import coverage_rows, filter_groups, sort_by_date, type_legend
 
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = 'https://drkervis.com'
-UPDATED = '2026-10-01'
+UPDATED = '2026-10-04'
 PAGES = []
-NAME = 'Dr Kervis Soo'
+NAME = '苏才育博士'
 EMAIL = 'Drkervis@xingyu.global'
 SOCIALS = [
     ('Facebook', 'https://www.facebook.com/zoccosoo'),
@@ -26,19 +26,19 @@ SOCIALS = [
     ('X', 'https://x.com/DrKervis'),
     ('LinkedIn', 'https://www.linkedin.com/in/dr-kervis-32b0593b8/'),
 ]
-NAV = [('About', '人物简介', '/dr-kervis-soo/'), ('His Journey', '来时路', '/story/'),
-       ('Business', '事业版图', '/business/'), ('Insights', 'AI 与观点', '/insights/'),
-       ('Impact', '社会贡献', '/social-impact/'), ('Media', '媒体记录', '/media/'),
-       ('Speaking', '演讲与活动', '/speaking/')]
+NAV = [('人物简介', '/dr-kervis-soo/'), ('来时路', '/story/'),
+       ('事业版图', '/business/'), ('人工智能与观点', '/insights/'),
+       ('社会贡献', '/social-impact/'), ('媒体记录', '/media/'),
+       ('演讲与活动', '/speaking/')]
 ARCHIVE_SIZES = '(max-width: 680px) calc(100vw - 48px), (max-width: 960px) 46vw, 410px'
-PILL = [('About', '/dr-kervis-soo/'), ('Journey', '/story/'), ('Business', '/business/'), ('Insights', '/insights/')]
+PILL = [('人物简介', '/dr-kervis-soo/'), ('来时路', '/story/'), ('事业版图', '/business/'), ('观点', '/insights/')]
 CSS_SOURCES = ROOT / 'scripts' / 'css'
 PERSON = {
     '@type': 'Person', '@id': DOMAIN + '/dr-kervis-soo/#person',
-    'name': NAME, 'alternateName': ['苏才育', 'Kervis Soo Chai Ee', 'Dr Kervis'],
+    'name': NAME, 'alternateName': ['苏才育', 'Kervis Soo Chai Ee', 'Dr Kervis Soo'],
     'url': DOMAIN + '/dr-kervis-soo/', 'image': DOMAIN + '/images/hero.jpg',
-    'jobTitle': 'Founder & Chairman, Zocco Group',
-    'worksFor': {'@type': 'Organization', 'name': 'Zocco Group', 'alternateName': '星域集团', '@id': DOMAIN + '/business/#zocco-group'},
+    'jobTitle': '星域集团创办人兼董事长',
+    'worksFor': {'@type': 'Organization', 'name': '星域集团', 'alternateName': 'Zocco Group', '@id': DOMAIN + '/business/#zocco-group'},
     'sameAs': [url for label, url in SOCIALS if label != 'WhatsApp'],
 }
 
@@ -103,18 +103,18 @@ ICON_PATHS = {
 def social_icons(css_class=''):
     """Round outline icons linking to the official accounts (opens in a new window)."""
     items = ''.join(f'<li><a href="{url}" target="_blank" rel="noopener noreferrer" aria-label="{label}（在新窗口打开）"><svg viewBox="0 0 24 24" aria-hidden="true">{ICON_PATHS[label]}</svg></a></li>' for label, url in SOCIALS)
-    return f'<ul class="social-icons {css_class}" aria-label="社交媒体 / Social media">{items}</ul>'
+    return f'<ul class="social-icons {css_class}" aria-label="社交媒体">{items}</ul>'
 
 
 def quick_contact():
     """Side tab on the right edge and the small drawer it opens (email, WhatsApp, press kit)."""
     whatsapp = dict(SOCIALS)['WhatsApp']
-    return (f'<button class="side-tab" type="button" aria-expanded="false" aria-controls="quick-drawer"><span>快速联系</span><span class="tab-en"> · Quick contact</span></button>'
-            f'<aside class="quick-drawer" id="quick-drawer" aria-label="快速联系" hidden><button class="drawer-close" type="button" aria-label="关闭 / Close"><span aria-hidden="true">✕</span></button>'
-            f'<div class="drawer-title">Quick contact</div><p>合作、媒体与演讲邀请</p><div class="drawer-links"><a href="mailto:{EMAIL}">{EMAIL}<span aria-hidden="true">↗</span></a>'
-            f'<button type="button" data-copy-text="{EMAIL}">复制邮箱 / Copy email<span aria-hidden="true">⧉</span></button>'
+    return (f'<button class="side-tab" type="button" aria-expanded="false" aria-controls="quick-drawer"><span>快速联系</span></button>'
+            f'<aside class="quick-drawer" id="quick-drawer" aria-label="快速联系" hidden><button class="drawer-close" type="button" aria-label="关闭"><span aria-hidden="true">✕</span></button>'
+            f'<div class="drawer-title">快速联系</div><p>合作、媒体与演讲邀请</p><div class="drawer-links"><a href="mailto:{EMAIL}">{EMAIL}<span aria-hidden="true">↗</span></a>'
+            f'<button type="button" data-copy-text="{EMAIL}">复制邮箱<span aria-hidden="true">⧉</span></button>'
             f'<a href="{whatsapp}" target="_blank" rel="noopener noreferrer">WhatsApp<span aria-hidden="true">↗</span></a>'
-            f'<a href="/press/">Press kit · 媒体资料<span aria-hidden="true">→</span></a><a href="/contact/?type=speaking">Invite to speak · 邀请演讲<span aria-hidden="true">→</span></a></div>'
+            f'<a href="/press/">媒体资料<span aria-hidden="true">→</span></a><a href="/contact/?type=speaking">邀请演讲<span aria-hidden="true">→</span></a></div>'
             f'<p class="copy-status" role="status"></p></aside>')
 
 
@@ -124,29 +124,29 @@ def current(path, active):
 
 def header(active):
     pill = ''.join(f'<a href="{path}"{current(path, active)}>{label}</a>' for label, path in PILL)
-    overlay = ''.join(f'<a href="{path}"{current(path, active)}>{en}<small>{zh}</small></a>' for en, zh, path in NAV)
+    overlay = ''.join(f'<a href="{path}"{current(path, active)}>{label}</a>' for label, path in NAV)
     socials = ''.join(f'<a href="{url}" target="_blank" rel="noopener noreferrer">{label} ↗</a>' for label, url in SOCIALS)
-    return f'''<a class="skip-link" href="#main">跳至内容 / Skip to content</a>
+    return f'''<a class="skip-link" href="#main">跳至内容</a>
     <header class="site-header"><div class="wrap">
-      <a class="brand" href="/landing.html" aria-label="Dr Kervis Soo 首页">Dr Kervis Soo<span class="brand-dot" aria-hidden="true">.</span></a>
-      <a class="header-contact" href="/contact/">Let’s connect <span class="circle-arrow" aria-hidden="true">↗</span></a>
+      <a class="brand" href="/landing/" aria-label="苏才育博士首页">苏才育博士<span class="brand-dot" aria-hidden="true">.</span></a>
+      <a class="header-contact" href="/contact/">联系团队 <span class="circle-arrow" aria-hidden="true">↗</span></a>
     </div><div class="progress" aria-hidden="true"></div></header>
-    <nav class="pill-nav" aria-label="快速导航">{pill}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu"><span class="menu-bars" aria-hidden="true"><i></i><i></i></span><span class="menu-text-open">Menu</span><span class="menu-text-close">Close</span></button></nav>
+    <nav class="pill-nav" aria-label="快速导航">{pill}<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu"><span class="menu-bars" aria-hidden="true"><i></i><i></i></span><span class="menu-text-open">菜单</span><span class="menu-text-close">关闭</span></button></nav>
     {quick_contact()}
-    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="站点菜单" hidden><nav aria-label="全站导航">{overlay}<a href="/contact/"{current('/contact/', active)}>Contact<small>合作与联系</small></a></nav><div class="menu-bottom"><a href="mailto:{EMAIL}">{EMAIL}</a><div class="menu-socials">{socials}</div></div></div>'''
+    <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="站点菜单" hidden><nav aria-label="全站导航">{overlay}<a href="/contact/"{current('/contact/', active)}>合作与联系</a></nav><div class="menu-bottom"><a href="mailto:{EMAIL}">{EMAIL}</a><div class="menu-socials">{socials}</div></div></div>'''
 
 
 def footer():
-    explore = ''.join(f'<a href="{path}">{en} · {zh}</a>' for en, zh, path in NAV[:5])
-    records = [('Media', '/media/'), ('Recognition', '/awards/'), ('Press Room', '/press/'), ('News', '/news/'), ('Archive', '/archive/'), ('Speaking', '/speaking/'), ('Contact', '/contact/')]
+    explore = ''.join(f'<a href="{path}">{label}</a>' for label, path in NAV[:5])
+    records = [('媒体记录', '/media/'), ('学历与荣誉', '/awards/'), ('新闻资料室', '/press/'), ('新闻与动态', '/news/'), ('人物档案', '/archive/'), ('演讲与活动', '/speaking/'), ('合作与联系', '/contact/')]
     records = ''.join(f'<a href="{url}">{text}</a>' for text, url in records)
     socials = ''.join(f'<a href="{url}" target="_blank" rel="noopener noreferrer">{text} ↗</a>' for text, url in SOCIALS)
     return f'''<footer class="site-footer" data-tone="dark"><div class="wrap"><div class="footer-grid">
-    <div><a class="footer-brand" href="/landing.html">Dr Kervis Soo<small>苏才育博士</small></a><p class="footer-summary">以科技连接可能，以事业创造价值。<br>Building businesses. Empowering people.<br>Creating impact.</p>{social_icons()}</div>
-    <div><div class="footer-heading">Explore / 探索</div><nav class="footer-links" aria-label="探索页面">{explore}</nav></div>
-    <div><div class="footer-heading">Public record / 记录</div><nav class="footer-links" aria-label="档案页面">{records}</nav></div>
-    <div><div class="footer-heading">Stay connected / 关注</div><div class="footer-links">{socials}<a href="mailto:{EMAIL}">Email ↗</a></div></div>
-    </div><div class="footer-bottom"><span>© <span data-year>{date.today().year}</span> Dr Kervis Soo. All rights reserved. · 个人官方网站</span><div><a href="/privacy/">Privacy &amp; Legal</a><a href="/" aria-label="The entrance - 重看入口动画">The entrance ↗</a><a class="back-top" href="#top">Back to top ↑</a></div></div></div></footer>'''
+    <div><a class="footer-brand" href="/landing/">苏才育博士</a><p class="footer-summary">以科技连接可能，以事业创造价值。<br>成就事业，助人成长，创造影响。</p>{social_icons()}</div>
+    <div><div class="footer-heading">探索</div><nav class="footer-links" aria-label="探索页面">{explore}</nav></div>
+    <div><div class="footer-heading">公众记录</div><nav class="footer-links" aria-label="档案页面">{records}</nav></div>
+    <div><div class="footer-heading">保持联系</div><div class="footer-links">{socials}<a href="mailto:{EMAIL}">电子邮件 ↗</a></div></div>
+    </div><div class="footer-bottom"><span>© <span data-year>{date.today().year}</span> 苏才育博士 · 版权所有 · 个人官方网站</span><div><a href="/privacy/">隐私与网站说明</a><a href="/" aria-label="重看入口动画">重看入口动画 ↗</a><a class="back-top" href="#top">返回顶部 ↑</a></div></div></div></footer>'''
 
 
 CLOSING_PORTRAIT = ('about-640.webp', 640, 427)  # name, width, height
@@ -155,17 +155,17 @@ CLOSING_PORTRAIT = ('about-640.webp', 640, 427)  # name, width, height
 def closing():
     name, width, height = CLOSING_PORTRAIT
     portrait = f'<img class="closing-portrait" src="/images/{name}" alt="" width="{width}" height="{height}" loading="lazy" decoding="async">'
-    mail = (f'<span class="closing-mail"><a href="mailto:{EMAIL}">{EMAIL}</a><button class="copy-email" type="button" data-copy-text="{EMAIL}" aria-label="复制邮箱 / Copy email">'
+    mail = (f'<span class="closing-mail"><a href="mailto:{EMAIL}">{EMAIL}</a><button class="copy-email" type="button" data-copy-text="{EMAIL}" aria-label="复制邮箱">'
             '<span aria-hidden="true">⧉</span></button></span>')
-    return (f'<section class="closing panel on-navy" data-tone="dark"><div class="wrap"><div class="reveal"><h2><span class="line">Let’s Create a</span> {portrait}<span class="line"><em>Better Tomorrow</em></span></h2>'
-            f'<p>商业合作 · 媒体采访 · 演讲邀请 · 公益交流</p></div><div class="closing-actions">{link("Get In Touch<small>联系 Dr Kervis 团队</small>", "/contact/", True)}{mail}</div>'
+    return (f'<section class="closing panel on-navy" data-tone="dark"><div class="wrap"><div class="reveal"><h2><span class="line">携手共创</span> {portrait}<span class="line"><em>美好明天</em></span></h2>'
+            f'<p>商业合作 · 媒体采访 · 演讲邀请 · 公益交流</p></div><div class="closing-actions">{link("联系团队", "/contact/", True)}{mail}</div>'
             '<p class="copy-status" role="status"></p></div></section>')
 
 
 def write_page(path, title, description, body, active='', home=False, extra_schema=None, og_image='/images/hero.jpg'):
     canonical = DOMAIN + path
     schema = {'@context': 'https://schema.org', '@graph': [PERSON, {
-        '@type': 'WebSite', '@id': DOMAIN + '/#website', 'name': 'Dr Kervis Soo 官方网站', 'url': DOMAIN + '/', 'inLanguage': 'zh-CN', 'about': {'@id': PERSON['@id']}
+        '@type': 'WebSite', '@id': DOMAIN + '/#website', 'name': '苏才育博士官方网站', 'url': DOMAIN + '/', 'inLanguage': 'zh-CN', 'about': {'@id': PERSON['@id']}
     }, {
         '@type': 'WebPage', '@id': canonical + '#webpage', 'url': canonical,
         'name': title, 'description': description, 'inLanguage': 'zh-CN',
@@ -173,20 +173,21 @@ def write_page(path, title, description, body, active='', home=False, extra_sche
     }]}
     if not home:
         schema['@graph'].append({'@type': 'BreadcrumbList', 'itemListElement': [
-            {'@type': 'ListItem', 'position': 1, 'name': '首页', 'item': DOMAIN + '/landing.html'},
+            {'@type': 'ListItem', 'position': 1, 'name': '首页', 'item': DOMAIN + '/landing/'},
             {'@type': 'ListItem', 'position': 2, 'name': title, 'item': canonical}]})
     extras = extra_schema if isinstance(extra_schema, list) else ([extra_schema] if extra_schema else [])
     schema['@graph'].extend(extras)
     og_type = 'article' if any(item.get('@type') == 'Article' for item in extras) else 'website'
     html = f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{escape(title)} | Dr Kervis Soo 苏才育博士</title><meta name="description" content="{escape(description, quote=True)}">
+<title>{escape(title)} | 苏才育博士</title><meta name="description" content="{escape(description, quote=True)}">
 <meta name="theme-color" content="#102638"><link rel="canonical" href="{canonical}">
-<meta property="og:type" content="{og_type}"><meta property="og:title" content="{escape(title, quote=True)} | Dr Kervis Soo"><meta property="og:description" content="{escape(description, quote=True)}"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{DOMAIN}{og_image}"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="{og_type}"><meta property="og:title" content="{escape(title, quote=True)} | 苏才育博士"><meta property="og:description" content="{escape(description, quote=True)}"><meta property="og:url" content="{canonical}"><meta property="og:image" content="{DOMAIN}{og_image}"><meta property="og:locale" content="zh_CN"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"><link rel="preload" href="/assets/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="/assets/site.css">
 <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False).replace('</', '<\\/')}</script><script src="/assets/site.js" defer></script>{'<script src="/assets/home.js" defer></script>' if home else ''}
 </head><body id="top" class="{'home' if home else 'inner-page'}">{header(active)}<main id="main" class="{'home-main' if home else 'page-main'}">{body}</main>{footer()}</body></html>'''
-    output = ROOT / (path.lstrip('/') if path.endswith('.html') else path.strip('/') + '/index.html')
+    # Vercel cleanUrls serves the generated homepage file at /landing/.
+    output = ROOT / ('landing.html' if home else path.strip('/') + '/index.html')
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(html, encoding='utf-8')
     PAGES.append(path)
@@ -195,46 +196,46 @@ def write_page(path, title, description, body, active='', home=False, extra_sche
 def intro(en, zh, description, photo=None, article=False, photo_alt='苏才育博士人物照片'):
     media = image(photo, photo_alt, 'intro-photo', True) if photo else ''
     heading_class = 'latin-title' if not any('\u4e00' <= c <= '\u9fff' for c in zh) else ''
-    return f'''<section class="page-intro {'with-photo' if photo else ''}">{media}<div class="wrap {'article-head' if article else ''}"><nav class="breadcrumbs" aria-label="面包屑"><a href="/landing.html">首页 Home</a><span aria-hidden="true">/</span><span>{zh}</span></nav>{eyebrow(en)}<h1 class="{heading_class}">{zh}</h1><p class="page-subtitle">{en}</p><p class="lead">{description}</p></div></section>'''
+    return f'''<section class="page-intro {'with-photo' if photo else ''}">{media}<div class="wrap {'article-head' if article else ''}"><nav class="breadcrumbs" aria-label="面包屑"><a href="/landing/">首页</a><span aria-hidden="true">/</span><span>{zh}</span></nav>{eyebrow(en) if en != zh else ""}<h1 class="{heading_class}">{zh}</h1><p class="lead">{description}</p></div></section>'''
 
 
 def page_section(content, cls=''):
     return f'<section class="section {cls}"><div class="wrap">{content}</div></section>'
 
 
-def prose_layout(sections, aside_title='On this page / 本页内容'):
+def prose_layout(sections, aside_title='本页内容'):
     nav = ''.join(f'<a href="#{key}">{title}</a>' for key, title, html in sections)
     prose = ''.join(f'<section id="{key}"><h2>{title}</h2>{html}</section>' for key, title, html in sections)
     return page_section(f'<div class="page-grid"><nav class="page-aside" aria-label="{escape(aside_title, quote=True)}">{eyebrow(aside_title)}{nav}</nav><div class="prose">{prose}</div></div>')
 
 
-BIO = '苏才育（Kervis Soo Chai Ee，1992年出生于马来西亚），星域集团（Zocco Group）创办人兼董事长。他的事业横跨人工智能应用、数字内容、创作者经济及跨界商业，关注科技如何转化为企业与个人可实际运用的能力。从居銮中华中学的求学经历，到企业经营与管理学研究，他持续探索商业、科技与人的连接；同时通过教育支持、青年发展及社区公益，将企业成长与社会责任联系起来。'
+BIO = '苏才育（1992年出生于马来西亚），星域集团创办人兼董事长。他的事业横跨人工智能应用、数字内容、创作者经济及跨界商业，关注科技如何转化为企业与个人可实际运用的能力。从居銮中华中学的求学经历，到企业经营与管理学研究，他持续探索商业、科技与人的连接；同时通过教育支持、青年发展及社区公益，将企业成长与社会责任联系起来。'
 
 BUSINESSES = [
-    {'slug': 'ai-content', 'en': 'AI & Content', 'title': 'AI 与内容创新', 'desc': '从创作工具到运营流程，让人工智能走进真实的内容生产。', 'intro': '围绕短视频、直播与数字音乐，探索人工智能如何帮助创作者提高效率，并让团队把更多精力投入创意与内容质量。',
-     'sections': [('内容生产', '将生成式 AI 应用于脚本构思、文案及后期剪辑辅助，把重复工作转化为更有条理的创作流程。内容的判断、表达与最终审核，仍然围绕真实受众的需要展开。'), ('数字音乐与 IP', '结合 AI 创作与 IP 联动，探索数字音乐内容的制作与传播，让技术能力与原创表达形成互补。'), ('数据化运营', '通过直播与短视频数据，理解受众反应，支持选题、内容安排及运营决策，持续改进内容与用户之间的连接。')]},
-    {'slug': 'creator-economy', 'en': 'Creator Economy', 'title': 'MCN 与创作者生态', 'desc': '连接创作者、平台与品牌，让内容价值拥有更长的生命周期。', 'intro': '以短视频内容与直播运营为基础，星域集团将创作者培养、内容运营、平台布局及品牌合作连接起来。',
+    {'slug': 'ai-content', 'label': '人工智能与内容', 'title': '人工智能与内容创新', 'desc': '从创作工具到运营流程，让人工智能走进真实的内容生产。', 'intro': '围绕短视频、直播与数字音乐，探索人工智能如何帮助创作者提高效率，并让团队把更多精力投入创意与内容质量。',
+     'sections': [('内容生产', '将生成式人工智能应用于脚本构思、文案及后期剪辑辅助，把重复工作转化为更有条理的创作流程。内容的判断、表达与最终审核，仍然围绕真实受众的需要展开。'), ('数字音乐与知识产权', '结合人工智能创作与知识产权联动，探索数字音乐内容的制作与传播，让技术能力与原创表达形成互补。'), ('数据化运营', '通过直播与短视频数据，理解受众反应，支持选题、内容安排及运营决策，持续改进内容与用户之间的连接。')]},
+    {'slug': 'creator-economy', 'label': '创作者经济', 'title': '内容机构与创作者生态', 'desc': '连接创作者、平台与品牌，让内容价值拥有更长的生命周期。', 'intro': '以短视频内容与直播运营为基础，星域集团将创作者培养、内容运营、平台布局及品牌合作连接起来。',
      'sections': [('创作者成长', '通过内容定位、创作规划与运营支持，建立更有持续性的创作者培养路径，让个人特色与专业协作共同成长。'), ('多平台内容', '围绕 TikTok、Facebook、YouTube 等平台开展内容与创作者运营，根据受众、形式与使用场景调整表达。'), ('品牌合作', '连接创作者与医美、时尚、零售等领域的品牌，探索从内容传播到实际消费体验的合作方式。')]},
-    {'slug': 'film-technology', 'en': 'Film & Technology', 'title': '影视与科技', 'desc': '将内容经验延伸至影视，探索创意、投资与数字技术的交汇。', 'intro': '在短视频与直播之外，星域集团的业务探索延伸至影视投资，以及人工智能在影视工作流程中的应用。',
-     'sections': [('影视投资', '参与电影《Indera》等影视项目，关注作品内容、受众与传播方式之间的关系，将数字内容领域的经验延伸至电影产业。'), ('制作流程探索', '探索 AI 剧本预审、分镜辅助及虚拟拍摄的应用空间，用数字工具支持创意沟通与制作规划。'), ('数字营销', '结合内容运营与传播经验，思考影视作品如何通过数字平台触达观众，建立从内容制作到传播的连接。')]},
-    {'slug': 'brand-business', 'en': 'Brands & Business', 'title': '品牌与跨界商业', 'desc': '从线上影响力走向线下体验，拓展数字商业的边界。', 'intro': '以东南亚市场为基础，把内容、品牌与线下消费场景连接起来，探索跨行业合作的实际价值。',
+    {'slug': 'film-technology', 'label': '影视与科技', 'title': '影视与科技', 'desc': '将内容经验延伸至影视，探索创意、投资与数字技术的交汇。', 'intro': '在短视频与直播之外，星域集团的业务探索延伸至影视投资，以及人工智能在影视工作流程中的应用。',
+     'sections': [('影视投资', '参与电影《Indera》等影视项目，关注作品内容、受众与传播方式之间的关系，将数字内容领域的经验延伸至电影产业。'), ('制作流程探索', '探索人工智能剧本预审、分镜辅助及虚拟拍摄的应用空间，用数字工具支持创意沟通与制作规划。'), ('数字营销', '结合内容运营与传播经验，思考影视作品如何通过数字平台触达观众，建立从内容制作到传播的连接。')]},
+    {'slug': 'brand-business', 'label': '品牌与商业', 'title': '品牌与跨界商业', 'desc': '从线上影响力走向线下体验，拓展数字商业的边界。', 'intro': '以东南亚市场为基础，把内容、品牌与线下消费场景连接起来，探索跨行业合作的实际价值。',
      'sections': [('线上与线下', '围绕医美、时尚及零售等领域，探索线上娱乐内容与线下品牌体验之间的连接，让流量运营与实际服务相互配合。'), ('品牌交流', '通过星域集团与 AJEndless 的马来西亚品鉴会等合作形式，促进品牌、创作者与消费者之间的交流。'), ('区域发展', '立足东南亚市场，关注不同地区的消费习惯、文化与平台特点，在业务拓展中建立更具本地理解的合作关系。')]},
 ]
 
 ARTICLES = [
-    {'slug': 'ai-in-the-workflow', 'category': 'ai', 'label': 'AI & Digital Economy', 'art': '', 'title': 'AI 的价值，始于真实的工作场景', 'summary': '从一个具体问题开始，让技术成为团队真正用得上的能力。', 'minutes': '4',
+    {'slug': 'ai-in-the-workflow', 'category': 'ai', 'label': '人工智能与数字经济', 'art': '', 'title': '人工智能的价值，始于真实的工作场景', 'summary': '从一个具体问题开始，让技术成为团队真正用得上的能力。', 'minutes': '4',
      'sections': [
-         ('先找到问题，再选择工具', '企业面对 AI 时，最容易被新工具的演示效果吸引。但一项技术能否产生持续价值，往往取决于它是否解决了一个具体问题：内容团队是否花了太多时间整理资料？重复制作是否挤占了创意讨论？运营是否需要更清楚地理解受众反馈？', '把问题描述清楚，才能判断 AI 应该放在流程的哪一个位置。一个有明确输入、输出和负责人的小环节，比一个没有边界的大目标更容易落实。'),
-         ('把效率留给创意，把判断留给人', '在脚本、文案和剪辑辅助等内容场景中，AI 可以提供初稿、整理线索与生成不同方向。它节省下来的时间，应当用来理解用户、优化表达和进行人工审核。', '内容并不因为生成速度更快，就自动更有价值。事实是否准确、语气是否合适、表达是否尊重受众，仍然需要团队承担判断与责任。'),
+         ('先找到问题，再选择工具', '企业面对人工智能时，最容易被新工具的演示效果吸引。但一项技术能否产生持续价值，往往取决于它是否解决了一个具体问题：内容团队是否花了太多时间整理资料？重复制作是否挤占了创意讨论？运营是否需要更清楚地理解受众反馈？', '把问题描述清楚，才能判断人工智能应该放在流程的哪一个位置。一个有明确输入、输出和负责人的小环节，比一个没有边界的大目标更容易落实。'),
+         ('把效率留给创意，把判断留给人', '在脚本、文案和剪辑辅助等内容场景中，人工智能可以提供初稿、整理线索与生成不同方向。它节省下来的时间，应当用来理解用户、优化表达和进行人工审核。', '内容并不因为生成速度更快，就自动更有价值。事实是否准确、语气是否合适、表达是否尊重受众，仍然需要团队承担判断与责任。'),
          ('用一个小流程建立团队能力', '选择一个重复频率高、结果可检查的工作步骤，先记录现有时间与质量，再让小团队试用。比较修改次数、交付质量及协作体验，比只看生成速度更有意义。', '当经验被写成清楚的流程，团队才能把一次成功变成可持续的工作方式。技术的长期价值，也在这个过程中逐步显现。')
      ]},
-    {'slug': 'building-a-creator-ecosystem', 'category': 'creators', 'label': 'Creator Economy', 'art': 'network', 'title': '从一次流量，到长期的创作者生态', 'summary': '内容、信任与商业合作，如何形成持续成长的关系。', 'minutes': '4',
+    {'slug': 'building-a-creator-ecosystem', 'category': 'creators', 'label': '创作者经济', 'art': 'network', 'title': '从一次流量，到长期的创作者生态', 'summary': '内容、信任与商业合作，如何形成持续成长的关系。', 'minutes': '4',
      'sections': [
          ('先建立辨识度', '一次内容走红可以带来关注，但稳定的创作方向、持续的表达与对受众的理解，才有机会把关注转化为长期关系。创作者需要知道自己擅长什么，也需要理解人们为什么愿意继续观看。', '内容定位并不是限制创意，而是让每次尝试都围绕一条清晰的主线展开。受众认得出创作者，品牌也更容易理解合作的价值。'),
-         ('让专业分工支持个人表达', '创作者生态包含选题、拍摄、剪辑、发布、数据分析及商务沟通。合理的团队支持，可以帮助创作者减少重复工作，把时间留给自身擅长的表达。', 'MCN 的价值可以体现在这些日常协作中：把经验整理为方法，让个人能力与团队资源互相补充，同时保留创作者的独特性。'),
+         ('让专业分工支持个人表达', '创作者生态包含选题、拍摄、剪辑、发布、数据分析及商务沟通。合理的团队支持，可以帮助创作者减少重复工作，把时间留给自身擅长的表达。', '多渠道内容机构的价值可以体现在这些日常协作中：把经验整理为方法，让个人能力与团队资源互相补充，同时保留创作者的独特性。'),
          ('合作的起点是契合', '品牌合作需要同时考虑创作者的风格、受众的需要和产品的真实使用场景。只有当三者能够形成自然连接，内容才更容易被理解与接受。', '从单次传播到长期合作，重要的是建立清楚的预期、尊重内容质量，并持续检视用户反馈。一次合作的结束，也可以成为下一次共同成长的起点。')
      ]},
-    {'slug': 'business-with-social-purpose', 'category': 'impact', 'label': 'Leadership & Social Impact', 'art': 'steps', 'title': '企业的成长，也应成为他人的机会', 'summary': '把教育、青年发展与社区需要，放进长期经营的视野。', 'minutes': '3',
+    {'slug': 'business-with-social-purpose', 'category': 'impact', 'label': '领导力与社会贡献', 'art': 'steps', 'title': '企业的成长，也应成为他人的机会', 'summary': '把教育、青年发展与社区需要，放进长期经营的视野。', 'minutes': '3',
      'sections': [
          ('从身边的需要开始', '社会贡献不一定从庞大的计划开始。对一所学校、一群青年或一个社区的持续理解，能够帮助企业看见具体需要，也让参与更有方向。', '教育支持的意义，不只在于一次资助，也在于帮助年轻人获得继续学习、接触新技能与探索未来的机会。'),
          ('用企业所长回应问题', '数字内容和科技企业可以贡献资金，也可以贡献培训、传播经验与专业协作。把自身能力放到合适的公益场景中，能让参与更加具体。', '例如围绕数字技能、内容表达或创业基础开展交流，可以帮助参与者建立面向未来的能力。合作应从受益群体的实际情况出发，而不是从企业想展示的成果出发。'),
@@ -248,7 +249,7 @@ def insight_item(article):
 
 
 def article_image(article):
-    images = {'ai': ('generated/ai-perspective.webp', '折叠金属与深蓝玻璃的 AI 生成概念静物'), 'creators': ('generated/creator-studio.webp', '创作工作室与摄影机的 AI 生成概念影像'), 'impact': ('impact1.jpg', '星域集团慈善基金活动现场')}
+    images = {'ai': ('generated/ai-perspective.webp', '折叠金属与深蓝玻璃的人工智能生成概念静物'), 'creators': ('generated/creator-studio.webp', '创作工作室与摄影机的人工智能生成概念影像'), 'impact': ('impact1.jpg', '星域集团慈善基金活动现场')}
     name, alt = images[article['category']]
     return image(name, alt)
 
@@ -257,7 +258,7 @@ def filter_buttons(categories):
     return ''.join(f'<button type="button" data-filter="{key}" aria-pressed="{"true" if i == 0 else "false"}">{label}</button>' for i, (key, label) in enumerate(categories))
 
 
-def filter_controls(categories, search_hint='搜索记录 / Search records', groups=None):
+def filter_controls(categories, search_hint='搜索记录', groups=None):
     """One group of filter buttons, or several independent groups (a row must match every group)."""
     if groups is None:
         controls = f'<div class="filter-buttons" role="group" aria-label="按主题筛选">{filter_buttons(categories)}</div>'
@@ -274,27 +275,27 @@ def no_results():
 
 def home_page():
     html = render_home(image, link, BIO, BUSINESSES, ARTICLES, insight_item, coverage_rows, sort_by_date(COVERAGE), closing, social_icons('hero-social'))
-    write_page('/landing.html', '首页 · Building businesses. Creating impact.', 'Dr Kervis Soo 苏才育博士个人官方网站。了解星域集团创办人的创业历程、AI 与数字经济实践、社会贡献及媒体记录。', html, home=True)
+    write_page('/landing/', '首页 · 成就事业，创造影响', '苏才育博士个人官方网站。了解星域集团创办人的创业历程、人工智能与数字经济实践、社会贡献及媒体记录。', html, home=True)
 
 
 def biography_pages():
-    facts = '<dl class="facts"><div><dt>英文姓名</dt><dd>Kervis Soo Chai Ee</dd></div><div><dt>中文姓名</dt><dd>苏才育</dd></div><div><dt>出生</dt><dd>1992 年 · 马来西亚</dd></div><div><dt>主要身份</dt><dd>星域集团创办人兼董事长</dd></div></dl>'
+    facts = '<dl class="facts"><div><dt>中文姓名</dt><dd>苏才育</dd></div><div><dt>出生</dt><dd>1992 年 · 马来西亚</dd></div><div><dt>主要身份</dt><dd>星域集团创办人兼董事长</dd></div></dl>'
     sections = [
-        ('profile', '人物简介', f'<p>{BIO}</p>{facts}<p>他长期关注 AI、数字内容产业、MCN 生态及直播娱乐业之间的连接，探索科技如何进入商业场景，并为创作者与品牌带来新的合作空间。</p>'),
+        ('profile', '人物简介', f'<p>{BIO}</p>{facts}<p>他长期关注人工智能、数字内容产业、多渠道内容机构生态及直播娱乐业之间的连接，探索科技如何进入商业场景，并为创作者与品牌带来新的合作空间。</p>'),
         ('early-years', '从居銮出发', '<p>苏才育曾就读于柔佛州居銮中华中学。求学经历构成了其成长背景的重要部分，也成为日后关注教育、支持母校发展的情感连接。</p><p>随着事业发展，他将视野延伸至数字内容、企业管理与科技应用，在经营实践中持续学习。</p>' + link('阅读完整来时路', '/story/')),
-        ('business', '事业与数字经济', '<p>作为星域集团（Zocco Group）创办人兼董事长，他从短视频内容与直播运营出发，逐步将业务延伸至 MCN、电商营销、艺人孵化及影视投资等领域。</p><p>围绕 AI、内容、创作者经济与品牌商业化，集团探索内容生产、流量聚合、品牌合作与商业转化之间的协同。</p>' + link('探索事业版图', '/business/')),
-        ('education', '教育与学术经历', '<p>2025 年取得马来亚大学（University of Malaya）管理学博士（DBA）学位。研究方向关注数字经济背景下的企业转型，以及人工智能对传统内容产业的赋能。</p><p>2026 年获马来西亚林肯大学学院（Lincoln University College）授予「人工智能领域荣誉院士」（Honorary Fellow in Artificial Intelligence）称号。</p><p>管理学博士属于学术学历；人工智能领域荣誉院士为荣誉身份，两者在此分别记录。</p>' + link('查看荣誉记录', '/awards/')),
-        ('contribution', '社会贡献', '<p>「取之社会，用之社会」是其社会责任理念。从星域集团慈善基金、NEWGEN 苏亚辉与陈亚莲夫妇百万教育基金，到母校支持与马来西亚公益节，教育、青年与社区构成其公益关注的方向。</p>' + link('了解公益项目', '/social-impact/')),
-        ('faq', '常见问题', '<div class="faq"><details><summary>Dr Kervis Soo 是谁？</summary><p>Dr Kervis Soo，中文名苏才育，是马来西亚企业家，星域集团（Zocco Group）创办人兼董事长，关注人工智能应用、数字内容与社会贡献。</p></details><details><summary>他的主要事业领域是什么？</summary><p>主要包括 AI 与内容创新、MCN 与创作者生态、影视与科技，以及品牌与跨界商业。</p></details><details><summary>如何联系演讲或媒体合作？</summary><p>可通过联系页面选择演讲邀请或媒体采访，或发送邮件至 Drkervis@xingyu.global。</p></details></div>'),
+        ('business', '事业与数字经济', '<p>作为星域集团创办人兼董事长，他从短视频内容与直播运营出发，逐步将业务延伸至多渠道内容机构、电商营销、艺人孵化及影视投资等领域。</p><p>围绕人工智能、内容、创作者经济与品牌商业化，集团探索内容生产、流量聚合、品牌合作与商业转化之间的协同。</p>' + link('探索事业版图', '/business/')),
+        ('education', '教育与学术经历', '<p>2025 年取得马来亚大学管理学博士学位。研究方向关注数字经济背景下的企业转型，以及人工智能对传统内容产业的赋能。</p><p>2026 年获马来西亚林肯大学学院授予「人工智能领域荣誉院士」称号。</p><p>管理学博士属于学术学历；人工智能领域荣誉院士为荣誉身份，两者在此分别记录。</p>' + link('查看荣誉记录', '/awards/')),
+        ('contribution', '社会贡献', '<p>「取之社会，用之社会」是其社会责任理念。从星域集团慈善基金、苏亚辉与陈亚莲夫妇百万教育基金，到母校支持与马来西亚公益节，教育、青年与社区构成其公益关注的方向。</p>' + link('了解公益项目', '/social-impact/')),
+        ('faq', '常见问题', '<div class="faq"><details><summary>苏才育博士是谁？</summary><p>苏才育博士是马来西亚企业家，星域集团创办人兼董事长，关注人工智能应用、数字内容与社会贡献。</p></details><details><summary>他的主要事业领域是什么？</summary><p>主要包括人工智能与内容创新、内容机构与创作者生态、影视与科技，以及品牌与跨界商业。</p></details><details><summary>如何联系演讲或媒体合作？</summary><p>可通过联系页面选择演讲邀请或媒体采访，或发送邮件至 Drkervis@xingyu.global。</p></details></div>'),
         ('official', '官方账号与媒体资料', '<p>关注官方社交账号，或使用新闻资料室内的人物简介与照片。如需采访、商务交流或活动邀请，请通过联系页面与团队沟通。</p><div class="actions">' + link('新闻资料室', '/press/') + link('联系团队', '/contact/') + '</div>'),
     ]
-    write_page('/dr-kervis-soo/', '人物简介', 'Dr Kervis Soo 苏才育博士的官方人物简介：成长背景、星域集团、教育经历、AI 实践与社会贡献。', intro('About Dr Kervis', '以实践，连接更多可能。', '认识苏才育博士：企业家、科技应用实践者，以及教育与社会贡献的参与者。', 'hero.jpg') + prose_layout(sections) + closing(), '/dr-kervis-soo/')
+    write_page('/dr-kervis-soo/', '人物简介', '苏才育博士的官方人物简介：成长背景、星域集团、教育经历、人工智能实践与社会贡献。', intro('人物简介', '以实践，连接更多可能。', '认识苏才育博士：企业家、科技应用实践者，以及教育与社会贡献的参与者。', 'hero.jpg') + prose_layout(sections) + closing(), '/dr-kervis-soo/')
 
     chapters = [
         ('roots', '从居銮的课堂出发', '成长的起点，往往留下长久的影响。1992 年出生于马来西亚的苏才育，曾就读于居銮中华中学。这里既是其求学经历的一部分，也是后来回馈教育、支持母校的情感起点。', '当事业不断向外拓展，对教育与年轻一代的关注，仍然与这段成长经历保持着连接。'),
-        ('building', '在数字内容中找到方向', '短视频与直播改变了人们获取信息、表达自我与建立联系的方式。苏才育以内容与直播运营为切入点创办星域集团，把创作者、平台与商业合作连接起来。', '随着业务延伸，星域集团的版图涵盖 MCN、电商营销、艺人孵化及影视投资。从内容到商业的连接，成为这段创业历程中的一条主线。'),
-        ('learning', '把经营经验带回学习', '企业经营带来具体的问题，也让持续学习更有方向。围绕数字经济背景下的企业转型与 AI 应用，苏才育将实践中的关注带入管理学研究，并于 2025 年取得马来亚大学管理学博士学位。', '从实践到研究，再回到应用，这条路径体现了对商业问题的持续探索。'),
-        ('technology', '走向 AI 与产业应用', '在内容生产与运营之外，AI 为流程、工具与创作方式提供了新的可能。苏才育关注生成式内容、数字音乐与数据化运营，探索技术在具体业务中的应用。', '2026 年，林肯大学学院授予其人工智能领域荣誉院士称号。这一荣誉身份，也成为其科技实践历程中的一个节点。'),
+        ('building', '在数字内容中找到方向', '短视频与直播改变了人们获取信息、表达自我与建立联系的方式。苏才育以内容与直播运营为切入点创办星域集团，把创作者、平台与商业合作连接起来。', '随着业务延伸，星域集团的版图涵盖多渠道内容机构、电商营销、艺人孵化及影视投资。从内容到商业的连接，成为这段创业历程中的一条主线。'),
+        ('learning', '把经营经验带回学习', '企业经营带来具体的问题，也让持续学习更有方向。围绕数字经济背景下的企业转型与人工智能应用，苏才育将实践中的关注带入管理学研究，并于 2025 年取得马来亚大学管理学博士学位。', '从实践到研究，再回到应用，这条路径体现了对商业问题的持续探索。'),
+        ('technology', '走向人工智能与产业应用', '在内容生产与运营之外，人工智能为流程、工具与创作方式提供了新的可能。苏才育关注生成式内容、数字音乐与数据化运营，探索技术在具体业务中的应用。', '2026 年，林肯大学学院授予其人工智能领域荣誉院士称号。这一荣誉身份，也成为其科技实践历程中的一个节点。'),
         ('giving', '让事业与社会相连', '企业的成长，也带来参与社会的空间。慈善基金、教育支持与社区活动，让经营之外的责任有了具体的表达。', '以「取之社会，用之社会」为理念，他通过教育基金、母校回馈与公益活动，关注青年与社区的长期需要。'),
         ('forward', '继续向前', '内容、科技与商业仍在不断变化。面向未来，持续学习、连接不同领域的人，并让创新回应真实需要，构成了这段旅程延伸的方向。', '更多事业、观点与社会贡献记录，将在这个官方网站中持续汇集。'),
     ]
@@ -302,54 +303,54 @@ def biography_pages():
     for i, (key, title, p1, p2) in enumerate(chapters, 1):
         html = f'<div class="story-chapter"><span class="chapter-number">0{i}</span><div><p>{p1}</p><p>{p2}</p></div></div>'
         if i == 2:
-            html += f'<figure>{image("about.png", "苏才育博士个人肖像")}<figcaption class="photo-caption">Dr Kervis Soo · 苏才育博士</figcaption></figure>'
+            html += f'<figure>{image("about.png", "苏才育博士个人肖像")}<figcaption class="photo-caption">苏才育博士</figcaption></figure>'
         if i == 5:
             html += f'<figure>{image("impact1.jpg", "星域集团慈善基金活动记录")}</figure>'
         sections.append((key, title, html))
-    write_page('/story/', '来时路 · His Journey', '从居銮求学到创办星域集团，从管理学研究到 AI 实践，了解苏才育博士的成长与创业历程。', intro('His journey', '一路学习，一路创造。', '从成长的起点，到事业的展开。循着学习、创业与社会参与，走近苏才育博士的来时路。', 'about.png') + prose_layout(sections) + page_section(link('按年份查看人生节点', '/journey/')) + closing(), '/story/')
+    write_page('/story/', '来时路', '从居銮求学到创办星域集团，从管理学研究到人工智能实践，了解苏才育博士的成长与创业历程。', intro('来时路', '一路学习，一路创造。', '从成长的起点，到事业的展开。循着学习、创业与社会参与，走近苏才育博士的来时路。', 'about.png') + prose_layout(sections) + page_section(link('按年份查看人生节点', '/journey/')) + closing(), '/story/')
 
     milestones = [
         ('1992', '出生于马来西亚', '从马来西亚出发，成长经历与其后来的事业及社会参与紧密相连。', '/dr-kervis-soo/', '人物简介'),
         ('求学时期', '居銮中华中学', '就读柔佛州居銮中华中学，并在日后持续关注母校的教育发展。', '/story/#roots', '成长背景'),
         ('创业阶段', '创办星域集团', '以短视频内容与直播运营为切入点，建立连接创作者、品牌与数字技术的事业版图。', '/business/', '事业版图'),
-        ('2025', '取得管理学博士学位', '马来亚大学（University of Malaya）管理学博士，研究关注数字经济与企业转型。', '/dr-kervis-soo/#education', '教育经历'),
+        ('2025', '取得管理学博士学位', '马来亚大学管理学博士，研究关注数字经济与企业转型。', '/dr-kervis-soo/#education', '教育经历'),
         ('2025.10', '发起慈善基金', '星域集团发起慈善基金计划，关注青年创业、数字技能及社区教育。', '/social-impact/charitable-foundation/', '公益记录'),
-        ('2026', '获授 AI 荣誉院士称号', '获林肯大学学院授予人工智能领域荣誉院士称号。', '/awards/ai-honorary-fellow/', '荣誉记录'),
+        ('2026', '获授人工智能荣誉院士称号', '获林肯大学学院授予人工智能领域荣誉院士称号。', '/awards/ai-honorary-fellow/', '荣誉记录'),
     ]
     timeline = ''.join(f'<article class="timeline-entry"><div class="time">{year}</div><div><h2>{title}</h2><p>{desc}</p>{link(label, href)}</div></article>' for year, title, desc, href, label in milestones)
-    write_page('/journey/', '人生与事业时间线', '苏才育博士的求学、创业、学历、公益及荣誉经历时间线。', intro('A life in progress', '时间里的脚印。', '从早年到今天，沿着重要节点，了解人物与事业的发展。') + page_section(f'<div class="timeline-list">{timeline}</div>') + closing(), '/story/')
+    write_page('/journey/', '人生与事业时间线', '苏才育博士的求学、创业、学历、公益及荣誉经历时间线。', intro('人生与事业时间线', '时间里的脚印。', '从早年到今天，沿着重要节点，了解人物与事业的发展。') + page_section(f'<div class="timeline-list">{timeline}</div>') + closing(), '/story/')
 
 
 def business_pages():
-    features = ''.join(f'<article class="feature-item">{eyebrow("0"+str(i)+" / "+b["en"])}<h2>{b["title"]}</h2><p>{b["intro"]}</p>{link("Explore this field · 了解业务", "/business/"+b["slug"]+"/")}</article>' for i, b in enumerate(BUSINESSES, 1))
-    overview = f'<div class="intro-grid"><div>{eyebrow("Founder & Chairman")}<h2 class="english-title" style="margin-top:24px">Zocco Group.</h2><p class="serif" style="margin-top:20px;font-size:24px">星域集团</p></div><div><p class="lead">连接 AI、内容、创作者与品牌，构建持续运转的数字业务。</p><p class="body-copy" style="margin-top:22px">从短视频与直播出发，星域集团探索内容生产、创作者培养、品牌合作和商业转化之间的连接。苏才育博士担任创办人兼董事长。</p><div class="actions">{link("了解星域集团", "/business/zocco-group/")}</div></div></div>'
-    write_page('/business/', '事业版图', '探索 Dr Kervis Soo 与星域集团的事业领域：AI 内容、MCN 创作者生态、影视科技及跨界品牌商业。', intro('Business & companies', '把想法，变成事业。', '以数字内容为起点，探索科技、创作者与商业之间的连接。') + page_section(overview) + page_section(f'<div class="feature-list">{features}</div>') + closing(), '/business/')
-    sections = [('group', '星域集团 Zocco Group', '<p>星域集团由苏才育博士创办，以短视频内容与直播运营为切入点，逐步发展为涵盖 MCN、电商营销、艺人孵化及影视投资的综合性业务平台。</p><dl class="facts"><div><dt>中文名称</dt><dd>星域集团</dd></div><div><dt>英文名称</dt><dd>Zocco Group</dd></div><div><dt>苏才育博士的角色</dt><dd>创办人兼董事长</dd></div><div><dt>业务关注</dt><dd>AI、内容、创作者经济、品牌商业化</dd></div></dl>'),
-                ('work', '相互连接的业务', '<p>集团围绕内容生产、流量聚合、品牌合作与商业转化展开业务探索。AI 应用帮助优化内容工作流程，创作者运营连接人才与平台，品牌合作则将内容影响力延伸至商业场景。</p>' + ''.join(f'<h3>{b["title"]}</h3><p>{b["desc"]}</p>{link("了解更多", "/business/"+b["slug"]+"/")}' for b in BUSINESSES)),
+    features = ''.join(f'<article class="feature-item">{eyebrow("0"+str(i)+" / "+b["label"])}<h2>{b["title"]}</h2><p>{b["intro"]}</p>{link("了解业务", "/business/"+b["slug"]+"/")}</article>' for i, b in enumerate(BUSINESSES, 1))
+    overview = f'<div class="intro-grid"><div>{eyebrow("创办人兼董事长")}<h2 class="english-title" style="margin-top:24px">星域集团</h2></div><div><p class="lead">连接人工智能、内容、创作者与品牌，构建持续运转的数字业务。</p><p class="body-copy" style="margin-top:22px">从短视频与直播出发，星域集团探索内容生产、创作者培养、品牌合作和商业转化之间的连接。苏才育博士担任创办人兼董事长。</p><div class="actions">{link("了解星域集团", "/business/zocco-group/")}</div></div></div>'
+    write_page('/business/', '事业版图', '探索苏才育博士与星域集团的事业领域：人工智能内容、多渠道内容机构创作者生态、影视科技及跨界品牌商业。', intro('事业版图', '把想法，变成事业。', '以数字内容为起点，探索科技、创作者与商业之间的连接。') + page_section(overview) + page_section(f'<div class="feature-list">{features}</div>') + closing(), '/business/')
+    sections = [('group', '星域集团', '<p>星域集团由苏才育博士创办，以短视频内容与直播运营为切入点，逐步发展为涵盖多渠道内容机构、电商营销、艺人孵化及影视投资的综合性业务平台。</p><dl class="facts"><div><dt>中文名称</dt><dd>星域集团</dd></div><div><dt>苏才育博士的角色</dt><dd>创办人兼董事长</dd></div><div><dt>业务关注</dt><dd>人工智能、内容、创作者经济、品牌商业化</dd></div></dl>'),
+                ('work', '相互连接的业务', '<p>集团围绕内容生产、流量聚合、品牌合作与商业转化展开业务探索。人工智能应用帮助优化内容工作流程，创作者运营连接人才与平台，品牌合作则将内容影响力延伸至商业场景。</p>' + ''.join(f'<h3>{b["title"]}</h3><p>{b["desc"]}</p>{link("了解更多", "/business/"+b["slug"]+"/")}' for b in BUSINESSES)),
                 ('responsibility', '经营之外的责任', '<p>集团通过慈善基金、教育支持及公益活动参与社会贡献，将企业发展与青年、教育和社区的需要联系起来。</p>' + link('了解社会贡献', '/social-impact/'))]
-    write_page('/business/zocco-group/', '星域集团 · Zocco Group', '星域集团简介与苏才育博士的创办人及董事长角色，了解集团的内容、科技、创作者与品牌业务。', intro('Zocco Group', '连接内容，创造价值。', '星域集团 · 创办人兼董事长：Dr Kervis Soo 苏才育博士', 'impact3.jpg') + prose_layout(sections) + closing(), '/business/', extra_schema=PERSON['worksFor'])
+    write_page('/business/zocco-group/', '星域集团', '星域集团简介与苏才育博士的创办人及董事长角色，了解集团的内容、科技、创作者与品牌业务。', intro('星域集团', '连接内容，创造价值。', '星域集团 · 创办人兼董事长：苏才育博士', 'impact3.jpg') + prose_layout(sections) + closing(), '/business/', extra_schema=PERSON['worksFor'])
     for b in BUSINESSES:
         sections = [(f'focus-{i}', title, f'<p>{text}</p>') for i, (title, text) in enumerate(b['sections'], 1)]
         sections.append(('connections', '连接更多领域', '<p>这一业务方向与星域集团的其他业务相互关联。了解集团全貌，或与团队讨论具体的合作方向。</p><div class="actions">' + link('返回事业版图', '/business/') + link('商业合作', '/contact/?type=business') + '</div>'))
-        write_page(f'/business/{b["slug"]}/', b['title'], b['intro'], intro(b['en'], b['title'], b['intro']) + prose_layout(sections) + closing(), '/business/')
+        write_page(f'/business/{b["slug"]}/', b['title'], b['intro'], intro(b['label'], b['title'], b['intro']) + prose_layout(sections) + closing(), '/business/')
 
 
 def impact_pages():
     items = [
-        ('charitable-foundation', '01 / Community & opportunity', '星域集团慈善基金', '关注青年创业、数字技能与社区教育，通过持续的投入与合作，让更多人获得成长的机会。', 'impact1.jpg'),
-        ('newgen-education', '02 / Education & the next generation', 'NEWGEN 教育基金', '苏亚辉与陈亚莲夫妇百万教育基金，以教育传承为方向，支持家庭经济困难的学生继续求学。', 'impact2.jpg'),
-        ('school-community', '03 / Giving back', '母校回馈与社区参与', '从居銮中华中学到马来西亚公益节，将个人成长与企业资源连接到教育和社区。', 'impact3.jpg'),
+        ('charitable-foundation', '01 / 社区与成长机会', '星域集团慈善基金', '关注青年创业、数字技能与社区教育，通过持续的投入与合作，让更多人获得成长的机会。', 'impact1.jpg'),
+        ('newgen-education', '02 / 教育与下一代', '苏亚辉与陈亚莲教育基金', '苏亚辉与陈亚莲夫妇百万教育基金，以教育传承为方向，支持家庭经济困难的学生继续求学。', 'impact2.jpg'),
+        ('school-community', '03 / 回馈社会', '母校回馈与社区参与', '从居銮中华中学到马来西亚公益节，将个人成长与企业资源连接到教育和社区。', 'impact3.jpg'),
     ]
-    features = ''.join(f'<article class="feature-item"><figure>{image(img, title, "fund-image" if img=="impact2.jpg" else "")}</figure>{eyebrow(en)}<h2>{title}</h2><p>{desc}</p>{link("Explore the initiative · 了解项目", "/social-impact/"+slug+"/")}</article>' for slug, en, title, desc, img in items)
-    write_page('/social-impact/', '社会贡献', '了解苏才育博士在教育、青年成长与社区公益方面的参与，包括星域集团慈善基金及 NEWGEN 教育基金。', intro('Social impact', '让成长，成为更多人的机会。', '教育、青年与社区。以持续的参与，把「取之社会，用之社会」落实到具体行动。', 'impact1.jpg') + page_section('<blockquote class="wide-quote">「取之社会，用之社会。」</blockquote><p class="quote-attribution">— Dr Kervis Soo 苏才育博士</p><p class="body-copy" style="max-width:720px;margin-top:25px">事业的发展带来资源，也带来责任。关注教育与技能，让下一代有机会继续学习；参与社区与公益，让商业之外的连接不断延伸。</p>') + page_section(f'<div class="feature-list">{features}</div>') + closing(), '/social-impact/')
+    features = ''.join(f'<article class="feature-item"><figure>{image(img, title, "fund-image" if img=="impact2.jpg" else "")}</figure>{eyebrow(en)}<h2>{title}</h2><p>{desc}</p>{link("了解项目", "/social-impact/"+slug+"/")}</article>' for slug, en, title, desc, img in items)
+    write_page('/social-impact/', '社会贡献', '了解苏才育博士在教育、青年成长与社区公益方面的参与，包括星域集团慈善基金及苏亚辉与陈亚莲教育基金。', intro('社会贡献', '让成长，成为更多人的机会。', '教育、青年与社区。以持续的参与，把「取之社会，用之社会」落实到具体行动。', 'impact1.jpg') + page_section('<blockquote class="wide-quote">「取之社会，用之社会。」</blockquote><p class="quote-attribution">— 苏才育博士</p><p class="body-copy" style="max-width:720px;margin-top:25px">事业的发展带来资源，也带来责任。关注教育与技能，让下一代有机会继续学习；参与社区与公益，让商业之外的连接不断延伸。</p>') + page_section(f'<div class="feature-list">{features}</div>') + closing(), '/social-impact/')
     data = [
-        ('charitable-foundation', '星域集团慈善基金', 'Charitable foundation', 'impact1.jpg', [
+        ('charitable-foundation', '星域集团慈善基金', '慈善基金', 'impact1.jpg', [
             ('purpose', '以科技与教育，支持长期成长', '<p>2025 年 10 月，星域集团发起慈善基金计划，关注青年创业、数字技能培训与社区教育基础设施。其方向是将科技与商业资源，转化为对青年和社区的实际支持。</p><p>基金以长期参与为出发点，关注人们建立能力与改善生活的机会。将技能、教育与社区需要联系起来，是这一计划的持续方向。</p>'),
             ('focus', '关注方向', '<h3>青年创业</h3><p>关注青年探索创业的需要，连接经验、学习与发展机会。</p><h3>数字技能</h3><p>关注数字时代的基础能力与工具应用，帮助更多人理解科技、接触新技能。</p><h3>社区教育</h3><p>关注社区的教育资源，让学习与成长有更扎实的基础。</p>')]),
-        ('newgen-education', 'NEWGEN 教育基金', 'Education & family legacy', 'impact2.jpg', [
-            ('purpose', '让教育成为一份传承', '<p>NEWGEN 苏亚辉与陈亚莲夫妇百万教育基金在柔佛州设立，以感念父母教养、传承教育价值为出发点。</p><p>基金主要关注家庭经济困难、品学兼优的学生，支持其完成从中学到大学的学业，让教育为个人与家庭带来更长远的可能。</p>'),
+        ('newgen-education', '苏亚辉与陈亚莲教育基金', '教育与家庭传承', 'impact2.jpg', [
+            ('purpose', '让教育成为一份传承', '<p>苏亚辉与陈亚莲夫妇百万教育基金在柔佛州设立，以感念父母教养、传承教育价值为出发点。</p><p>基金主要关注家庭经济困难、品学兼优的学生，支持其完成从中学到大学的学业，让教育为个人与家庭带来更长远的可能。</p>'),
             ('focus', '关注学生的长期成长', '<p>一次帮助的意义，可以延伸为继续学习的机会。教育支持关注学生当下的需要，也关注其未来的发展。</p><p>通过支持学生完成学业，让家庭的教育期待有机会成为现实，也让这份重视学习的价值继续传递。</p>')]),
-        ('school-community', '母校回馈与社区参与', 'School & community', 'impact3.jpg', [
+        ('school-community', '母校回馈与社区参与', '母校与社区', 'impact3.jpg', [
             ('school', '回到成长的起点', '<p>苏才育博士以个人及集团名义回馈居銮中华中学，支持学校硬件建设与奖助学金计划，并鼓励学生探索科技与未来的发展方向。</p><p>对母校的支持，将个人求学经历与下一代的成长联系起来。</p>'),
             ('community', '参与公益，连接社区', '<p>星域集团冠名赞助马来西亚公益节，以企业参与的方式支持公益交流与社会责任文化。</p><p>从教育到社区，持续参与有助于加深对不同群体需要的理解，也让企业资源有机会回应更具体的问题。</p>')]),
     ]
@@ -361,118 +362,118 @@ def impact_pages():
 
 
 def media_awards_pages():
-    filters = filter_controls(None, '搜索报道 / Search coverage', groups=filter_groups())
+    filters = filter_controls(None, '搜索报道', groups=filter_groups())
     coverage = sort_by_date(COVERAGE)
     lead = f'关于人物、事业、科技与社会贡献的第三方报道，共 {len(coverage)} 条。每条均已核对并链接到原文，按发布方式标注类型。'
-    write_page('/media/', '媒体与公众记录', '汇集关于 Dr Kervis Soo、星域集团、AI 应用与社会贡献的第三方报道：逐条核对、链接原文，并按发布方式分类。', intro('Media & public record', '从不同视角，看见实践。', lead) + page_section(f'<div class="media-legend">{eyebrow("How to read this list / 类型说明")}{type_legend()}</div><div data-filter-list><h2 class="sr-only">媒体报道 / Coverage</h2>{filters}{coverage_rows(coverage)}{no_results()}</div>') + page_section(link('获取人物简介与媒体照片', '/press/')) + closing(), '/media/')
+    write_page('/media/', '媒体与公众记录', '汇集关于苏才育博士、星域集团、人工智能应用与社会贡献的第三方报道：逐条核对、链接原文，并按发布方式分类。', intro('媒体与公众记录', '从不同视角，看见实践。', lead) + page_section(f'<div class="media-legend">{eyebrow("类型说明")}{type_legend()}</div><div data-filter-list><h2 class="sr-only">媒体报道</h2>{filters}{coverage_rows(coverage)}{no_results()}</div>') + page_section(link('获取人物简介与媒体照片', '/press/')) + closing(), '/media/')
 
-    recognition = '<div class="feature-list"><article class="feature-item">' + eyebrow('Honorary appointment / 荣誉身份') + '<h2>人工智能领域荣誉院士</h2><p>2026 · Lincoln University College<br>林肯大学学院授予的 Honorary Fellow in Artificial Intelligence 荣誉身份。</p>' + link('View recognition record · 查看记录', '/awards/ai-honorary-fellow/') + '</article><article class="feature-item">' + eyebrow('Academic qualification / 学术学历') + '<h2>管理学博士 · DBA</h2><p>2025 · University of Malaya<br>马来亚大学管理学博士。教育背景在人物简介中独立记录。</p>' + link('View education · 教育经历', '/dr-kervis-soo/#education') + '</article></div>'
-    write_page('/awards/', '学历与荣誉', '分别了解苏才育博士的学术学历与人工智能领域荣誉身份。', intro('Education & recognition', '学习与实践的印记。', '以清晰的分类，记录学术经历与荣誉身份。') + page_section(recognition) + closing())
-    sections = [('record', '荣誉记录', '<figure>' + placeholder('photo', '颁授典礼照片与证书待补充 · Photo & certificate coming soon') + '</figure><dl class="facts"><div><dt>荣誉名称</dt><dd>Honorary Fellow in Artificial Intelligence</dd></div><div><dt>中文名称</dt><dd>人工智能领域荣誉院士</dd></div><div><dt>授予机构</dt><dd>Lincoln University College<br>林肯大学学院</dd></div><div><dt>年份与类别</dt><dd>2026 · 荣誉身份</dd></div></dl><p>2026 年，林肯大学学院授予苏才育博士人工智能领域荣誉院士称号。这一身份与其对 AI 产业化及数字内容应用的关注相联系。</p>'),
-                ('context', '相关实践', '<p>苏才育博士关注 AI 在内容生产、数字音乐及运营场景中的应用，并通过星域集团探索技术与产业之间的连接。</p><div class="actions">' + link('AI 与内容创新', '/business/ai-content/') + link('相关媒体条目', '/media/') + '</div>')]
-    write_page('/awards/ai-honorary-fellow/', '人工智能领域荣誉院士', '2026 年林肯大学学院授予苏才育博士人工智能领域荣誉院士称号的记录。', intro('Honorary fellow in artificial intelligence', '人工智能领域荣誉院士', '2026 · Lincoln University College · 林肯大学学院') + prose_layout(sections) + closing())
+    recognition = '<div class="feature-list"><article class="feature-item">' + eyebrow('荣誉身份') + '<h2>人工智能领域荣誉院士</h2><p>2026 · 林肯大学学院授予的人工智能领域荣誉院士荣誉身份。</p>' + link('查看记录', '/awards/ai-honorary-fellow/') + '</article><article class="feature-item">' + eyebrow('学术学历') + '<h2>管理学博士</h2><p>2025 · 马来亚大学<br>马来亚大学管理学博士。教育背景在人物简介中独立记录。</p>' + link('教育经历', '/dr-kervis-soo/#education') + '</article></div>'
+    write_page('/awards/', '学历与荣誉', '分别了解苏才育博士的学术学历与人工智能领域荣誉身份。', intro('学历与荣誉', '学习与实践的印记。', '以清晰的分类，记录学术经历与荣誉身份。') + page_section(recognition) + closing())
+    sections = [('record', '荣誉记录', '<figure>' + placeholder('photo', '颁授典礼照片与证书待补充') + '</figure><dl class="facts"><div><dt>荣誉名称</dt><dd>人工智能领域荣誉院士</dd></div><div><dt>授予机构</dt><dd>林肯大学学院</dd></div><div><dt>年份与类别</dt><dd>2026 · 荣誉身份</dd></div></dl><p>2026 年，林肯大学学院授予苏才育博士人工智能领域荣誉院士称号。这一身份与其对人工智能产业化及数字内容应用的关注相联系。</p>'),
+                ('context', '相关实践', '<p>苏才育博士关注人工智能在内容生产、数字音乐及运营场景中的应用，并通过星域集团探索技术与产业之间的连接。</p><div class="actions">' + link('人工智能与内容创新', '/business/ai-content/') + link('相关媒体条目', '/media/') + '</div>')]
+    write_page('/awards/ai-honorary-fellow/', '人工智能领域荣誉院士', '2026 年林肯大学学院授予苏才育博士人工智能领域荣誉院士称号的记录。', intro('人工智能领域荣誉院士', '人工智能领域荣誉院士', '2026 · 林肯大学学院') + prose_layout(sections) + closing())
 
 
 def insight_pages():
-    filters = filter_controls([('all', '全部 All'), ('ai', 'AI 与数字经济'), ('creators', '创作者经济'), ('impact', '领导力与公益')], '搜索观点 / Search insights')
-    write_page('/insights/', 'AI 与观点', '围绕 AI、数字经济、创作者经济、领导力与社会贡献的官网主题观察。', intro('AI & insights', '把变化，变成思考的起点。', '从技术到经营，从创作到社会价值。围绕事业关注领域，由官网编辑整理的主题文章。') + page_section(f'<div data-filter-list><h2 class="sr-only">主题文章 / Articles</h2>{filters}<div class="insight-grid">{"".join(insight_item(a) for a in ARTICLES)}</div>{no_results()}</div>') + closing(), '/insights/')
+    filters = filter_controls([('all', '全部'), ('ai', '人工智能与数字经济'), ('creators', '创作者经济'), ('impact', '领导力与公益')], '搜索观点')
+    write_page('/insights/', '人工智能与观点', '围绕人工智能、数字经济、创作者经济、领导力与社会贡献的官网主题观察。', intro('人工智能与观点', '把变化，变成思考的起点。', '从技术到经营，从创作到社会价值。围绕事业关注领域，由官网编辑整理的主题文章。') + page_section(f'<div data-filter-list><h2 class="sr-only">主题文章</h2>{filters}<div class="insight-grid">{"".join(insight_item(a) for a in ARTICLES)}</div>{no_results()}</div>') + closing(), '/insights/')
     for a in ARTICLES:
         sections = [(f'chapter-{i}', title, f'<p>{p1}</p><p>{p2}</p>') for i, (title, p1, p2) in enumerate(a['sections'], 1)]
         meta = f'<div class="article-meta"><span>主题观察 · 官网编辑</span><span>整理于 <time datetime="{UPDATED}">{UPDATED.replace("-", ".")}</time></span><span>{a["minutes"]} 分钟阅读</span></div>'
-        caption = 'AI 概念影像' if a['category'] in ('ai', 'creators') else '星域集团慈善基金 · 活动记录'
+        caption = '人工智能概念影像' if a['category'] in ('ai', 'creators') else '星域集团慈善基金 · 活动记录'
         art = f'<figure class="article-art">{article_image(a)}<figcaption class="photo-caption">{caption}</figcaption></figure>'
-        content = intro(a['label'], a['title'], a['summary'], article=True) + page_section(f'<div class="prose" style="margin:auto">{art}{meta}</div>') + prose_layout(sections, 'In this perspective / 阅读导航') + page_section('<div class="actions">' + link('更多主题观点', '/insights/') + link('了解相关事业', '/business/') + '</div>')
-        article_schema = {'@type': 'Article', 'headline': a['title'], 'description': a['summary'], 'inLanguage': 'zh-CN', 'datePublished': UPDATED, 'dateModified': UPDATED, 'author': {'@type': 'Organization', 'name': 'Dr Kervis Soo 官网编辑'}, 'mainEntityOfPage': DOMAIN + '/insights/' + a['slug'] + '/'}
+        content = intro(a['label'], a['title'], a['summary'], article=True) + page_section(f'<div class="prose" style="margin:auto">{art}{meta}</div>') + prose_layout(sections, '阅读导航') + page_section('<div class="actions">' + link('更多主题观点', '/insights/') + link('了解相关事业', '/business/') + '</div>')
+        article_schema = {'@type': 'Article', 'headline': a['title'], 'description': a['summary'], 'inLanguage': 'zh-CN', 'datePublished': '2026-10-01', 'dateModified': UPDATED, 'author': {'@type': 'Organization', 'name': '苏才育博士官网编辑'}, 'mainEntityOfPage': DOMAIN + '/insights/' + a['slug'] + '/'}
         write_page('/insights/' + a['slug'] + '/', a['title'], a['summary'], content + closing(), '/insights/', extra_schema=article_schema)
 
 
 def speaking_press_pages():
     topics = [
-        ('AI & digital economy', 'AI 如何走进实际业务', '从内容工作流程、团队协作与数字化经营的角度，交流 AI 应用的机会与思考。'),
-        ('Entrepreneurship & leadership', '在变化中建立事业', '围绕创业、学习与企业经营，探讨团队如何面对变化、积累经验并持续成长。'),
-        ('Creator economy', '创作者与品牌的连接', '围绕短视频、直播与 MCN 生态，讨论内容、受众关系与品牌合作。'),
-        ('Social impact', '企业发展与社会责任', '从教育、青年与社区参与出发，交流企业资源与社会需要之间的连接。'),
+        ('人工智能与数字经济', '人工智能如何走进实际业务', '从内容工作流程、团队协作与数字化经营的角度，交流人工智能应用的机会与思考。'),
+        ('创业与领导力', '在变化中建立事业', '围绕创业、学习与企业经营，探讨团队如何面对变化、积累经验并持续成长。'),
+        ('创作者经济', '创作者与品牌的连接', '围绕短视频、直播与多渠道内容机构生态，讨论内容、受众关系与品牌合作。'),
+        ('社会贡献', '企业发展与社会责任', '从教育、青年与社区参与出发，交流企业资源与社会需要之间的连接。'),
     ]
     features = ''.join(f'<article class="feature-item">{eyebrow(en)}<h2>{title}</h2><p>{desc}</p></article>' for en, title, desc in topics)
-    record = '<h2 class="sr-only">公开活动记录 / Appearances</h2>' + appearance_cards(image, link)
-    write_page('/speaking/', '演讲与公开活动', 'Dr Kervis Soo 的交流主题与公开活动记录。联系 AI、数字经济、创业及社会贡献相关演讲邀请。', intro('Speaking & appearances', '在对话中，打开新的视角。', 'AI 与数字经济、创业与领导力、创作者经济、社会责任。欢迎会议、校园、媒体及行业交流。', 'impact3.jpg') + page_section(f'<div class="feature-list">{features}</div>') + page_section(record) + page_section(link('Invite Dr Kervis · 邀请演讲', '/contact/?type=speaking', True)) + closing(), '/speaking/')
+    record = '<h2 class="sr-only">公开活动记录</h2>' + appearance_cards(image, link)
+    write_page('/speaking/', '演讲与公开活动', '苏才育博士的交流主题与公开活动记录。联系人工智能、数字经济、创业及社会贡献相关演讲邀请。', intro('演讲与公开活动', '在对话中，打开新的视角。', '人工智能与数字经济、创业与领导力、创作者经济、社会责任。欢迎会议、校园、媒体及行业交流。', 'impact3.jpg') + page_section(f'<div class="feature-list">{features}</div>') + page_section(record) + page_section(link('邀请演讲', '/contact/?type=speaking', True)) + closing(), '/speaking/')
     sections = [('appearance', '公开活动记录', f'<figure>{image("impact3.jpg", "苏才育博士在星域集团开幕仪式上发言")}<figcaption class="photo-caption">活动照片 · 星域集团开幕仪式</figcaption></figure><dl class="facts"><div><dt>活动</dt><dd>星域集团开幕仪式</dd></div><div><dt>出席身份</dt><dd>创办人兼董事长</dd></div></dl><p>活动现场围绕集团及个人事业方向进行介绍，呈现内容、品牌与数字商业之间的连接。</p>'),
-                ('video', '人物与事业影像', '<div class="video-wrap">' + placeholder('video', '视频待补充 · Video coming soon', 'placeholder-video', 'impact3.jpg') + '<p class="photo-caption">人物与事业影像将在取得正式影片后发布。</p></div>'),
+                ('video', '人物与事业影像', '<div class="video-wrap">' + placeholder('video', '视频待补充', 'placeholder-video', 'impact3.jpg') + '<p class="photo-caption">人物与事业影像将在取得正式影片后发布。</p></div>'),
                 ('invite', '活动与演讲邀请', '<p>如希望邀请苏才育博士参与会议、论坛、校园交流或媒体访问，请提供主题、活动形式、日期与地点，方便团队了解安排。</p>' + link('联系演讲邀请', '/contact/?type=speaking'))]
-    write_page('/speaking/zocco-group-opening/', '星域集团开幕仪式', '苏才育博士参与星域集团开幕仪式的活动影像及事业介绍。', intro('Public appearance', '星域集团开幕仪式', 'Dr Kervis Soo · 星域集团创办人兼董事长') + prose_layout(sections) + closing(), '/speaking/')
+    write_page('/speaking/zocco-group-opening/', '星域集团开幕仪式', '苏才育博士参与星域集团开幕仪式的活动影像及事业介绍。', intro('公开活动', '星域集团开幕仪式', '苏才育博士 · 星域集团创办人兼董事长') + prose_layout(sections) + closing(), '/speaking/')
 
     bios = [
-        ('short', '简版简介', '苏才育博士（Dr Kervis Soo），星域集团创办人兼董事长，关注人工智能应用、数字内容、创作者经济与社会贡献。'),
-        ('standard', '标准简介', '苏才育博士（Dr Kervis Soo）是马来西亚企业家、星域集团（Zocco Group）创办人兼董事长，事业涉及 AI 应用、数字内容、MCN 生态与跨界商业。他关注科技与产业的连接，同时参与教育支持、青年发展与社区公益。'),
-        ('extended', '完整简介', BIO + '2025 年取得马来亚大学管理学博士学位，2026 年获林肯大学学院授予人工智能领域荣誉院士称号。他通过星域集团慈善基金、NEWGEN 教育基金、母校回馈与公益活动，将事业发展与教育、青年及社区的需要连接起来。'),
+        ('short', '简版简介', '苏才育博士，星域集团创办人兼董事长，关注人工智能应用、数字内容、创作者经济与社会贡献。'),
+        ('standard', '标准简介', '苏才育博士是马来西亚企业家、星域集团创办人兼董事长，事业涉及人工智能应用、数字内容、多渠道内容机构生态与跨界商业。他关注科技与产业的连接，同时参与教育支持、青年发展与社区公益。'),
+        ('extended', '完整简介', BIO + '2025 年取得马来亚大学管理学博士学位，2026 年获林肯大学学院授予人工智能领域荣誉院士称号。他通过星域集团慈善基金、苏亚辉与陈亚莲教育基金、母校回馈与公益活动，将事业发展与教育、青年及社区的需要连接起来。'),
     ]
-    bios_html = ''.join(f'<div class="bio-option"><h3>{label}</h3><p id="bio-{key}">{copy}</p><button class="copy-button" data-copy="bio-{key}" type="button">复制简介 / Copy biography</button><span class="copy-feedback" role="status"></span></div>' for key, label, copy in bios)
+    bios_html = ''.join(f'<div class="bio-option"><h3>{label}</h3><p id="bio-{key}">{copy}</p><button class="copy-button" data-copy="bio-{key}" type="button">复制简介</button><span class="copy-feedback" role="status"></span></div>' for key, label, copy in bios)
     bios_text = '\n\n'.join(label + '\n' + text for key, label, text in bios)
     (ROOT / 'assets' / 'dr-kervis-biographies.txt').write_text(bios_text, encoding='utf-8')
-    downloads = f'<div class="downloads"><div class="download-item">{image("hero.jpg", "苏才育博士正式肖像")}<a href="/images/hero.jpg" download="Dr-Kervis-Soo-portrait.jpg">下载正式肖像 · JPG ↓</a></div><div class="download-item">{image("about.png", "苏才育博士个人肖像")}<a href="/images/about.png" download="Dr-Kervis-Soo-profile.png">下载人物照片 · PNG ↓</a></div><div class="download-item">{image("events/csr-portrait.webp", "苏才育博士身着米色西装的活动人像")}<a href="/images/events/csr-portrait-press.jpg" download="Dr-Kervis-Soo-event-portrait.jpg">下载活动人像 · JPG ↓</a></div></div>'
-    sections = [('names', '姓名与身份', '<dl class="facts"><div><dt>公开姓名</dt><dd>Dr Kervis Soo / 苏才育博士</dd></div><div><dt>英文全名</dt><dd>Kervis Soo Chai Ee</dd></div><div><dt>主要职务</dt><dd>Founder & Chairman, Zocco Group<br>星域集团创办人兼董事长</dd></div><div><dt>媒体联系</dt><dd><a href="mailto:Drkervis@xingyu.global">Drkervis@xingyu.global</a></dd></div></dl>'),
-                ('biographies', '可用人物简介', bios_html + '<div class="actions"><a class="text-link" href="/assets/dr-kervis-biographies.txt" download>下载全部简介 · TXT ↓</a></div>'),
-                ('photos', '人物照片', '<p>用于介绍 Dr Kervis Soo 的采访、活动及人物报道。商业广告、肖像背书或其他用途，请先联系团队确认。</p>' + downloads),
-                ('topics', '交流主题与公司资料', '<p>AI 与数字经济、创业与领导力、创作者经济、社会贡献。了解具体主题与事业背景，可查看以下页面。</p><div class="actions">' + link('演讲主题', '/speaking/') + link('星域集团简介', '/business/zocco-group/') + '</div>'),
-                ('media-contact', '采访与媒体联系', '<p>请在联系时说明媒体名称、采访主题、形式、预计时间与刊出安排，便于团队了解需求。</p>' + link('Media enquiry · 媒体联系', '/contact/?type=media', True))]
-    write_page('/press/', '新闻资料室', '获取 Dr Kervis Soo 苏才育博士的人物简介、正式姓名与职务、媒体照片及采访联系方法。', intro('Press room', '让准确的介绍，从这里开始。', '人物简介、照片、事业资料与媒体联系，供采访与活动介绍使用。') + prose_layout(sections) + closing())
+    downloads = f'<div class="downloads"><div class="download-item">{image("hero.jpg", "苏才育博士正式肖像")}<a href="/images/hero.jpg" download="Dr-Kervis-Soo-portrait.jpg">下载正式肖像 ↓</a></div><div class="download-item">{image("about.png", "苏才育博士个人肖像")}<a href="/images/about.png" download="Dr-Kervis-Soo-profile.png">下载人物照片 ↓</a></div><div class="download-item">{image("events/csr-portrait.webp", "苏才育博士身着米色西装的活动人像")}<a href="/images/events/csr-portrait-press.jpg" download="Dr-Kervis-Soo-event-portrait.jpg">下载活动人像 ↓</a></div></div>'
+    sections = [('names', '姓名与身份', '<dl class="facts"><div><dt>公开姓名</dt><dd>苏才育博士</dd></div><div><dt>主要职务</dt><dd>星域集团创办人兼董事长</dd></div><div><dt>媒体联系</dt><dd><a href="mailto:Drkervis@xingyu.global">Drkervis@xingyu.global</a></dd></div></dl>'),
+                ('biographies', '可用人物简介', bios_html + '<div class="actions"><a class="text-link" href="/assets/dr-kervis-biographies.txt" download>下载全部简介（文本文件）↓</a></div>'),
+                ('photos', '人物照片', '<p>用于介绍苏才育博士的采访、活动及人物报道。商业广告、肖像背书或其他用途，请先联系团队确认。</p>' + downloads),
+                ('topics', '交流主题与公司资料', '<p>人工智能与数字经济、创业与领导力、创作者经济、社会贡献。了解具体主题与事业背景，可查看以下页面。</p><div class="actions">' + link('演讲主题', '/speaking/') + link('星域集团简介', '/business/zocco-group/') + '</div>'),
+                ('media-contact', '采访与媒体联系', '<p>请在联系时说明媒体名称、采访主题、形式、预计时间与刊出安排，便于团队了解需求。</p>' + link('媒体联系', '/contact/?type=media', True))]
+    write_page('/press/', '新闻资料室', '获取苏才育博士的人物简介、正式姓名与职务、媒体照片及采访联系方法。', intro('新闻资料室', '让准确的介绍，从这里开始。', '人物简介、照片、事业资料与媒体联系，供采访与活动介绍使用。') + prose_layout(sections) + closing())
 
 
 def event_page():
     related = coverage_rows(sort_by_date([article for article in COVERAGE if article.event == EVENT_ID]))
     description = f'{EVENT_NAME}（2026 年 9 月 16 日，八打灵再也）：VYBE 启动、合作仪式与电影发布的精选影像、现场照片及相关报道。'
-    page_intro = intro('Public appearance · 2026.09.16', '916 星域荣耀盛典', f'{EVENT_NAME} · 八打灵再也 D Theatre, Hextar World', 'events/gala-podium.webp', photo_alt='苏才育博士在星域荣耀盛典上致辞')
+    page_intro = intro('公开活动 · 2026.09.16', '916 星域荣耀盛典', f'{EVENT_NAME} · 八打灵再也 D Theatre, Hextar World', 'events/gala-podium.webp', photo_alt='苏才育博士在星域荣耀盛典上致辞')
     write_page(EVENT_PATH, '916 星域荣耀盛典', description, page_intro + prose_layout(event_sections(image, link, related)) + closing(), '/speaking/', extra_schema=event_schema(DOMAIN), og_image=OG_IMAGE)
 
 
 def news_archive_pages():
     news = [
         ('2026.09', '916 星域荣耀盛典', 'VYBE 正式启动、电影发布与多项合作仪式；查看活动影像、现场照片与相关报道。', EVENT_PATH),
-        ('2026', 'AI 荣誉院士身份记录', '林肯大学学院授予人工智能领域荣誉院士称号，记录其 AI 实践历程中的节点。', '/awards/ai-honorary-fellow/'),
+        ('2026', '人工智能荣誉院士身份记录', '林肯大学学院授予人工智能领域荣誉院士称号，记录其人工智能实践历程中的节点。', '/awards/ai-honorary-fellow/'),
         ('2025.10', '星域集团慈善基金计划', '以青年创业、数字技能与社区教育为关注方向，连接企业资源与社会需要。', '/social-impact/charitable-foundation/'),
-        ('2025', '管理学博士学业记录', '马来亚大学管理学博士，研究关注数字经济背景下的企业转型与 AI 应用。', '/dr-kervis-soo/#education'),
+        ('2025', '管理学博士学业记录', '马来亚大学管理学博士，研究关注数字经济背景下的企业转型与人工智能应用。', '/dr-kervis-soo/#education'),
     ]
     rows = ''.join(f'<a class="news-row" href="{href}"><time>{year}</time><div><h2>{title}</h2><p>{desc}</p></div><span class="arrow" aria-hidden="true">↗</span></a>' for year, title, desc, href in news)
-    write_page('/news/', '新闻与动态', '了解苏才育博士的事业、学习与社会贡献的重要动态。', intro('News & updates', '持续前行的记录。', '汇集人物、事业与社会参与的重要节点。') + page_section(rows) + closing())
+    write_page('/news/', '新闻与动态', '了解苏才育博士的事业、学习与社会贡献的重要动态。', intro('新闻与动态', '持续前行的记录。', '汇集人物、事业与社会参与的重要节点。') + page_section(rows) + closing())
     archive = [
-        ('events/gala-podium.webp', '916 星域荣耀盛典 · 致辞', '2026.09 · 事业与活动 / Business & appearances', 'business', EVENT_PATH),
-        ('events/gala-degree.webp', '学位颁授环节', '2026.09 · 人物与成长 / Education', 'person', EVENT_PATH + '#photos'),
-        ('events/gala-birthday.webp', '生日庆祝与合作伙伴周年', '2026.09 · 事业与活动 / Business & appearances', 'business', EVENT_PATH + '#photos'),
-        ('events/vybe-event.webp', '星域 × VYBE 活动', '2026.07 · 事业与活动 / Business & appearances', 'business', '/speaking/'),
-        ('events/csr-portrait.webp', 'CSR 活动人像', '2026.06 · 人物资料 / Portrait', 'person', '/speaking/'),
-        ('hero.jpg', '人物肖像', '人物资料 / Portrait', 'person', '/dr-kervis-soo/'),
-        ('about.png', '来时路与成长', '人物故事 / His journey', 'person', '/story/'),
-        ('impact1.jpg', '星域集团慈善基金', '2025 · 社会贡献 / Social impact', 'impact', '/social-impact/charitable-foundation/'),
-        ('impact2.jpg', 'NEWGEN 教育基金', '教育支持 / Education', 'impact', '/social-impact/newgen-education/'),
-        ('impact3.jpg', '星域集团开幕仪式', '事业与活动 / Business & appearances', 'business', '/speaking/zocco-group-opening/'),
+        ('events/gala-podium.webp', '916 星域荣耀盛典 · 致辞', '2026.09 · 事业与活动', 'business', EVENT_PATH),
+        ('events/gala-degree.webp', '学位颁授环节', '2026.09 · 人物与成长', 'person', EVENT_PATH + '#photos'),
+        ('events/gala-birthday.webp', '生日庆祝与合作伙伴周年', '2026.09 · 事业与活动', 'business', EVENT_PATH + '#photos'),
+        ('events/vybe-event.webp', '星域 × VYBE 活动', '2026.07 · 事业与活动', 'business', '/speaking/'),
+        ('events/csr-portrait.webp', '企业社会责任活动人像', '2026.06 · 人物资料', 'person', '/speaking/'),
+        ('hero.jpg', '人物肖像', '人物资料', 'person', '/dr-kervis-soo/'),
+        ('about.png', '来时路与成长', '人物故事', 'person', '/story/'),
+        ('impact1.jpg', '星域集团慈善基金', '2025 · 社会贡献', 'impact', '/social-impact/charitable-foundation/'),
+        ('impact2.jpg', '苏亚辉与陈亚莲教育基金', '教育支持', 'impact', '/social-impact/newgen-education/'),
+        ('impact3.jpg', '星域集团开幕仪式', '事业与活动', 'business', '/speaking/zocco-group-opening/'),
     ]
     items = ''.join(f'<article class="archive-item {"contain" if img=="impact2.jpg" else ""}" data-category="{category}"><a href="{href}">{image(img, "", sizes=ARCHIVE_SIZES)}<h2>{title}</h2></a><p>{subtitle}</p>{link("查看记录", href)}</article>' for img, title, subtitle, category, href in archive)
-    filters = filter_controls([('all', '全部 All'), ('person', '人物与成长'), ('business', '事业与活动'), ('impact', '教育与公益')], '搜索档案 / Search archive')
-    write_page('/archive/', '人物与活动档案', '浏览苏才育博士的人物肖像、事业活动、教育与社会贡献影像及相关记录。', intro('The archive', '把每一段经历，留在时间里。', '人物、事业与社会参与的影像资料。循着一张照片，走进一段记录。') + page_section(f'<div data-filter-list>{filters}<div class="archive-grid">{items}</div>{no_results()}</div>') + page_section(link('按时间查看重要节点', '/journey/')) + closing())
+    filters = filter_controls([('all', '全部'), ('person', '人物与成长'), ('business', '事业与活动'), ('impact', '教育与公益')], '搜索档案')
+    write_page('/archive/', '人物与活动档案', '浏览苏才育博士的人物肖像、事业活动、教育与社会贡献影像及相关记录。', intro('人物与活动档案', '把每一段经历，留在时间里。', '人物、事业与社会参与的影像资料。循着一张照片，走进一段记录。') + page_section(f'<div data-filter-list>{filters}<div class="archive-grid">{items}</div>{no_results()}</div>') + page_section(link('按时间查看重要节点', '/journey/')) + closing())
 
 
 def contact_privacy_pages():
     socials = ''.join(f'<a href="{url}" target="_blank" rel="noopener noreferrer">{text} ↗</a>' for text, url in SOCIALS)
     form = '''<form class="contact-form"><div class="form-grid">
-      <div class="field"><label for="name">姓名 / Name *</label><input id="name" name="name" autocomplete="name" required maxlength="100"></div>
-      <div class="field"><label for="email">邮箱 / Email *</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="254"></div>
-      <div class="field full"><label for="organisation">机构 / Organisation</label><input id="organisation" name="organisation" autocomplete="organization" maxlength="160"></div>
-      <div class="field full"><label for="type">联系类型 / Enquiry type *</label><select id="type" name="type" required><option value="business">商业合作 / Business collaboration</option><option value="media">媒体采访 / Media enquiry</option><option value="speaking">演讲邀请 / Speaking invitation</option><option value="community">公益合作 / Community partnership</option><option value="general">一般联系 / General enquiry</option></select></div>
-      <div class="field full"><label for="message">告诉我们你的想法 / Your message *</label><textarea id="message" name="message" required maxlength="4000" placeholder="请介绍合作主题。如为活动邀请，可附上日期、地点与活动形式。"></textarea></div>
+      <div class="field"><label for="name">姓名 *</label><input id="name" name="name" autocomplete="name" required maxlength="100"></div>
+      <div class="field"><label for="email">邮箱 *</label><input id="email" name="email" type="email" autocomplete="email" required maxlength="254"></div>
+      <div class="field full"><label for="organisation">机构</label><input id="organisation" name="organisation" autocomplete="organization" maxlength="160"></div>
+      <div class="field full"><label for="type">联系类型 *</label><select id="type" name="type" required><option value="business">商业合作</option><option value="media">媒体采访</option><option value="speaking">演讲邀请</option><option value="community">公益合作</option><option value="general">一般联系</option></select></div>
+      <div class="field full"><label for="message">告诉我们你的想法 *</label><textarea id="message" name="message" required maxlength="4000" placeholder="请介绍合作主题。如为活动邀请，可附上日期、地点与活动形式。"></textarea></div>
       <p class="form-note">填写后将为你生成邮件草稿。你可以在自己的邮件应用中确认内容并发送；本页不会直接提交资料。</p>
-      <button type="submit" class="button">Prepare email · 生成邮件<span class="arrow" aria-hidden="true">→</span></button>
-    </div></form><div class="email-ready" hidden tabindex="-1" role="status"><p>邮件草稿已准备好。点击下方按钮，在邮件应用中检查并发送。</p><a class="button" href="mailto:Drkervis@xingyu.global">打开邮件应用<span class="arrow" aria-hidden="true">↗</span></a><p class="small" style="margin-top:15px">未设置邮件应用？也可直接发送至 Drkervis@xingyu.global。</p></div><noscript><p>请直接发送邮件至 <a href="mailto:Drkervis@xingyu.global">Drkervis@xingyu.global</a>。</p></noscript><p class="privacy-copy">了解联系资料如何使用：<a href="/privacy/">Privacy & Legal</a></p>'''
-    content = f'<div class="contact-grid"><div class="contact-info">{eyebrow("Start a conversation")}<h2 style="margin-top:25px">从一次对话，<br>开始新的可能。</h2><p>无论是共同探索事业、分享观点，还是为社区做些事情，欢迎与团队联系。</p><a class="contact-email" href="mailto:{EMAIL}">{EMAIL}</a><div class="contact-channels">{socials}</div></div><div>{form}</div></div>'
-    write_page('/contact/', '合作与联系', '联系 Dr Kervis Soo 团队，交流商业合作、媒体采访、演讲邀请及公益合作。', intro('Contact', 'Let’s connect.', '商业合作、媒体采访、演讲邀请与公益交流。请选择联系类型，让我们更好地了解你的想法。') + page_section(content), '/contact/')
+      <button type="submit" class="button">生成邮件草稿<span class="arrow" aria-hidden="true">→</span></button>
+    </div></form><div class="email-ready" hidden tabindex="-1" role="status"><p>邮件草稿已准备好。点击下方按钮，在邮件应用中检查并发送。</p><a class="button" href="mailto:Drkervis@xingyu.global">打开邮件应用<span class="arrow" aria-hidden="true">↗</span></a><p class="small" style="margin-top:15px">未设置邮件应用？也可直接发送至 Drkervis@xingyu.global。</p></div><noscript><p>请直接发送邮件至 <a href="mailto:Drkervis@xingyu.global">Drkervis@xingyu.global</a>。</p></noscript><p class="privacy-copy">了解联系资料如何使用：<a href="/privacy/">隐私与网站说明</a></p>'''
+    content = f'<div class="contact-grid"><div class="contact-info">{eyebrow("开始交流")}<h2 style="margin-top:25px">从一次对话，<br>开始新的可能。</h2><p>无论是共同探索事业、分享观点，还是为社区做些事情，欢迎与团队联系。</p><a class="contact-email" href="mailto:{EMAIL}">{EMAIL}</a><div class="contact-channels">{socials}</div></div><div>{form}</div></div>'
+    write_page('/contact/', '合作与联系', '联系苏才育博士团队，交流商业合作、媒体采访、演讲邀请及公益合作。', intro('合作与联系', '合作与联系', '商业合作、媒体采访、演讲邀请与公益交流。请选择联系类型，让我们更好地了解你的想法。') + page_section(content), '/contact/')
 
     privacy_sections = [
-        ('website', '关于本网站', '<p>本网站用于介绍 Dr Kervis Soo 苏才育博士的人物经历、事业方向、观点与社会参与。内容由网站团队整理维护。</p><p>资料更正、内容使用与其他网站事宜，请联系 Drkervis@xingyu.global。</p>'),
+        ('website', '关于本网站', '<p>本网站用于介绍苏才育博士的人物经历、事业方向、观点与社会参与。内容由网站团队整理维护。</p><p>资料更正、内容使用与其他网站事宜，请联系 Drkervis@xingyu.global。</p>'),
         ('contact-data', '联系资料', '<p>联系页面在你的浏览器中整理姓名、邮箱、机构与留言，生成邮件草稿。本页面不会将表单资料直接上传到网站服务器。</p><p>只有当你在邮件应用中确认发送后，资料才会通过所选邮件服务传递给收件人。请仅提供与联系目的有关的信息。</p>'),
-        ('storage', '浏览器存储与外部服务', '<p>本网站代码不设置分析或广告追踪 Cookie，也不在你的浏览器中保存访问标识。</p><p>网站字体由本网站托管。入口动画依赖 unpkg 托管的 Three.js 文件；浏览器访问该服务时，会向其发送加载资源所需的网络信息。托管服务也可能按其配置处理访问日志。</p>'),
+        ('storage', '浏览器存储与外部服务', '<p>本网站代码不设置分析或广告追踪浏览器追踪标记，也不在你的浏览器中保存访问标识。</p><p>网站字体由本网站托管。入口动画依赖 unpkg 托管的 Three.js 文件；浏览器访问该服务时，会向其发送加载资源所需的网络信息。托管服务也可能按其配置处理访问日志。</p>'),
         ('external', '外部链接与内容使用', '<p>点击社交账号、WhatsApp 或邮件链接后，你将使用相应平台或应用，其资料处理方式由该服务决定。</p><p>人物照片与简介可用于相关采访、活动介绍与人物报道。商业广告、代言或其他肖像使用，请先取得授权。请勿通过编辑造成错误的身份、立场或背书印象。</p>'),
         ('updates', '更新与联系', f'<p>本页更新日期：{UPDATED}。如对网站内容或资料处理有疑问，请发送邮件至 <a href="mailto:{EMAIL}">{EMAIL}</a>。</p>'),
     ]
-    write_page('/privacy/', '隐私与网站说明', 'Dr Kervis Soo 个人官方网站的联系资料处理、浏览器存储、外部服务及内容使用说明。', intro('Privacy & legal', '隐私与网站说明', '关于联系资料、网站使用及内容授权的说明。') + prose_layout(privacy_sections))
+    write_page('/privacy/', '隐私与网站说明', '苏才育博士个人官方网站的联系资料处理、浏览器存储、外部服务及内容使用说明。', intro('隐私与网站说明', '隐私与网站说明', '关于联系资料、网站使用及内容授权的说明。') + prose_layout(privacy_sections))
 
 
 def supporting_files():

@@ -3,7 +3,7 @@ const { chromium } = require('playwright');
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
-const base = 'http://127.0.0.1:8000';
+const base = process.env.SITE_URL || 'http://127.0.0.1:8000';
 const fixture = path.join(__dirname, '..', 'preview-reload-test.html');
 
 (async () => {
@@ -19,12 +19,12 @@ const fixture = path.join(__dirname, '..', 'preview-reload-test.html');
     console.log('PASS: an already-open page reloads after a file edit');
 
     await page.goto(base + '/preview/');
-    assert.match(await page.locator('h1').innerText(), /Dr Kervis/);
+    assert.match(await page.locator('h1').innerText(), /苏才育/);
     assert.equal(new URL(page.url()).pathname, '/preview/');
     assert.equal(await page.locator('.hero-photo').count(), 1);
     console.log('PASS: fresh preview directly displays the rebuilt homepage');
 
-    for (const pathname of ['/preview/', '/landing.html', '/assets/site.css', '/assets/site.js']) {
+    for (const pathname of ['/preview/', '/landing/', '/assets/site.css', '/assets/site.js']) {
       const response = await page.request.get(base + pathname, { headers: { 'If-Modified-Since': 'Wed, 31 Dec 2099 23:59:59 GMT' } });
       assert.equal(response.status(), 200, pathname);
       assert.match(response.headers()['cache-control'], /no-store/, pathname);
