@@ -341,8 +341,13 @@ const tokenColour = (page, token) => page.evaluate(name => {
     assert.equal(await page.locator('.filter-summary').innerText(), `${rowCount} 条记录`);
 
     await page.goto(`${BASE}/insights/`);
-    await page.locator('[data-filter="creators"]').click();
+    assert.equal(await page.locator('[data-filter]').count(), 0, 'insights has no category buttons');
+    const insightTotal = await page.locator('.insight:visible').count();
+    assert.ok(insightTotal >= 3, 'insights lists every article');
+    await page.getByRole('searchbox').fill('从一次流量，到长期的创作者生态');
     assert.equal(await page.locator('.insight:visible').count(), 1);
+    await page.getByRole('searchbox').fill('');
+    assert.equal(await page.locator('.insight:visible').count(), insightTotal);
     await page.goto(`${BASE}/archive/`);
     await page.locator('[data-filter="impact"]').click();
     assert.equal(await page.locator('.archive-item:visible').count(), 2);

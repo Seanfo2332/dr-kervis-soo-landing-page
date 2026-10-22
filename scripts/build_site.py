@@ -10,6 +10,7 @@ from html import escape
 import json
 from event_layout import EVENT_ID, EVENT_NAME, EVENT_PATH, OG_IMAGE, appearance_cards, event_schema, event_sections
 from home_layout import render_home
+from insights_data import load_insights, remove_stale_pages, render_blocks
 from press_data import ARTICLES as COVERAGE
 from press_layout import coverage_rows, filter_groups, sort_by_date, type_legend
 
@@ -17,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = 'https://drkervis.com'
 UPDATED = '2026-10-04'
 PAGES = []
+LASTMOD = {}  # page path -> its own last-changed date, for pages that are not tied to UPDATED
 NAME = '苏才育博士'
 EMAIL = 'Drkervis@xingyu.global'
 SOCIALS = [
@@ -162,14 +164,14 @@ def closing():
             '<p class="copy-status" role="status"></p></div></section>')
 
 
-def write_page(path, title, description, body, active='', home=False, extra_schema=None, og_image='/images/hero.jpg'):
+def write_page(path, title, description, body, active='', home=False, extra_schema=None, og_image='/images/hero.jpg', modified=UPDATED):
     canonical = DOMAIN + path
     schema = {'@context': 'https://schema.org', '@graph': [PERSON, {
         '@type': 'WebSite', '@id': DOMAIN + '/#website', 'name': '苏才育博士官方网站', 'url': DOMAIN + '/', 'inLanguage': 'zh-CN', 'about': {'@id': PERSON['@id']}
     }, {
         '@type': 'WebPage', '@id': canonical + '#webpage', 'url': canonical,
         'name': title, 'description': description, 'inLanguage': 'zh-CN',
-        'dateModified': UPDATED, 'isPartOf': {'@id': DOMAIN + '/#website'}, 'about': {'@id': PERSON['@id']}
+        'dateModified': modified, 'isPartOf': {'@id': DOMAIN + '/#website'}, 'about': {'@id': PERSON['@id']}
     }]}
     if not home:
         schema['@graph'].append({'@type': 'BreadcrumbList', 'itemListElement': [
@@ -191,6 +193,8 @@ def write_page(path, title, description, body, active='', home=False, extra_sche
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(html, encoding='utf-8')
     PAGES.append(path)
+    if modified != UPDATED:
+        LASTMOD[path] = modified
 
 
 def intro(en, zh, description, photo=None, article=False, photo_alt='苏才育博士人物照片'):
@@ -243,12 +247,28 @@ ARTICLES = [
      ]},
 ]
 
+# Articles added through /admin come first (newest first), then the three written into this file.
+BUILTIN_SLUGS = {article['slug'] for article in ARTICLES}
+ADMIN_INSIGHTS, INSIGHT_WARNINGS = load_insights(ROOT, BUILTIN_SLUGS)
+ALL_INSIGHTS = ADMIN_INSIGHTS + ARTICLES
+CARD_SIZES = '(max-width: 680px) calc(100vw - 48px), 410px'
+ARTICLE_SIZES = '(max-width: 680px) calc(100vw - 48px), min(790px, 55vw)'
+
 
 def insight_item(article):
-    return f'''<a class="insight" href="/insights/{article['slug']}/" data-category="{article['category']}"><div class="insight-art">{article_image(article)}</div><div class="insight-copy"><div class="insight-meta"><span>{article['label']}</span><span>{article['minutes']} 分钟</span></div><h3>{article['title']}</h3><p>{article['summary']}</p><div class="read">阅读全文<span class="arrow" aria-hidden="true">↗</span></div></div></a>'''
+    return f'''<a class="insight" href="/insights/{article['slug']}/" data-category="{article['category']}"><div class="insight-art">{article_image(article)}</div><div class="insight-copy"><div class="insight-meta"><span>{article['label']}</span><span>{article['minutes']} 分钟</span></div><h3>{escape(article['title'])}</h3><p>{escape(article['summary'])}</p><div class="read">阅读全文<span class="arrow" aria-hidden="true">↗</span></div></div></a>'''
+
+
+def uploaded_image(photo, sizes, eager=False):
+    """<img> for a photo uploaded through /admin: a 640px copy and the full-size copy."""
+    load = 'fetchpriority="high"' if eager else 'loading="lazy"'
+    return (f'<img src="{photo["src"]}" srcset="{photo["small"]} 640w, {photo["src"]} {photo["width"]}w" sizes="{sizes}" '
+            f'alt="{escape(photo["alt"], quote=True)}" width="{photo["width"]}" height="{photo["height"]}" {load} decoding="async">')
 
 
 def article_image(article):
+    if 'image' in article:
+        return uploaded_image(article['image'], CARD_SIZES)
     images = {'ai': ('generated/ai-perspective.webp', '折叠金属与深蓝玻璃的人工智能生成概念静物'), 'creators': ('generated/creator-studio.webp', '创作工作室与摄影机的人工智能生成概念影像'), 'impact': ('impact1.jpg', '星域集团慈善基金活动现场')}
     name, alt = images[article['category']]
     return image(name, alt)
@@ -260,13 +280,16 @@ def filter_buttons(categories):
 
 def filter_controls(categories, search_hint='搜索记录', groups=None):
     """One group of filter buttons, or several independent groups (a row must match every group)."""
-    if groups is None:
+    search_only = groups is None and not categories
+    if search_only:
+        controls = ''
+    elif groups is None:
         controls = f'<div class="filter-buttons" role="group" aria-label="按主题筛选">{filter_buttons(categories)}</div>'
     else:
         blocks = ''.join(f'<div class="filter-group" data-filter-group role="group" aria-label="{label}"><span class="filter-label" aria-hidden="true">{label.removeprefix("按").removesuffix("筛选")}</span>'
                          f'<div class="filter-buttons">{filter_buttons(buttons)}</div></div>' for label, buttons in groups)
         controls = f'<div class="filter-groups">{blocks}</div>'
-    return f'<div class="filter-bar">{controls}<label class="search-label"><span class="sr-only">搜索</span><input type="search" placeholder="{search_hint}" aria-label="{search_hint}"><span aria-hidden="true">⌕</span></label></div><p class="filter-summary" aria-live="polite"></p>'
+    return f'<div class="filter-bar{" search-only" if search_only else ""}">{controls}<label class="search-label"><span class="sr-only">搜索</span><input type="search" placeholder="{search_hint}" aria-label="{search_hint}"><span aria-hidden="true">⌕</span></label></div><p class="filter-summary" aria-live="polite"></p>'
 
 
 def no_results():
@@ -274,7 +297,7 @@ def no_results():
 
 
 def home_page():
-    html = render_home(image, link, BIO, BUSINESSES, ARTICLES, insight_item, coverage_rows, sort_by_date(COVERAGE), closing, social_icons('hero-social'))
+    html = render_home(image, link, BIO, BUSINESSES, ALL_INSIGHTS[:3], insight_item, coverage_rows, sort_by_date(COVERAGE), closing, social_icons('hero-social'))
     write_page('/landing/', '首页 · 成就事业，创造影响', '苏才育博士个人官方网站。了解星域集团创办人的创业历程、人工智能与数字经济实践、社会贡献及媒体记录。', html, home=True)
 
 
@@ -374,17 +397,43 @@ def media_awards_pages():
     write_page('/awards/ai-honorary-fellow/', '人工智能领域荣誉院士', '2026 年林肯大学学院授予苏才育博士人工智能领域荣誉院士称号的记录。', intro('人工智能领域荣誉院士', '人工智能领域荣誉院士', '2026 · 林肯大学学院') + prose_layout(sections) + closing())
 
 
+def insight_more_links():
+    return page_section('<div class="actions">' + link('更多主题观点', '/insights/') + link('了解相关事业', '/business/') + '</div>')
+
+
+def builtin_insight_page(a):
+    sections = [(f'chapter-{i}', title, f'<p>{p1}</p><p>{p2}</p>') for i, (title, p1, p2) in enumerate(a['sections'], 1)]
+    meta = f'<div class="article-meta"><span>主题观察 · 官网编辑</span><span>整理于 <time datetime="{UPDATED}">{UPDATED.replace("-", ".")}</time></span><span>{a["minutes"]} 分钟阅读</span></div>'
+    caption = '人工智能概念影像' if a['category'] in ('ai', 'creators') else '星域集团慈善基金 · 活动记录'
+    art = f'<figure class="article-art">{article_image(a)}<figcaption class="photo-caption">{caption}</figcaption></figure>'
+    content = intro(a['label'], a['title'], a['summary'], article=True) + page_section(f'<div class="prose" style="margin:auto">{art}{meta}</div>') + prose_layout(sections, '阅读导航') + insight_more_links()
+    article_schema = {'@type': 'Article', 'headline': a['title'], 'description': a['summary'], 'inLanguage': 'zh-CN', 'datePublished': '2026-10-01', 'dateModified': UPDATED, 'author': {'@type': 'Organization', 'name': '苏才育博士官网编辑'}, 'mainEntityOfPage': DOMAIN + '/insights/' + a['slug'] + '/'}
+    write_page('/insights/' + a['slug'] + '/', a['title'], a['summary'], content + closing(), '/insights/', extra_schema=article_schema)
+
+
+def uploaded_insight_page(a):
+    """An article added through /admin. Text before the first heading sits above the reading navigation."""
+    lead = ''.join(render_blocks(section) for section in a['sections'] if section.heading is None)
+    headed = [section for section in a['sections'] if section.heading is not None]
+    chapters = [(f'chapter-{i}', escape(section.heading), render_blocks(section)) for i, section in enumerate(headed, 1)]
+    art = f'<figure class="article-art">{uploaded_image(a["image"], ARTICLE_SIZES, eager=True)}</figure>'
+    meta = f'<div class="article-meta"><span>{a["label"]} · 官网编辑</span><span>发布于 <time datetime="{a["published"]}">{a["published"].replace("-", ".")}</time></span><span>{a["minutes"]} 分钟阅读</span></div>'
+    content = (intro(a['label'], escape(a['title']), escape(a['summary']), article=True)
+               + page_section(f'<div class="prose" style="margin:auto">{art}{meta}{lead}</div>')
+               + (prose_layout(chapters, '阅读导航') if chapters else '') + insight_more_links())
+    path = '/insights/' + a['slug'] + '/'
+    article_schema = {'@type': 'Article', 'headline': a['title'], 'description': a['summary'], 'inLanguage': 'zh-CN', 'datePublished': a['published'], 'dateModified': a['modified'],
+                      'author': {'@type': 'Organization', 'name': '苏才育博士官网编辑'}, 'mainEntityOfPage': DOMAIN + path, 'image': DOMAIN + a['image']['src']}
+    write_page(path, a['meta_title'], a['meta_description'], content + closing(), '/insights/', extra_schema=article_schema, og_image=a['image']['src'], modified=a['modified'])
+
+
 def insight_pages():
-    filters = filter_controls([('all', '全部'), ('ai', '人工智能与数字经济'), ('creators', '创作者经济'), ('impact', '领导力与公益')], '搜索观点')
-    write_page('/insights/', '人工智能与观点', '围绕人工智能、数字经济、创作者经济、领导力与社会贡献的官网主题观察。', intro('人工智能与观点', '把变化，变成思考的起点。', '从技术到经营，从创作到社会价值。围绕事业关注领域，由官网编辑整理的主题文章。') + page_section(f'<div data-filter-list><h2 class="sr-only">主题文章</h2>{filters}<div class="insight-grid">{"".join(insight_item(a) for a in ARTICLES)}</div>{no_results()}</div>') + closing(), '/insights/')
-    for a in ARTICLES:
-        sections = [(f'chapter-{i}', title, f'<p>{p1}</p><p>{p2}</p>') for i, (title, p1, p2) in enumerate(a['sections'], 1)]
-        meta = f'<div class="article-meta"><span>主题观察 · 官网编辑</span><span>整理于 <time datetime="{UPDATED}">{UPDATED.replace("-", ".")}</time></span><span>{a["minutes"]} 分钟阅读</span></div>'
-        caption = '人工智能概念影像' if a['category'] in ('ai', 'creators') else '星域集团慈善基金 · 活动记录'
-        art = f'<figure class="article-art">{article_image(a)}<figcaption class="photo-caption">{caption}</figcaption></figure>'
-        content = intro(a['label'], a['title'], a['summary'], article=True) + page_section(f'<div class="prose" style="margin:auto">{art}{meta}</div>') + prose_layout(sections, '阅读导航') + page_section('<div class="actions">' + link('更多主题观点', '/insights/') + link('了解相关事业', '/business/') + '</div>')
-        article_schema = {'@type': 'Article', 'headline': a['title'], 'description': a['summary'], 'inLanguage': 'zh-CN', 'datePublished': '2026-10-01', 'dateModified': UPDATED, 'author': {'@type': 'Organization', 'name': '苏才育博士官网编辑'}, 'mainEntityOfPage': DOMAIN + '/insights/' + a['slug'] + '/'}
-        write_page('/insights/' + a['slug'] + '/', a['title'], a['summary'], content + closing(), '/insights/', extra_schema=article_schema)
+    for slug in remove_stale_pages(ROOT / 'insights', {article['slug'] for article in ALL_INSIGHTS}):
+        print(f'Removed the page of a deleted insight: /insights/{slug}/')
+    filters = filter_controls([], '搜索观点')
+    write_page('/insights/', '人工智能与观点', '围绕人工智能、数字经济、创作者经济、领导力与社会贡献的官网主题观察。', intro('人工智能与观点', '把变化，变成思考的起点。', '从技术到经营，从创作到社会价值。围绕事业关注领域，由官网编辑整理的主题文章。') + page_section(f'<div data-filter-list><h2 class="sr-only">主题文章</h2>{filters}<div class="insight-grid">{"".join(insight_item(a) for a in ALL_INSIGHTS)}</div>{no_results()}</div>') + closing(), '/insights/')
+    for a in ALL_INSIGHTS:
+        (uploaded_insight_page if 'image' in a else builtin_insight_page)(a)
 
 
 def speaking_press_pages():
@@ -479,7 +528,7 @@ def contact_privacy_pages():
 def supporting_files():
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     for path in ['/'] + PAGES:
-        sitemap += f'  <url><loc>{DOMAIN}{path}</loc><lastmod>{UPDATED}</lastmod></url>\n'
+        sitemap += f'  <url><loc>{DOMAIN}{path}</loc><lastmod>{LASTMOD.get(path, UPDATED)}</lastmod></url>\n'
     sitemap += '</urlset>\n'
     (ROOT / 'sitemap.xml').write_text(sitemap, encoding='utf-8')
     (ROOT / 'robots.txt').write_text(f'User-agent: *\nAllow: /\nDisallow: /scripts/\nDisallow: /tests/\nSitemap: {DOMAIN}/sitemap.xml\n', encoding='utf-8')
@@ -498,4 +547,6 @@ if __name__ == '__main__':
     news_archive_pages()
     contact_privacy_pages()
     supporting_files()
-    print(f'Built {len(PAGES)} static pages. The animated entrance is preserved.')
+    for warning in INSIGHT_WARNINGS:
+        print(f'WARNING: skipped an insight article - {warning}')
+    print(f'Built {len(PAGES)} static pages ({len(ADMIN_INSIGHTS)} admin-added insights). The animated entrance is preserved.')

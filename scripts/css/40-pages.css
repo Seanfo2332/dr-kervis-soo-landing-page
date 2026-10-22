@@ -139,6 +139,28 @@
   line-height: 2;
   margin-bottom: 22px;
 }
+.prose .article-list {
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+.prose .article-list li {
+  position: relative;
+  padding-left: 1.5em;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 2;
+}
+.prose .article-list li::before {
+  content: "";
+  position: absolute;
+  left: 0.3em;
+  top: 1.05em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+}
 .prose a:not(.button):not(.text-link):not(.ref-original) {
   color: var(--gold-ink);
   text-decoration: underline;
@@ -637,7 +659,8 @@
     font-size: 13px;
     padding-block: 10px;
   }
-  .prose p {
+  .prose p,
+  .prose .article-list li {
     font-size: 15px;
   }
   .prose section + section {

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文章管理 | 苏才育博士官网</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#102638">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/assets/fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/admin/admin.css">
+<script type="module" src="/admin/admin.js"></script>
+</head>
+<body>
+
+<p id="loading-view" class="loading" role="status">正在加载……</p>
+
+<main id="login-view" class="login" hidden>
+  <form id="login-form" class="login-card" novalidate>
+    <p class="eyebrow">苏才育博士官网</p>
+    <h1>文章管理</h1>
+    <p class="lead">请输入管理密码，登录后即可发布「人工智能与观点」栏目的文章。</p>
+    <label for="login-password">管理密码</label>
+    <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+    <p id="login-error" class="form-error" role="alert" hidden></p>
+    <button id="login-button" class="button" type="submit"><span class="lbl">登录</span><span class="arrow" aria-hidden="true">→</span></button>
+  </form>
+</main>
+
+<div id="dashboard-view" hidden>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <span class="topbar-title">文章管理</span>
+      <div class="topbar-actions">
+        <a class="text-button" href="/insights/" target="_blank" rel="noopener">查看网站 ↗</a>
+        <button id="logout-button" class="text-button" type="button">退出登录</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap dashboard">
+    <div class="dashboard-head">
+      <div>
+        <h1>人工智能与观点</h1>
+        <p class="lead">在这里发布和修改栏目文章。新文章发布后，大约 1 分钟就会出现在网站上。</p>
+      </div>
+      <button id="new-article-button" class="button" type="button"><span class="lbl">新建文章</span><span class="arrow" aria-hidden="true">+</span></button>
+    </div>
+
+    <p id="banner" class="banner" role="status" hidden></p>
+    <p id="list-error" class="form-error" role="alert" hidden></p>
+
+    <ul id="article-list" class="article-list" aria-label="已发布的文章"></ul>
+    <p id="empty-state" class="empty" hidden>还没有通过这里发布的文章。点击右上角的「新建文章」开始。</p>
+    <p class="fine-print">网站原有的 3 篇文章写在网站里，不在这里管理。</p>
+  </main>
+</div>
+
+<dialog id="editor-dialog" class="dialog" aria-labelledby="editor-title">
+  <form id="editor-form" novalidate>
+    <header class="dialog-head">
+      <h2 id="editor-title">新建文章</h2>
+      <button id="editor-close" class="icon-button" type="button" aria-label="关闭">✕</button>
+    </header>
+
+    <div class="dialog-body">
+      <div class="field">
+        <label for="field-title">文章标题</label>
+        <input id="field-title" name="title" type="text" maxlength="120" autocomplete="off" placeholder="请输入文章标题">
+        <p class="address-line">文章网址：drkervis.com/insights/<strong id="address-preview">……</strong>/ <span id="address-status" class="address-status" role="status">填好标题和内容后，会自动生成英文网址。</span></p>
+      </div>
+
+      <div class="field">
+        <label for="field-content">文章内容</label>
+        <textarea id="field-content" name="content" rows="13" placeholder="在这里粘贴文章内容……&#10;&#10;从 Word、Google 文档或 ChatGPT 复制过来的标题和要点，会自动识别。&#10;也可以自己写，例如：&#10;## 大标题&#10;### 小标题&#10;这是一段正文。&#10;- 这是一个要点"></textarea>
+        <p class="hint">直接粘贴整篇文章就可以，从 Word、Google 文档、ChatGPT 复制的<strong>标题和要点会自动识别</strong>。自己写的话：<strong>## </strong>开头的一行是大标题，<strong>### </strong>开头的是小标题，<strong>- </strong>开头的是要点，其余每一行都是一段正文。</p>
+      </div>
+
+      <div class="field">
+        <span class="label" id="photo-label">文章图片</span>
+        <div class="photo-picker">
+          <div id="photo-preview" class="photo-preview" hidden></div>
+          <div class="photo-controls">
+            <label class="secondary-button" for="photo-input" id="photo-button">选择图片</label>
+            <input id="photo-input" class="visually-hidden" type="file" accept="image/*" aria-labelledby="photo-label photo-button">
+            <p id="photo-status" class="hint" role="status">请选择一张 JPG、PNG 或 WebP 图片，系统会自动调整大小。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="field suggest">
+        <button id="suggest-button" class="secondary-button" type="button">自动生成摘要和搜索设置</button>
+        <p class="hint">根据你粘贴的文章，自动写好下面的摘要、搜索标题、搜索描述和网址。生成后可以自己修改。</p>
+      </div>
+
+      <details id="optional-fields" class="optional">
+        <summary>摘要与搜索设置（可以不填）</summary>
+        <p class="hint">不填也可以，发布时系统会自动补上。</p>
+        <div class="field">
+          <label for="field-summary">摘要（显示在文章列表里）</label>
+          <textarea id="field-summary" name="summary" rows="2" maxlength="200"></textarea>
+        </div>
+        <div class="field">
+          <label for="field-meta-title">搜索标题（显示在谷歌搜索结果里）</label>
+          <input id="field-meta-title" name="metaTitle" type="text" maxlength="80" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="field-meta-description">搜索描述（显示在谷歌搜索结果里）</label>
+          <textarea id="field-meta-description" name="metaDescription" rows="2" maxlength="200"></textarea>
+        </div>
+        <div class="field">
+          <label for="field-slug">网址（小写英文字母、数字和连字符）</label>
+          <input id="field-slug" name="slug" type="text" maxlength="80" autocomplete="off" spellcheck="false" placeholder="例如：ai-starts-with-real-work">
+          <p class="hint">会自动生成。想改的话，请只用小写英文字母、数字和连字符。留空的话，发布时也会自动补上。</p>
+        </div>
+      </details>
+
+      <p id="form-notice" class="notice" role="status" hidden></p>
+      <p id="form-error" class="form-error" role="alert" hidden></p>
+    </div>
+
+    <footer class="dialog-foot">
+      <button id="editor-cancel" class="secondary-button" type="button">取消</button>
+      <button id="editor-submit" class="button" type="submit"><span class="lbl">发布文章</span><span class="arrow" aria-hidden="true">→</span></button>
+    </footer>
+  </form>
+</dialog>
+
+<dialog id="delete-dialog" class="dialog dialog-small" aria-labelledby="delete-title">
+  <form method="dialog" id="delete-form">
+    <header class="dialog-head"><h2 id="delete-title">删除这篇文章？</h2></header>
+    <div class="dialog-body">
+      <p id="delete-message"></p>
+      <p id="delete-error" class="form-error" role="alert" hidden></p>
+    </div>
+    <footer class="dialog-foot">
+      <button id="delete-cancel" class="secondary-button" type="button">不删除</button>
+      <button id="delete-confirm" class="danger-button" type="submit">确认删除</button>
+    </footer>
+  </form>
+</dialog>
+
+<template id="article-row-template">
+  <li class="article-row">
+    <div class="article-thumb"></div>
+    <div class="article-info">
+      <h3 class="article-title"></h3>
+      <p class="article-summary"></p>
+      <p class="article-meta"></p>
+    </div>
+    <div class="article-actions">
+      <a class="text-button view-link" target="_blank" rel="noopener">查看</a>
+      <button class="text-button edit-button" type="button">编辑</button>
+      <button class="text-button delete-button" type="button">删除</button>
+    </div>
+  </li>
+</template>
+
+</body>
+</html>
