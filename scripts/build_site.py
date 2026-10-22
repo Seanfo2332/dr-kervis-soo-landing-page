@@ -24,7 +24,7 @@ EMAIL = 'Drkervis@xingyu.global'
 SOCIALS = [
     ('Facebook', 'https://www.facebook.com/zoccosoo'),
     ('Instagram', 'https://www.instagram.com/kervisoo/'),
-    ('WhatsApp', 'https://wa.me/60176378676'),
+    ('WhatsApp', 'https://wa.me/60198208676'),
     ('X', 'https://x.com/DrKervis'),
     ('LinkedIn', 'https://www.linkedin.com/in/dr-kervis-32b0593b8/'),
 ]
