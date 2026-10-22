@@ -19,7 +19,7 @@ const MAX_BODY_BYTES = 4.5 * 1024 * 1024;
 // The same header rules Vercel applies in production (vercel.json), so the page is tested under its real security policy.
 function headersFor(pathname) {
   const rules = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8')).headers || [];
-  const prefix = (rule) => rule.source.replace(/\/:path\*$/, '');
+  const prefix = (rule) => rule.source.replace(/\/\(\.\*\)$/, '');
   return rules.filter((rule) => pathname === prefix(rule) || pathname.startsWith(`${prefix(rule)}/`)).flatMap((rule) => rule.headers);
 }
 
