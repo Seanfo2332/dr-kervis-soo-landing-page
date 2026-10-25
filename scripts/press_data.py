@@ -24,6 +24,7 @@ assert not set(KINDS) & set(TOPICS) and not any(key.startswith('all') for key in
 
 # thumbnail path under /images -> (width, height)
 THUMB_SIZES = {
+    'events/kervis-film-panel.jpg': (1280, 853),
     'events/gala-podium-640.webp': (640, 427),
     'events/gala-birthday-640.webp': (640, 427),
     'about-640.webp': (640, 427),
@@ -69,7 +70,7 @@ ARTICLES = (
             'Utusan Malaysia', 'news', '2026-10-22',
             'https://utusan.com.my/gaya/hiburan/2026/10/kervis-soo-bawa-karya-filem-ke-kampung-halaman/',
             '报道苏才育博士计划于 11 月 13 日返回居銮举办答谢活动，分享电影创作进展，并推介 VYBE Ai SHOW 人才竞赛。',
-            'business', 'about-640.webp', lang='ms',
+            'business', 'events/kervis-film-panel.jpg', lang='ms',
             headline_zh='苏才育博士携电影作品回到家乡居銮'),
     Article('916 Xing Yu Grand Gala Brings Cross-Industry Forces Together as VYBE Officially Launches',
             'ACCESS Newswire · Yahoo Finance', 'release', '2026-09-23',
