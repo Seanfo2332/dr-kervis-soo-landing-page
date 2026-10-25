@@ -17,6 +17,7 @@ from press_layout import coverage_rows, filter_groups, sort_by_date, type_legend
 ROOT = Path(__file__).resolve().parents[1]
 DOMAIN = 'https://drkervis.com'
 UPDATED = '2026-10-04'
+COVERAGE_UPDATED = '2026-10-26'
 PAGES = []
 LASTMOD = {}  # page path -> its own last-changed date, for pages that are not tied to UPDATED
 NAME = '苏才育博士'
@@ -298,7 +299,7 @@ def no_results():
 
 def home_page():
     html = render_home(image, link, BIO, BUSINESSES, ALL_INSIGHTS[:3], insight_item, coverage_rows, sort_by_date(COVERAGE), closing, social_icons('hero-social'))
-    write_page('/landing/', '首页 · 成就事业，创造影响', '苏才育博士个人官方网站。了解星域集团创办人的创业历程、人工智能与数字经济实践、社会贡献及媒体记录。', html, home=True)
+    write_page('/landing/', '首页 · 成就事业，创造影响', '苏才育博士个人官方网站。了解星域集团创办人的创业历程、人工智能与数字经济实践、社会贡献及媒体记录。', html, home=True, modified=COVERAGE_UPDATED)
 
 
 def biography_pages():
@@ -388,7 +389,7 @@ def media_awards_pages():
     filters = filter_controls(None, '搜索报道', groups=filter_groups())
     coverage = sort_by_date(COVERAGE)
     lead = f'关于人物、事业、科技与社会贡献的第三方报道，共 {len(coverage)} 条。每条均已核对并链接到原文，按发布方式标注类型。'
-    write_page('/media/', '媒体与公众记录', '汇集关于苏才育博士、星域集团、人工智能应用与社会贡献的第三方报道：逐条核对、链接原文，并按发布方式分类。', intro('媒体与公众记录', '从不同视角，看见实践。', lead) + page_section(f'<div class="media-legend">{eyebrow("类型说明")}{type_legend()}</div><div data-filter-list><h2 class="sr-only">媒体报道</h2>{filters}{coverage_rows(coverage)}{no_results()}</div>') + page_section(link('获取人物简介与媒体照片', '/press/')) + closing(), '/media/')
+    write_page('/media/', '媒体与公众记录', '汇集关于苏才育博士、星域集团、人工智能应用与社会贡献的第三方报道：逐条核对、链接原文，并按发布方式分类。', intro('媒体与公众记录', '从不同视角，看见实践。', lead) + page_section(f'<div class="media-legend">{eyebrow("类型说明")}{type_legend()}</div><div data-filter-list><h2 class="sr-only">媒体报道</h2>{filters}{coverage_rows(coverage)}{no_results()}</div>') + page_section(link('获取人物简介与媒体照片', '/press/')) + closing(), '/media/', modified=COVERAGE_UPDATED)
 
     recognition = '<div class="feature-list"><article class="feature-item">' + eyebrow('荣誉身份') + '<h2>人工智能领域荣誉院士</h2><p>2026 · 林肯大学学院授予的人工智能领域荣誉院士荣誉身份。</p>' + link('查看记录', '/awards/ai-honorary-fellow/') + '</article><article class="feature-item">' + eyebrow('学术学历') + '<h2>管理学博士</h2><p>2025 · 马来亚大学<br>马来亚大学管理学博士。教育背景在人物简介中独立记录。</p>' + link('教育经历', '/dr-kervis-soo/#education') + '</article></div>'
     write_page('/awards/', '学历与荣誉', '分别了解苏才育博士的学术学历与人工智能领域荣誉身份。', intro('学历与荣誉', '学习与实践的印记。', '以清晰的分类，记录学术经历与荣誉身份。') + page_section(recognition) + closing())

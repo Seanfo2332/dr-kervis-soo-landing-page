@@ -9,7 +9,7 @@ from html import escape
 
 from event_layout import EVENT_PATH, POSTER_PATH, VIDEO_LABEL, VIDEO_PATH
 
-HOME_COVERAGE_COUNT = 3  # newest verified articles shown on the homepage
+HOME_COVERAGE_COUNT = 4  # newest verified articles shown on the homepage
 IDENTITY_TAGS = ('企业家', '创新实践者', '慈善家', '青年发展倡导者')
 
 # Real photographs floating around the reel title (decorative; the reel link carries the label).
